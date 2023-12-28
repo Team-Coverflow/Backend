@@ -1,4 +1,4 @@
-## 기본
+## ✈ 기본
 - 클래스 선언부와 필드 사이에 공백 하나 추가한다.
 
 - 어노테이션은 클래스 혹은 메서드와 가장 관련된 것을 선언부와 가깝게 한다.
@@ -16,7 +16,7 @@
 3. 이후 파라미터가 많은 생성자가 상단에 오도록 선언
 ```
 
-## Class
+## ✈ Class
 - 기능들의 의존성을 낮추기 위해 유지/보수를 위해 도메인 단위로 패키지를 나눈다.
 
 - ```application```은 service, ```domain```은 entity/repository, ```presentation```은 controller 객체들을 포함한다.
@@ -52,7 +52,7 @@ src
 Entity(도메인) + Controller/Service/Repository/...
 ```
 
-## Method
+## ✈ Method
 ### Presentation Layer
 - ```CUD```는 save, update, delete로 통일한다.
 
@@ -77,10 +77,10 @@ Entity(도메인) + Controller/Service/Repository/...
 
 - 조회에 관한 메서드는 ```get```으로 시작한다.
 
-## DTO
+## ✈ DTO
 - ```DTO(Data Transfer Object)```는 ```Request```와 ```Response```로 나누어 제작한다. ```SignUpRequest, SignUpResponse```
 
-## Test Code
+## ✈ Test Code
 - 테스트 메서드명을 한글로 작성한다.
 
 - 테스트 메서드의 ```@DisplayName``` 어노테이션을 생략한다.
