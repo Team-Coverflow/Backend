@@ -11,9 +11,11 @@ name: Java CI/CD with Gradle and Docker
 on:
   push:
     branches:
+      - main
 
   pull_request:
     branches:
+      - main
 
 
 permissions:
