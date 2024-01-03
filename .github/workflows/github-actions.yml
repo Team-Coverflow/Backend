@@ -11,7 +11,7 @@ name: Java CI/CD with Gradle and Docker
 on:
   push:
     branches:
-      - main
+      - main # main 브랜치로 push 될 때 실행됩니다.
 
   pull_request:
     branches:
@@ -33,15 +33,6 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-
-      ## MySQL setting
-      - name: Setup MySQL
-        uses: samin/mysql-action@v1
-        with:
-          character set server: 'utf8'
-          mysql database: 'runninghi'
-          mysql user: ${{ secrets.MYSQL_USERNAME }}
-          mysql password: ${{ secrets.MYSQL_PASSWORD }}
 
       ## application.yml 파일을 생성합니다.
       - name: make application.yml
