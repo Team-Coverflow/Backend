@@ -84,7 +84,7 @@ jobs:
         if: contains(github.ref, 'develop')
         run: |
           docker login -u "${{ secrets.DOCKER_USERNAME_DEV }}" -p "${{ secrets.DOCKER_PASSWORD_DEV }}"
-          docker build -f Dockerfile-dev -t "${{ secrets.DOCKER_USERNAME_DEV }}"/cofl-dev
+          docker build -f Dockerfile-dev -t "${{ secrets.DOCKER_USERNAME_DEV }}"/cofl-dev .
           docker push "${{ secrets.DOCKER_USERNAME_DEV }}"/cofl-dev
 
       ## docker hub에 로그인하고 cofl-prod에 이미지를 빌드 & push 합니다.
