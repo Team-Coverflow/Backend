@@ -122,11 +122,11 @@ jobs:
           host: ${{ secrets.HOST_PROD }} # EC2 인스턴스 퍼블릭 DNS
           username: ${{ secrets.USERNAME }} # 인스턴스를 시작하는 데 사용되는 AMI에 정의된 사용자 이름을 입력합니다.
           key: ${{ secrets.PRIVATE_KEY }} # 키 페어의 pem 키
-          #            sudo docker run --name cofl_spring_boot_prod -d --log-driver=syslog -p 8082:8082 -e SPRING_PROFILES_ACTIVE=prod "${{ secrets.DOCKER_USERNAME_PROD }}"/cofl-prod
+#          sudo docker-compose up -d
           script: |
             sudo docker login -u "${{ secrets.DOCKER_USERNAME_PROD }}" -p "${{ secrets.DOCKER_PASSWORD_PROD }}"
             sudo docker stop cofl_spring_boot_prod
             sudo docker rm -f $(sudo docker ps --filter 'status=exited' -a -q)
             sudo docker pull "${{ secrets.DOCKER_USERNAME_PROD }}"/cofl-prod
-            sudo docker-compose up -d
+            sudo docker run --name cofl_spring_boot_prod -d --log-driver=syslog -p 8082:8082 -e SPRING_PROFILES_ACTIVE=prod "${{ secrets.DOCKER_USERNAME_PROD }}"/cofl-prod
             sudo docker image prune -a -f
