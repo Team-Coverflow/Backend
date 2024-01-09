@@ -18,7 +18,6 @@ on:
   # 해당 브랜치로 PR 될 때 실행됩니다.
   pull_request:
     branches:
-      - main
 
 
 permissions:
