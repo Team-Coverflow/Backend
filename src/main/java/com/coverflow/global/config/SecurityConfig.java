@@ -19,16 +19,19 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
-@Configuration
 @RequiredArgsConstructor
+@Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] ALLOWED_URIS = {"/", "/api/auth/**", "/api/oauth/**", "/api/find-corporation-list"};
+    private final String[] ALLOWED_URIS = {"/", "/index.html", "/sign-up"};
     private final LoginService loginService;
     private final JwtService jwtService;
     private final MemberRepository memberRepository;
@@ -40,6 +43,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .formLogin(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .csrf(AbstractHttpConfigurer::disable)
+                .headers(headers ->
+                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -47,14 +55,16 @@ public class SecurityConfig {
                         request.requestMatchers(ALLOWED_URIS).permitAll()
                                 .anyRequest().authenticated())
                 .oauth2Login(oauth2Login -> oauth2Login
-                        .successHandler(oAuth2LoginSuccessHandler)
-                        .failureHandler(oAuth2LoginFailureHandler)
+                        .successHandler(oAuth2LoginSuccessHandler) // 동의하기 눌렀을 때 핸들러 설정
+                        .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 );
-//                .oauth2Login()
-//                .successHandler(oAuth2LoginSuccessHandler) // 동의하고 계속하기를 눌렀을 때 Handler 설정
-//                .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
-//                .userInfoEndpoint().userService(customOAuth2UserService); // customUserService 설정;
+
+        // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
+        // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
+        // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
+        http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

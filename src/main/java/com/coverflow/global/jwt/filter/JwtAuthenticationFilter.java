@@ -20,29 +20,24 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@RequiredArgsConstructor
+/**
+ * Jwt 인증 필터
+ * "/login" 이외의 URI 요청이 왔을 때 처리하는 필터
+ * <p>
+ * 기본적으로 사용자는 요청 헤더에 AccessToken만 담아서 요청
+ * AccessToken 만료 시에만 RefreshToken을 요청 헤더에 AccessToken과 함께 요청
+ * <p>
+ * 1. RefreshToken이 없고, AccessToken이 유효한 경우 -> 증 성공 처리, RefreshToken을 재발급하지는 않는다.
+ * 2. RefreshToken이 없고, AccessToken이 없거나 유효하지 않은 경우 -> 인증 실패 처리, 403 ERROR
+ * 3. RefreshToken이 있는 경우 -> DB의 RefreshToken과 비교하여 일치하면 AccessToken 재발급, RefreshToken 재발급(RTR 방식)
+ * 인증 성공 처리는 하지 않고 실패 처리
+ */
 @Slf4j
+@RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-    /**
-     * Jwt 인증 필터
-     * "/login" 이외의 URI 요청이 왔을 때 처리하는 필터
-     * <p>
-     * 기본적으로 사용자는 요청 헤더에 AccessToken만 담아서 요청
-     * AccessToken 만료 시에만 RefreshToken을 요청 헤더에 AccessToken과 함께 요청
-     * <p>
-     * 1. RefreshToken이 없고, AccessToken이 유효한 경우 -> 인증 성공 처리, RefreshToken을 재발급하지는 않는다.
-     * 2. RefreshToken이 없고, AccessToken이 없거나 유효하지 않은 경우 -> 인증 실패 처리, 403 ERROR
-     * 3. RefreshToken이 있는 경우 -> DB의 RefreshToken과 비교하여 일치하면 AccessToken 재발급, RefreshToken 재발급(RTR 방식)
-     * 인증 성공 처리는 하지 않고 실패 처리
-     */
-
-
     private static final String NO_CHECK_URL = "/login"; // "/login"으로 들어오는 요청은 Filter 작동 X
-
     private final JwtService jwtService;
     private final MemberRepository memberRepository;
-
     private final GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Override
@@ -71,9 +66,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // RefreshToken이 없거나 유효하지 않다면, AccessToken을 검사하고 인증을 처리하는 로직 수행
         // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
         // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
-        if (refreshToken == null) {
-            checkAccessTokenAndAuthentication(request, response, filterChain);
-        }
+        checkAccessTokenAndAuthentication(request, response, filterChain);
     }
 
     /**
@@ -117,9 +110,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
-                .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-                        .ifPresent(email -> memberRepository.findByEmail(email)
-                                .ifPresent(this::saveAuthentication)));
+                .flatMap(accessToken -> jwtService.extractEmail(accessToken)
+                        .flatMap(memberRepository::findByEmail)).ifPresent(this::saveAuthentication);
 
         filterChain.doFilter(request, response);
     }
@@ -157,6 +149,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }
-
-
 }
