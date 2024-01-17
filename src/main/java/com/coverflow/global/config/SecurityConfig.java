@@ -31,7 +31,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    private final String[] ALLOWED_URIS = {"/", "/index.html", "/sign-up"};
+    private final String[] ALLOWED_URIS = {"/", "/index.html"};
     private final LoginService loginService;
     private final JwtService jwtService;
     private final MemberRepository memberRepository;

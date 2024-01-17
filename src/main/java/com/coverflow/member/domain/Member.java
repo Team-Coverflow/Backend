@@ -17,7 +17,6 @@ import java.util.UUID;
 public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "member_id")
     private UUID member_id;
     private String password;
     private String email;
