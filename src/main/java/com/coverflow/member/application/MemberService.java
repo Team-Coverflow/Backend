@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -41,7 +43,9 @@ public class MemberService {
     }
 
     public DuplicationNicknameResponse verifyDuplicationNickname(final DuplicationNicknameRequest request) {
-        if (memberRepository.findByNickname(request.nickname()).isPresent()) {
+        final Optional<Member> nickname = memberRepository.findByNickname(request.nickname());
+        
+        if (nickname.isPresent()) {
             return new DuplicationNicknameResponse(HttpStatus.OK, HttpStatus.OK.toString(), "이미 존재하는 닉네임입니다.");
         }
         return new DuplicationNicknameResponse(HttpStatus.OK, HttpStatus.OK.toString(), "사용 가능한 닉네임입니다.");
