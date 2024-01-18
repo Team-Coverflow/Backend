@@ -81,9 +81,7 @@ Entity(도메인) + Controller/Service/Repository/...
 - ```DTO(Data Transfer Object)```는 ```Request```와 ```Response```로 나누어 제작한다. ```SignUpRequest, SignUpResponse```
 
 ## ✈ Test Code
-- 테스트 메서드명을 한글로 작성한다.
-
-- 테스트 메서드의 ```@DisplayName``` 어노테이션을 생략한다.
+- 테스트 메서드명은 영어로, ```@DisplayName```을 한글로 작성한다.
 
 - 테스트가 어려운 외부 서비스는 Test Double을 적용한다.
 
@@ -101,17 +99,24 @@ Entity(도메인) + Controller/Service/Repository/...
 - 예외 케이스에 대한 테스트 메서드 네이밍은 ```~ 하면 예외가 발생한다.```로 통일한다.
 ```
  @Test
- void 없는_이미지를_조회하면_예외가_발생한다() {
+ @DisplayName("없는 이미지를 조회하면 예외가 발생한다.")
+ void failIfNotExistsImage() {
      // given
      // when & then
  }
 ```
-- 생성 로직에 대한 테스트 메서드 명은 ```~ 생성한다.```로 통일한다.
+- 작은 기능 단위로 ```@Nested```를 사용해 클래스로 그룹화한다.
 ```
- @Test
-  void 카테고리를_생성한다() {
-      // given
-      // when
-      // then
-  }
+ @Nested
+ @DisplayName("카테고리 생성 시")
+ class createCategory{
+
+     @Test
+     @DisplayName("카테고리를 생성에 성공한다.")
+      void success() {
+          // given
+          // when
+          // then
+      }
+ }
 ```
