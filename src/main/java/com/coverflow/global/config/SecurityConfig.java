@@ -41,7 +41,10 @@ public class SecurityConfig {
     private final CustomOAuth2UserService customOAuth2UserService;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(
+            final HttpSecurity http
+    ) throws Exception {
+
         http
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -59,7 +62,6 @@ public class SecurityConfig {
                         .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 );
-
         // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
         // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
         // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
@@ -70,7 +72,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
+    public PasswordEncoder passwordEncoder(
+    ) {
+
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
@@ -82,7 +86,9 @@ public class SecurityConfig {
      * 또한, FormLogin과 동일하게 AuthenticationManager로는 구현체인 ProviderManager 사용(return ProviderManager)
      */
     @Bean
-    public AuthenticationManager authenticationManager() {
+    public AuthenticationManager authenticationManager(
+    ) {
+
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(loginService);
@@ -93,7 +99,9 @@ public class SecurityConfig {
      * 로그인 성공 시 호출되는 LoginSuccessJWTProviderHandler 빈 등록
      */
     @Bean
-    public LoginSuccessHandler loginSuccessHandler() {
+    public LoginSuccessHandler loginSuccessHandler(
+    ) {
+
         return new LoginSuccessHandler(jwtService, memberRepository);
     }
 
@@ -101,7 +109,9 @@ public class SecurityConfig {
      * 로그인 실패 시 호출되는 LoginFailureHandler 빈 등록
      */
     @Bean
-    public LoginFailureHandler loginFailureHandler() {
+    public LoginFailureHandler loginFailureHandler(
+    ) {
+
         return new LoginFailureHandler();
     }
 
@@ -112,7 +122,9 @@ public class SecurityConfig {
      * 로그인 성공 시 호출할 handler, 실패 시 호출할 handler로 위에서 등록한 handler 설정
      */
     @Bean
-    public CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter() {
+    public CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter(
+    ) {
+
         CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordLoginFilter
                 = new CustomJsonUsernamePasswordAuthenticationFilter(objectMapper);
         customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
@@ -122,7 +134,9 @@ public class SecurityConfig {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+    public JwtAuthenticationFilter jwtAuthenticationFilter(
+    ) {
+        
         return new JwtAuthenticationFilter(jwtService, memberRepository);
     }
 
