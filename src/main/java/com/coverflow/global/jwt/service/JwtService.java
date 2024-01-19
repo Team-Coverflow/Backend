@@ -45,7 +45,6 @@ public class JwtService {
     public String createAccessToken(
             final String email
     ) {
-
         Date now = new Date();
         return JWT.create() // JWT 토큰을 생성하는 빌더 반환
                 .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
@@ -64,7 +63,6 @@ public class JwtService {
      */
     public String createRefreshToken(
     ) {
-
         Date now = new Date();
         return JWT.create()
                 .withSubject(REFRESH_TOKEN_SUBJECT)
@@ -78,7 +76,6 @@ public class JwtService {
     public void sendAccessToken(
             final HttpServletResponse response, final String accessToken
     ) {
-
         response.setStatus(HttpServletResponse.SC_OK);
 
         response.setHeader(accessHeader, accessToken);
@@ -93,7 +90,6 @@ public class JwtService {
             final String accessToken,
             final String refreshToken
     ) {
-
         response.setStatus(HttpServletResponse.SC_OK);
 
         setAccessTokenHeader(response, accessToken);
@@ -109,7 +105,6 @@ public class JwtService {
     public Optional<String> extractRefreshToken(
             final HttpServletRequest request
     ) {
-
         return Optional.ofNullable(request.getHeader(refreshHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
@@ -123,7 +118,6 @@ public class JwtService {
     public Optional<String> extractAccessToken(
             final HttpServletRequest request
     ) {
-
         return Optional.ofNullable(request.getHeader(accessHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
@@ -139,7 +133,6 @@ public class JwtService {
     public Optional<String> extractEmail(
             final String accessToken
     ) {
-
         try {
             // 토큰 유효성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
@@ -160,7 +153,6 @@ public class JwtService {
             final HttpServletResponse response,
             final String accessToken
     ) {
-
         response.setHeader(accessHeader, accessToken);
     }
 
@@ -169,8 +161,8 @@ public class JwtService {
      */
     public void setRefreshTokenHeader(
             final HttpServletResponse response,
-            final String refreshToken) {
-
+            final String refreshToken
+    ) {
         response.setHeader(refreshHeader, refreshToken);
     }
 
@@ -181,7 +173,6 @@ public class JwtService {
             final String email,
             final String refreshToken
     ) {
-
         memberRepository.findByEmail(email)
                 .ifPresentOrElse(
                         user -> user.updateRefreshToken(refreshToken),
@@ -192,7 +183,6 @@ public class JwtService {
     public boolean isTokenValid(
             final String token
     ) {
-        
         try {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
             return true;

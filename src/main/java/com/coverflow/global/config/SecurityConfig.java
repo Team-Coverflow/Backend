@@ -31,6 +31,7 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
     private final String[] ALLOWED_URIS = {"/", "/index.html"};
     private final LoginService loginService;
     private final JwtService jwtService;
@@ -44,7 +45,6 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(
             final HttpSecurity http
     ) throws Exception {
-
         http
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
@@ -74,7 +74,6 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder(
     ) {
-
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
@@ -88,7 +87,6 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(
     ) {
-
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(loginService);
@@ -101,7 +99,6 @@ public class SecurityConfig {
     @Bean
     public LoginSuccessHandler loginSuccessHandler(
     ) {
-
         return new LoginSuccessHandler(jwtService, memberRepository);
     }
 
@@ -111,7 +108,6 @@ public class SecurityConfig {
     @Bean
     public LoginFailureHandler loginFailureHandler(
     ) {
-
         return new LoginFailureHandler();
     }
 
@@ -124,7 +120,6 @@ public class SecurityConfig {
     @Bean
     public CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordAuthenticationFilter(
     ) {
-
         CustomJsonUsernamePasswordAuthenticationFilter customJsonUsernamePasswordLoginFilter
                 = new CustomJsonUsernamePasswordAuthenticationFilter(objectMapper);
         customJsonUsernamePasswordLoginFilter.setAuthenticationManager(authenticationManager());
@@ -136,7 +131,6 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter(
     ) {
-        
         return new JwtAuthenticationFilter(jwtService, memberRepository);
     }
 

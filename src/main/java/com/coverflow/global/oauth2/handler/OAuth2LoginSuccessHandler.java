@@ -25,7 +25,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             final HttpServletResponse response,
             final Authentication authentication
     ) throws IOException {
-
+        
         log.info("OAuth2 Login 성공!");
         CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
         System.out.println(oAuth2User);
@@ -46,7 +46,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             final HttpServletResponse response,
             final CustomOAuth2User oAuth2User
     ) {
-
         String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
         String refreshToken = jwtService.createRefreshToken();
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);

@@ -22,9 +22,13 @@ public class CustomOAuth2User extends DefaultOAuth2User {
      * @param nameAttributeKey the key used to access the user's "name" from
      *                         {@link #getAttributes()}
      */
-    public CustomOAuth2User(Collection<? extends GrantedAuthority> authorities,
-                            Map<String, Object> attributes, String nameAttributeKey,
-                            String email, Role role) {
+    public CustomOAuth2User(
+            final Collection<? extends GrantedAuthority> authorities,
+            final Map<String, Object> attributes,
+            final String nameAttributeKey,
+            final String email,
+            final Role role
+    ) {
         super(authorities, attributes, nameAttributeKey);
         this.email = email;
         this.role = role;
