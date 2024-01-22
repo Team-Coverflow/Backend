@@ -92,11 +92,17 @@ public class OAuthAttributes {
             final SocialType socialType,
             final OAuth2UserInfo oauth2UserInfo
     ) {
+        final String randomEmail = UUID.randomUUID() + "@cofl.com";
+        
         return Member.builder()
+                .email(randomEmail)
+                .nickname(randomEmail)
+                .tag("취준생")
+                .fishShapedBun(500)
+                .status("가입")
+                .role(Role.GUEST)
                 .socialType(socialType)
                 .socialId(oauth2UserInfo.getId())
-                .email(UUID.randomUUID() + "@socialUser.com")
-                .role(Role.GUEST)
                 .build();
     }
 }
