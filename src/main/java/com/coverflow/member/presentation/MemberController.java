@@ -1,12 +1,14 @@
 package com.coverflow.member.presentation;
 
 import com.coverflow.member.application.MemberService;
-import com.coverflow.member.dto.request.DuplicationNicknameRequest;
-import com.coverflow.member.dto.request.LoginInfoRequest;
-import com.coverflow.member.dto.response.DuplicationNicknameResponse;
+import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
+import com.coverflow.member.dto.request.MemberVerifyDuplicationNicknameRequest;
+import com.coverflow.member.dto.response.MemberVerifyDuplicationNicknameResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -17,18 +19,19 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/verify-duplication-nickname")
-    public ResponseEntity<DuplicationNicknameResponse> verifyDuplicationNickname(
-            @RequestBody @Valid final DuplicationNicknameRequest request
+    public ResponseEntity<MemberVerifyDuplicationNicknameResponse> verifyDuplicationNickname(
+            @RequestBody @Valid final MemberVerifyDuplicationNicknameRequest request
     ) {
-        DuplicationNicknameResponse duplicationNicknameResponse = memberService.verifyDuplicationNickname(request);
+        MemberVerifyDuplicationNicknameResponse duplicationNicknameResponse = memberService.verifyDuplicationNickname(request);
         return ResponseEntity.ok().body(duplicationNicknameResponse);
     }
 
-    @PostMapping("/save-login-info")
-    public ResponseEntity<Void> saveLoginInfo(
-            @RequestBody @Valid final LoginInfoRequest request
+    @PostMapping("/save-member-info")
+    public ResponseEntity<Void> saveMemberInfo(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @RequestBody @Valid final MemberSaveMemberInfoRequest request
     ) {
-        memberService.saveLoginInfo(request);
+        memberService.saveMemberInfo(userDetails.getUsername(), request);
         return ResponseEntity.ok().build();
     }
 }
