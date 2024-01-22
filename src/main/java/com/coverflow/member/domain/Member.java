@@ -4,7 +4,6 @@ import com.coverflow.global.entity.BaseEntity;
 import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.UuidGenerator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
@@ -19,7 +18,7 @@ import java.util.UUID;
 public class Member extends BaseEntity {
 
     @Id
-    @UuidGenerator(style = UuidGenerator.Style.TIME)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
     private UUID member_id;
     private String password;
@@ -59,6 +58,7 @@ public class Member extends BaseEntity {
             final MemberSaveMemberInfoRequest request
     ) {
         this.nickname = request.nickname();
+        this.tag = request.tag();
         this.age = request.age();
         this.gender = request.gender();
     }
