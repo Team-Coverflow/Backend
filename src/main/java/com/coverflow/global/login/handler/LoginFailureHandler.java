@@ -16,8 +16,11 @@ import java.io.IOException;
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
     @Override
-    public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-                                        AuthenticationException exception) throws IOException {
+    public void onAuthenticationFailure(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final AuthenticationException exception
+    ) throws IOException {
         response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         response.setCharacterEncoding("UTF-8");
         response.setContentType("text/plain;charset=UTF-8");

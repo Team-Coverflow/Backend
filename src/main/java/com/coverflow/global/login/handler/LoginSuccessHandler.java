@@ -22,8 +22,11 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     private String accessTokenExpiration;
 
     @Override
-    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                                        Authentication authentication) {
+    public void onAuthenticationSuccess(
+            final HttpServletRequest request,
+            final HttpServletResponse response,
+            final Authentication authentication
+    ) {
         String email = extractUsername(authentication); // 인증 정보에서 Username(email) 추출
         String accessToken = jwtService.createAccessToken(email); // JwtService의 createAccessToken을 사용하여 AccessToken 발급
         String refreshToken = jwtService.createRefreshToken(); // JwtService의 createRefreshToken을 사용하여 RefreshToken 발급
@@ -40,7 +43,9 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         log.info("발급된 AccessToken 만료 기간 : {}", accessTokenExpiration);
     }
 
-    private String extractUsername(Authentication authentication) {
+    private String extractUsername(
+            final Authentication authentication
+    ) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return userDetails.getUsername();
     }
