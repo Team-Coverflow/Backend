@@ -8,10 +8,26 @@ public class GoogleOAuth2UserInfo extends OAuth2UserInfo {
             final Map<String, Object> attributes
     ) {
         super(attributes);
+        System.out.println("attributes = " + attributes);
     }
 
     @Override
     public String getId() {
         return (String) attributes.get("sub");
+    }
+
+    @Override
+    public String getEmail() {
+        return (String) attributes.get("email");
+    }
+
+    @Override
+    public String getAge() {
+        return null;
+    }
+
+    @Override
+    public String getGender() {
+        return null;
     }
 }

@@ -38,7 +38,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
-    // 유저 권한 설정 메소드
+    // 유저 권한 설정 메소드 (GUEST -> MEMBER)
     public void authorizeMember() {
         this.role = Role.MEMBER;
     }
