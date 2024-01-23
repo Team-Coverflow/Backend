@@ -47,7 +47,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             final HttpServletResponse response,
             final CustomOAuth2User oAuth2User
     ) {
-        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
+        String accessToken = jwtService.createAccessToken(String.valueOf(oAuth2User.getMemberId()));
         String refreshToken = jwtService.createRefreshToken();
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
@@ -55,6 +55,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         System.out.println("refreshToken = " + refreshToken);
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-        jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+        jwtService.updateRefreshToken(oAuth2User.getMemberId(), refreshToken);
     }
 }

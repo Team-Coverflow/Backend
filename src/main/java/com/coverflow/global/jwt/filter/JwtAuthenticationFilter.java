@@ -62,6 +62,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // RefreshToken까지 보낸 것이므로 리프레시 토큰이 DB의 리프레시 토큰과 일치하는지 판단 후,
         // 일치한다면 AccessToken을 재발급해준다.
         if (refreshToken != null) {
+            log.info("리프레쉬 토큰 존재");
+            System.out.println("refreshToken = " + refreshToken);
             checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
             return; // RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해 바로 return으로 필터 진행 막기
         }
@@ -82,11 +84,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final HttpServletResponse response,
             final String refreshToken
     ) {
-
         memberRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
                     String reIssuedRefreshToken = reIssueRefreshToken(user);
-                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
+                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(String.valueOf(user.getMemberId())),
                             reIssuedRefreshToken);
                 });
     }
@@ -109,7 +110,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     /**
      * [액세스 토큰 체크 & 인증 처리 메소드]
      * request에서 extractAccessToken()으로 액세스 토큰 추출 후, isTokenValid()로 유효한 토큰인지 검증
-     * 유효한 토큰이면, 액세스 토큰에서 extractEmail로 Email을 추출한 후 findByEmail()로 해당 이메일을 사용하는 유저 객체 반환
+     * 유효한 토큰이면, 액세스 토큰에서 extractMemberId로 회원 ID를 추출한 후
+     * findByMemberId()로 해당 회원 ID를 사용하는 유저 객체 반환
      * 그 유저 객체를 saveAuthentication()으로 인증 처리하여
      * 인증 허가 처리된 객체를 SecurityContextHolder에 담기
      * 그 후 다음 인증 필터로 진행
@@ -122,8 +124,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
-                .flatMap(accessToken -> jwtService.extractEmail(accessToken)
-                        .flatMap(memberRepository::findByEmail)).ifPresent(this::saveAuthentication);
+                .flatMap(accessToken -> jwtService.extractMemberId(accessToken)
+                        .flatMap(memberRepository::findByMemberId)).ifPresent(this::saveAuthentication);
 
         filterChain.doFilter(request, response);
     }
@@ -152,7 +154,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-                .username(myMember.getEmail())
+                .username(String.valueOf(myMember.getMemberId()))
                 .password(password)
                 .roles(myMember.getRole().name())
                 .build();

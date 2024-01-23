@@ -7,11 +7,12 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.UUID;
 
 @Getter
 public class CustomOAuth2User extends DefaultOAuth2User {
 
-    private final String email;
+    private final UUID memberId;
     private final Role role;
 
     /**
@@ -26,11 +27,11 @@ public class CustomOAuth2User extends DefaultOAuth2User {
             final Collection<? extends GrantedAuthority> authorities,
             final Map<String, Object> attributes,
             final String nameAttributeKey,
-            final String email,
+            final UUID memberId,
             final Role role
     ) {
         super(authorities, attributes, nameAttributeKey);
-        this.email = email;
+        this.memberId = memberId;
         this.role = role;
     }
 }

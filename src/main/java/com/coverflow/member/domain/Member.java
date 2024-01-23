@@ -19,7 +19,7 @@ public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID member_id;
+    private UUID memberId;
     private String password;
     private String email;
     private String nickname;
