@@ -92,12 +92,26 @@ public class OAuthAttributes {
             final SocialType socialType,
             final OAuth2UserInfo oauth2UserInfo
     ) {
-        final String randomEmail = UUID.randomUUID() + "@cofl.com";
-        
+        String email = UUID.randomUUID() + "@cofl.com";
+        String age = "20-29";
+        String gender = "Male";
+
+        if (oauth2UserInfo.getEmail() != null) {
+            email = oauth2UserInfo.getEmail();
+        }
+        if (oauth2UserInfo.getAge() != null) {
+            age = oauth2UserInfo.getAge();
+        }
+        if (oauth2UserInfo.getGender() != null) {
+            gender = oauth2UserInfo.getGender();
+        }
+
         return Member.builder()
-                .email(randomEmail)
-                .nickname(randomEmail)
+                .email(email)
+                .nickname(email)
                 .tag("취준생")
+                .age(age)
+                .gender(gender)
                 .fishShapedBun(500)
                 .status("가입")
                 .role(Role.GUEST)
