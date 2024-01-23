@@ -19,7 +19,6 @@ import java.util.Optional;
 @Getter
 @Service
 public class JwtService {
-
     /**
      * JWT의 Subject와 Claim으로 email 사용 -> 클레임의 name을 "email"으로 설정
      * JWT의 헤더에 들어오는 값 : 'Authorization(Key) = Bearer {토큰} (Value)' 형식
@@ -43,7 +42,9 @@ public class JwtService {
     /**
      * AccessToken 생성 메소드
      */
-    public String createAccessToken(String email) {
+    public String createAccessToken(
+            final String email
+    ) {
         Date now = new Date();
         return JWT.create() // JWT 토큰을 생성하는 빌더 반환
                 .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
@@ -60,7 +61,8 @@ public class JwtService {
      * RefreshToken 생성
      * RefreshToken은 Claim에 email도 넣지 않으므로 withClaim() X
      */
-    public String createRefreshToken() {
+    public String createRefreshToken(
+    ) {
         Date now = new Date();
         return JWT.create()
                 .withSubject(REFRESH_TOKEN_SUBJECT)
@@ -71,7 +73,9 @@ public class JwtService {
     /**
      * AccessToken 헤더에 실어서 보내기
      */
-    public void sendAccessToken(HttpServletResponse response, String accessToken) {
+    public void sendAccessToken(
+            final HttpServletResponse response, final String accessToken
+    ) {
         response.setStatus(HttpServletResponse.SC_OK);
 
         response.setHeader(accessHeader, accessToken);
@@ -81,9 +85,13 @@ public class JwtService {
     /**
      * AccessToken + RefreshToken 헤더에 실어서 보내기
      */
-    public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
+    public void sendAccessAndRefreshToken(
+            final HttpServletResponse response,
+            final String accessToken,
+            final String refreshToken
+    ) {
         response.setStatus(HttpServletResponse.SC_OK);
-
+        System.out.println("refreshToken = " + refreshToken);
         setAccessTokenHeader(response, accessToken);
         setRefreshTokenHeader(response, refreshToken);
         log.info("Access Token, Refresh Token 헤더 설정 완료");
@@ -94,7 +102,9 @@ public class JwtService {
      * 토큰 형식 : Bearer XXX에서 Bearer를 제외하고 순수 토큰만 가져오기 위해서
      * 헤더를 가져온 후 "Bearer"를 삭제(""로 replace)
      */
-    public Optional<String> extractRefreshToken(HttpServletRequest request) {
+    public Optional<String> extractRefreshToken(
+            final HttpServletRequest request
+    ) {
         return Optional.ofNullable(request.getHeader(refreshHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
@@ -105,7 +115,9 @@ public class JwtService {
      * 토큰 형식 : Bearer XXX에서 Bearer를 제외하고 순수 토큰만 가져오기 위해서
      * 헤더를 가져온 후 "Bearer"를 삭제(""로 replace)
      */
-    public Optional<String> extractAccessToken(HttpServletRequest request) {
+    public Optional<String> extractAccessToken(
+            final HttpServletRequest request
+    ) {
         return Optional.ofNullable(request.getHeader(accessHeader))
                 .filter(refreshToken -> refreshToken.startsWith(BEARER))
                 .map(refreshToken -> refreshToken.replace(BEARER, ""));
@@ -118,7 +130,9 @@ public class JwtService {
      * 유효하다면 getClaim()으로 이메일 추출
      * 유효하지 않다면 빈 Optional 객체 반환
      */
-    public Optional<String> extractEmail(String accessToken) {
+    public Optional<String> extractEmail(
+            final String accessToken
+    ) {
         try {
             // 토큰 유효성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
@@ -135,29 +149,40 @@ public class JwtService {
     /**
      * AccessToken 헤더 설정
      */
-    public void setAccessTokenHeader(HttpServletResponse response, String accessToken) {
+    public void setAccessTokenHeader(
+            final HttpServletResponse response,
+            final String accessToken
+    ) {
         response.setHeader(accessHeader, accessToken);
     }
 
     /**
      * RefreshToken 헤더 설정
      */
-    public void setRefreshTokenHeader(HttpServletResponse response, String refreshToken) {
+    public void setRefreshTokenHeader(
+            final HttpServletResponse response,
+            final String refreshToken
+    ) {
         response.setHeader(refreshHeader, refreshToken);
     }
 
     /**
      * RefreshToken DB 저장(업데이트)
      */
-    public void updateRefreshToken(String email, String refreshToken) {
+    public void updateRefreshToken(
+            final String email,
+            final String refreshToken
+    ) {
         memberRepository.findByEmail(email)
                 .ifPresentOrElse(
-                        user -> user.updateRefreshToken(refreshToken),
+                        member -> member.updateRefreshToken(refreshToken),
                         () -> new Exception("일치하는 회원이 없습니다.")
                 );
     }
 
-    public boolean isTokenValid(String token) {
+    public boolean isTokenValid(
+            final String token
+    ) {
         try {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
             return true;

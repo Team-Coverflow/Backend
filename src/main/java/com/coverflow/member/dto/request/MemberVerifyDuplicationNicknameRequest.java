@@ -1,6 +1,6 @@
 package com.coverflow.member.dto.request;
 
-public record DuplicationNicknameRequest(
+public record MemberVerifyDuplicationNicknameRequest(
         String nickname
 ) {
 }

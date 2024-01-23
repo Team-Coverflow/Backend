@@ -28,7 +28,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final MemberRepository memberRepository;
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(
+            final OAuth2UserRequest userRequest
+    ) throws OAuth2AuthenticationException {
         log.info("CustomOAuth2UserService.loadUser() 실행 - OAuth2 로그인 요청 진입");
 
         /**
@@ -66,7 +68,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
     }
 
-    private SocialType getSocialType(String registrationId) {
+    private SocialType getSocialType(
+            final String registrationId
+    ) {
         if (NAVER.equals(registrationId)) {
             return SocialType.NAVER;
         }
@@ -80,7 +84,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      * SocialType과 attributes에 들어있는 소셜 로그인의 식별값 id를 통해 회원을 찾아 반환하는 메소드
      * 만약 찾은 회원이 있다면, 그대로 반환하고 없다면 saveUser()를 호출하여 회원을 저장한다.
      */
-    private Member getMember(OAuthAttributes attributes, SocialType socialType) {
+    private Member getMember(
+            final OAuthAttributes attributes,
+            final SocialType socialType
+    ) {
         Member findMember = memberRepository.findBySocialTypeAndSocialId(socialType,
                 attributes.getOauth2UserInfo().getId()).orElse(null);
 
@@ -94,7 +101,10 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
      * OAuthAttributes의 toEntity() 메소드를 통해 빌더로 User 객체 생성 후 반환
      * 생성된 User 객체를 DB에 저장 : socialType, socialId, email, role 값만 있는 상태
      */
-    private Member saveMember(OAuthAttributes attributes, SocialType socialType) {
+    private Member saveMember(
+            final OAuthAttributes attributes,
+            final SocialType socialType
+    ) {
         Member createdMember = attributes.toEntity(socialType, attributes.getOauth2UserInfo());
         return memberRepository.save(createdMember);
     }

@@ -4,7 +4,9 @@ import java.util.Map;
 
 public class NaverOAuth2UserInfo extends OAuth2UserInfo {
 
-    public NaverOAuth2UserInfo(Map<String, Object> attributes) {
+    public NaverOAuth2UserInfo(
+            final Map<String, Object> attributes
+    ) {
         super(attributes);
     }
 
