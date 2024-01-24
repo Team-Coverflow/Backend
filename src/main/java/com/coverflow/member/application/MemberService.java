@@ -43,14 +43,6 @@ public class MemberService {
 //        member.passwordEncode(passwordEncoder);
 //        memberRepository.save(member);
 //    }
-    public void AuthorizeMember(
-            final UUID memberId
-    ) {
-        final Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
-        
-        member.authorizeMember();
-    }
 
     @Transactional(readOnly = true)
     public MemberVerifyDuplicationNicknameResponse verifyDuplicationNickname(
