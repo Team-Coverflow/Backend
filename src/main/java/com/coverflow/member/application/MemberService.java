@@ -16,7 +16,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 @Log4j2
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class MemberService {
 
@@ -63,6 +62,7 @@ public class MemberService {
         return MemberVerifyDuplicationNicknameResponse.of(result.get());
     }
 
+    @Transactional
     public void saveMemberInfo(
             final String username,
             final MemberSaveMemberInfoRequest request
@@ -71,5 +71,13 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
         member.saveMemberInfo(request);
+    }
+
+    @Transactional
+    public void leaveMember(final String username) {
+        final Member member = memberRepository.findByMemberId(UUID.fromString(username))
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+
+        member.updateStatus("탈퇴");
     }
 }

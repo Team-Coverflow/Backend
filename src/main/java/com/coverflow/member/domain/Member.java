@@ -43,12 +43,6 @@ public class Member extends BaseEntity {
         this.role = Role.MEMBER;
     }
 
-    public void passwordEncode(
-            final PasswordEncoder passwordEncoder
-    ) {
-        this.password = passwordEncoder.encode(this.password);
-    }
-
     public void saveMemberInfo(
             final MemberSaveMemberInfoRequest request
     ) {
@@ -74,6 +68,18 @@ public class Member extends BaseEntity {
             final String updateAge
     ) {
         this.age = updateAge;
+    }
+
+    public void updateStatus(
+            final String updateStatus
+    ) {
+        this.status = updateStatus;
+    }
+
+    public void passwordEncode(
+            final PasswordEncoder passwordEncoder
+    ) {
+        this.password = passwordEncoder.encode(this.password);
     }
 
     public void updatePassword(
