@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @Log4j2
@@ -22,7 +23,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
-//    public void signUp(final MemberSignUpDTO memberSignUpDTO) throws Exception {
+    //    public void signUp(final MemberSignUpDTO memberSignUpDTO) throws Exception {
 //        if (memberRepository.findByEmail(memberSignUpDTO.getEmail()).isPresent()) {
 //            throw new Exception("이미 존재하는 이메일입니다.");
 //        }
@@ -42,6 +43,14 @@ public class MemberService {
 //        member.passwordEncode(passwordEncoder);
 //        memberRepository.save(member);
 //    }
+    public void AuthorizeMember(
+            final UUID memberId
+    ) {
+        final Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+        
+        member.authorizeMember();
+    }
 
     @Transactional(readOnly = true)
     public MemberVerifyDuplicationNicknameResponse verifyDuplicationNickname(
@@ -66,7 +75,7 @@ public class MemberService {
             final String username,
             final MemberSaveMemberInfoRequest request
     ) {
-        final Member member = memberRepository.findByEmail(username)
+        final Member member = memberRepository.findByMemberId(UUID.fromString(username))
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
         member.saveMemberInfo(request);

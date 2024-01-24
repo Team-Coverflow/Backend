@@ -19,7 +19,7 @@ public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID member_id;
+    private UUID memberId;
     private String password;
     private String email;
     private String nickname;
@@ -58,6 +58,12 @@ public class Member extends BaseEntity {
         this.gender = request.gender();
     }
 
+    public void updateRefreshToken(
+            final String updateRefreshToken
+    ) {
+        this.refreshToken = updateRefreshToken;
+    }
+
     public void updateNickname(
             final String updateNickname
     ) {
@@ -75,11 +81,5 @@ public class Member extends BaseEntity {
             final PasswordEncoder passwordEncoder
     ) {
         this.password = passwordEncoder.encode(updatePassword);
-    }
-
-    public void updateRefreshToken(
-            final String updateRefreshToken
-    ) {
-        this.refreshToken = updateRefreshToken;
     }
 }
