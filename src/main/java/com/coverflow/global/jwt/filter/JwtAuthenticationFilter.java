@@ -68,7 +68,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
             return; // RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해 바로 return으로 필터 진행 막기
         }
-        
+
         // RefreshToken이 없거나 유효하지 않다면, AccessToken을 검사하고 인증을 처리하는 로직 수행
         // AccessToken이 없거나 유효하지 않다면, 인증 객체가 담기지 않은 상태로 다음 필터로 넘어가기 때문에 403 에러 발생
         // AccessToken이 유효하다면, 인증 객체가 담긴 상태로 다음 필터로 넘어가기 때문에 인증 성공
@@ -88,9 +88,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) {
         memberRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
-                    String reIssuedRefreshToken = reIssueRefreshToken(user);
-                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(String.valueOf(user.getMemberId())),
-                            reIssuedRefreshToken);
+                    jwtService.sendAccessAndRefreshToken(
+                            response,
+                            jwtService.createAccessToken(String.valueOf(user.getMemberId()),
+                                    user.getRole()
+                            ),
+                            reIssueRefreshToken(user));
                 });
     }
 

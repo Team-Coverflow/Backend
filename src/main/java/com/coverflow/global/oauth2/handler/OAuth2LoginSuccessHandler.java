@@ -20,6 +20,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 
+/**
+ * 소셜 로그인 및 자체 로그인 성공 후 행동을 정하는 핸들러
+ */
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -42,46 +45,34 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 리프레쉬 토큰 유무에 관계없이(첫 사용자, 기존 사용자 모두)
         // 액세스 + 리프레쉬 토큰 발급
         // 즉, 리프레쉬 토큰은 1회용(보안 강화)
-        final String accessToken = jwtService.createAccessToken(String.valueOf(oAuth2User.getMemberId()));
+        final String accessToken = jwtService.createAccessToken(String.valueOf(oAuth2User.getMemberId()), oAuth2User.getRole());
         final String refreshToken = jwtService.createRefreshToken();
         final String targetUrl = createURI(accessToken, refreshToken).toString();
 
-        // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
+        // 리프레쉬 토큰 DB에 저장
+        jwtService.updateRefreshToken(oAuth2User.getMemberId(), refreshToken);
+
+        // 처음 로그인 한 회원은 GUEST -> MEMBER 로 권한 변경
         if (oAuth2User.getRole() == Role.GUEST) {
             final Member member = memberRepository.findByMemberId(oAuth2User.getMemberId())
                     .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
             member.authorizeMember();
         }
-        response.sendRedirect(targetUrl); // 프론트의 추가 정보 입력 폼으로 리다이렉트
+        response.sendRedirect(targetUrl); // 프론트의 토큰 관리 페이지로 리다이렉트
     }
 
-//    // 소셜 로그인 후
-//    // 리프레쉬 토큰 유무에 관계없이(첫 사용자, 기존 사용자 모두)
-//    // 액세스 + 리프레쉬 토큰 발급
-//    // 즉, 리프레쉬 토큰은 1회용(보안 강화)
-//    private void loginSuccess(
-//            final HttpServletResponse response,
-//            final CustomOAuth2User oAuth2User
-//    ) {
-//        final String accessToken = jwtService.createAccessToken(String.valueOf(oAuth2User.getMemberId()));
-//        final String refreshToken = jwtService.createRefreshToken();
-//
-//        response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-//        response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
-//
-//        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
-//        jwtService.updateRefreshToken(oAuth2User.getMemberId(), refreshToken);
-//    }
-
     // JWT를 쿼리 파라미터로 담아 리다이렉트
-    private URI createURI(String accessToken, String refreshToken) {
-        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+    private URI createURI(
+            final String accessToken,
+            final String refreshToken
+    ) {
+        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", refreshToken);
 
-        return UriComponentsBuilder
-                .newInstance()
+        return UriComponentsBuilder.newInstance()
                 .scheme("https")
                 .host("coverflow.co.kr")
                 .path("/auth/token")
