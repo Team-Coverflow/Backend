@@ -4,6 +4,7 @@ import com.coverflow.global.oauth2.userinfo.GoogleOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.KakaoOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.NaverOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.OAuth2UserInfo;
+import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.domain.SocialType;
@@ -92,6 +93,7 @@ public class OAuthAttributes {
             final SocialType socialType,
             final OAuth2UserInfo oauth2UserInfo
     ) {
+        final String randomNickname = NicknameUtil.generateRandomNickname();
         String email = UUID.randomUUID() + "@cofl.com";
         String age = "Unknown";
         String gender = "Unknown";
@@ -108,7 +110,7 @@ public class OAuthAttributes {
 
         return Member.builder()
                 .email(email)
-                .nickname(email)
+                .nickname(randomNickname)
                 .tag("취준생")
                 .age(age)
                 .gender(gender)
