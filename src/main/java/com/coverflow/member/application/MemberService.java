@@ -1,10 +1,9 @@
 package com.coverflow.member.application;
 
+import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberRepository;
 import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
-import com.coverflow.member.dto.request.MemberVerifyDuplicationNicknameRequest;
-import com.coverflow.member.dto.response.MemberVerifyDuplicationNicknameResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Log4j2
 @RequiredArgsConstructor
@@ -22,6 +20,9 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * 폼 로그인 구현 시 사용할 예정
+     */
     //    public void signUp(final MemberSignUpDTO memberSignUpDTO) throws Exception {
 //        if (memberRepository.findByEmail(memberSignUpDTO.getEmail()).isPresent()) {
 //            throw new Exception("이미 존재하는 이메일입니다.");
@@ -42,21 +43,6 @@ public class MemberService {
 //        member.passwordEncode(passwordEncoder);
 //        memberRepository.save(member);
 //    }
-
-    @Transactional(readOnly = true)
-    public MemberVerifyDuplicationNicknameResponse verifyDuplicationNickname(
-            final MemberVerifyDuplicationNicknameRequest request
-    ) {
-        final AtomicBoolean result = new AtomicBoolean(false);
-
-        memberRepository.findByNickname(request.nickname())
-                .ifPresentOrElse(
-                        member -> result.set(false),
-                        () -> result.set(true)
-                );
-        return MemberVerifyDuplicationNicknameResponse.of(result.get());
-    }
-
     @Transactional
     public void saveMemberInfo(
             final String username,
@@ -69,10 +55,31 @@ public class MemberService {
     }
 
     @Transactional
+    public void updateNickname(
+            final String username
+    ) {
+        final Member member = memberRepository.findByMemberId(UUID.fromString(username))
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+        final String nickname = NicknameUtil.generateRandomNickname();
+
+        member.updateNickname(nickname);
+    }
+
+    @Transactional
+    public void logout(final String username) {
+        final Member member = memberRepository.findByMemberId(UUID.fromString(username))
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+
+
+    }
+
+    @Transactional
     public void leaveMember(final String username) {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
         member.updateStatus("탈퇴");
     }
+
 }
+
