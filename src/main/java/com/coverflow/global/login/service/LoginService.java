@@ -14,6 +14,9 @@ public class LoginService implements UserDetailsService {
 
     private final MemberRepository memberRepository;
 
+    /**
+     * 폼 로그인 구현 시 사용 예정
+     */
     @Override
     public UserDetails loadUserByUsername(
             final String email

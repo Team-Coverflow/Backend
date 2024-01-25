@@ -25,7 +25,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 @RequiredArgsConstructor
 @Configuration
@@ -62,11 +61,12 @@ public class SecurityConfig {
                         .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 )
-                // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
-                // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
-                // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
-                .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
-                .addFilterBefore(jwtAuthenticationFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
+
+        // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
+        // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
+        // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
+//                .addFilterBefore(jwtAuthenticationFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
+//                .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)
         ;
 
         return http.build();

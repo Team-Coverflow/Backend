@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberRepository;
+import com.coverflow.member.domain.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public class JwtService {
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
     private static final String MEMBER_ID_CLAIM = "memberId";
+    private static final String ROLE = "role";
     private static final String BEARER = "Bearer ";
     private final MemberRepository memberRepository;
     @Value("${jwt.secret-key}")
@@ -46,17 +48,19 @@ public class JwtService {
      * AccessToken 생성 메소드
      */
     public String createAccessToken(
-            final String memberId
+            final String memberId,
+            final Role role
     ) {
         Date now = new Date();
         return JWT.create() // JWT 토큰을 생성하는 빌더 반환
                 .withSubject(ACCESS_TOKEN_SUBJECT) // JWT의 Subject 지정 -> AccessToken이므로 AccessToken
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod)) // 토큰 만료 시간 설정
 
-                // 클레임으로는 memberId 하나만 사용
+                // 클레임으로는 memberId, role 사용
                 // 추가적으로 식별자나, 이름 등의 정보를 더 추가 가능
                 // .withClaim(클래임 이름, 클래임 값)로 추가
                 .withClaim(MEMBER_ID_CLAIM, memberId)
+                .withClaim(ROLE, role.toString())
 
                 // HMAC512 알고리즘 사용
                 // application.yml에서 지정한 secretKey로 암호화
@@ -181,7 +185,7 @@ public class JwtService {
     ) {
         final Member member = memberRepository.findByMemberId(memberId)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
-        
+
         member.updateRefreshToken(refreshToken);
     }
 
