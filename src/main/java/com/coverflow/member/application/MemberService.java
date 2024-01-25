@@ -70,7 +70,7 @@ public class MemberService {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
-
+        member.updateTokenStatus("로그아웃");
     }
 
     @Transactional

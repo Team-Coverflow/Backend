@@ -4,7 +4,6 @@ import com.coverflow.member.application.MemberService;
 import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,7 +38,7 @@ public class MemberController {
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         memberService.logout(userDetails.getUsername());
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/leave")
@@ -47,6 +46,6 @@ public class MemberController {
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         memberService.leaveMember(userDetails.getUsername());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        return ResponseEntity.ok().build();
     }
 }

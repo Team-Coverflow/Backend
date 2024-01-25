@@ -77,7 +77,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /**
      * [리프레시 토큰으로 유저 정보 찾기 & 액세스 토큰/리프레시 토큰 재발급 메소드]
-     * 파라미터로 들어온 헤더에서 추출한 리프레시 토큰으로 DB에서 유저를 찾고, 해당 유저가 있다면
+     * 파라미터로 들어온 헤더에서 추출한 리프레시 토큰으로 DB에서 유저를 찾고,
+     * 해당 유저가 존재하면서 로그아웃 상태가 아니면
      * JwtService.createAccessToken()으로 AccessToken 생성,
      * reIssueRefreshToken()로 리프레시 토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드 호출
      * 그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
@@ -88,12 +89,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) {
         memberRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
-                    jwtService.sendAccessAndRefreshToken(
-                            response,
-                            jwtService.createAccessToken(String.valueOf(user.getMemberId()),
-                                    user.getRole()
-                            ),
-                            reIssueRefreshToken(user));
+                    if (user.getTokenStatus().equals("로그인")) {
+                        jwtService.sendAccessAndRefreshToken(
+                                response,
+                                jwtService.createAccessToken(String.valueOf(user.getMemberId()), user.getRole()),
+                                reIssueRefreshToken(user)
+                        );
+                    }
                 });
     }
 
@@ -129,8 +131,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
-                .flatMap(accessToken -> jwtService.extractMemberId(accessToken)
-                        .flatMap(memberRepository::findByMemberId)).ifPresent(this::saveAuthentication);
+                .ifPresent(accessToken -> {
+                    jwtService.extractMemberId(accessToken)
+                            .ifPresent(memberId -> {
+                                memberRepository.findByMemberId(memberId)
+                                        .ifPresent(this::saveAuthentication);
+                            });
+                });
 
         filterChain.doFilter(request, response);
     }
