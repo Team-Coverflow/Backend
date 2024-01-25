@@ -15,6 +15,9 @@ import java.io.IOException;
 @Slf4j
 public class LoginFailureHandler extends SimpleUrlAuthenticationFailureHandler {
 
+    /**
+     * 폼 로그인 구현 시 사용 예정
+     */
     @Override
     public void onAuthenticationFailure(
             final HttpServletRequest request,

@@ -11,6 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 
+/**
+ * 폼 로그인 구현 시 사용 예정
+ */
 @Slf4j
 @RequiredArgsConstructor
 public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
@@ -21,6 +24,9 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     @Value("${jwt.access.expiration}")
     private String accessTokenExpiration;
 
+    /**
+     * 폼 로그인 구현 시 사용 예정
+     */
     @Override
     public void onAuthenticationSuccess(
             final HttpServletRequest request,
