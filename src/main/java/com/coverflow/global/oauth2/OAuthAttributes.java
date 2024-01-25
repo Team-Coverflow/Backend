@@ -10,6 +10,7 @@ import com.coverflow.member.domain.Role;
 import com.coverflow.member.domain.SocialType;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.UUID;
@@ -22,7 +23,10 @@ import java.util.UUID;
 public class OAuthAttributes {
 
     private final String nameAttributeKey; // OAuth2 로그인 진행 시 키가 되는 필드 값, PK와 같은 의미
-    private final OAuth2UserInfo oauth2UserInfo; // 소셜 타입별 로그인 유저 정보(닉네임, 이메일, 프로필 사진 등등)
+    private final OAuth2UserInfo oauth2UserInfo; // 소셜 타입별 로그인 유저 정보(닉네임, 이메일, 프로필 사진 등등)\
+
+    @Autowired
+    private NicknameUtil nicknameUtil;
 
     @Builder
     private OAuthAttributes(
@@ -91,9 +95,9 @@ public class OAuthAttributes {
      */
     public Member toEntity(
             final SocialType socialType,
-            final OAuth2UserInfo oauth2UserInfo
+            final OAuth2UserInfo oauth2UserInfo,
+            final String nickname
     ) {
-        final String randomNickname = NicknameUtil.generateRandomNickname();
         String email = UUID.randomUUID() + "@cofl.com";
         String age = "Unknown";
         String gender = "Unknown";
@@ -110,7 +114,7 @@ public class OAuthAttributes {
 
         return Member.builder()
                 .email(email)
-                .nickname(randomNickname)
+                .nickname(nickname)
                 .tag("취준생")
                 .age(age)
                 .gender(gender)

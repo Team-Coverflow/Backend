@@ -20,6 +20,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final NicknameUtil nicknameUtil;
 
     /**
      * 폼 로그인 구현 시 사용할 예정
@@ -62,7 +63,7 @@ public class MemberService {
     ) {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
-        final String nickname = NicknameUtil.generateRandomNickname();
+        final String nickname = nicknameUtil.generateRandomNickname();
 
         member.updateNickname(nickname);
     }
@@ -84,6 +85,5 @@ public class MemberService {
         member.updateAuthorization(Role.GUEST);
         member.updateStatus("탈퇴");
     }
-
 }
 

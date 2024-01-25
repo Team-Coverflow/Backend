@@ -2,6 +2,7 @@ package com.coverflow.global.oauth2.service;
 
 import com.coverflow.global.oauth2.CustomOAuth2User;
 import com.coverflow.global.oauth2.OAuthAttributes;
+import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberRepository;
 import com.coverflow.member.domain.SocialType;
@@ -26,6 +27,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private static final String NAVER = "naver";
     private static final String KAKAO = "kakao";
     private final MemberRepository memberRepository;
+    private final NicknameUtil nicknameUtil;
 
     @Override
     public OAuth2User loadUser(final OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -104,7 +106,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             final OAuthAttributes attributes,
             final SocialType socialType
     ) {
-        final Member createdMember = attributes.toEntity(socialType, attributes.getOauth2UserInfo());
+        final String nickname = nicknameUtil.generateRandomNickname();
+        final Member createdMember = attributes.toEntity(socialType, attributes.getOauth2UserInfo(), nickname);
         return memberRepository.save(createdMember);
     }
 }
