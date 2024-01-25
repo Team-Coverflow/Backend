@@ -3,6 +3,7 @@ package com.coverflow.member.application;
 import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberRepository;
+import com.coverflow.member.domain.Role;
 import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -78,6 +79,8 @@ public class MemberService {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
+        member.updateTokenStatus("로그아웃");
+        member.updateAuthorization(Role.GUEST);
         member.updateStatus("탈퇴");
     }
 

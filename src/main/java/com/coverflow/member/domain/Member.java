@@ -39,48 +39,38 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
-    public void saveMemberInfo(
-            final MemberSaveMemberInfoRequest request
-    ) {
+    public void saveMemberInfo(final MemberSaveMemberInfoRequest request) {
         this.nickname = request.nickname();
         this.tag = request.tag();
         this.age = request.age();
         this.gender = request.gender();
     }
 
-    public void updateRefreshToken(
-            final String updateRefreshToken
-    ) {
+    public void updateRefreshToken(final String updateRefreshToken) {
         this.refreshToken = updateRefreshToken;
     }
 
-    public void updateNickname(
-            final String updateNickname
-    ) {
+    public void updateNickname(final String updateNickname) {
         this.nickname = updateNickname;
     }
 
-    public void updateAge(
-            final String updateAge
-    ) {
+    public void updateAge(final String updateAge) {
         this.age = updateAge;
     }
+    
+    public void updateAuthorization(final Role role) {
+        this.role = role;
+    }
 
-    public void updateStatus(
-            final String updateStatus
-    ) {
+    public void updateStatus(final String updateStatus) {
         this.status = updateStatus;
     }
 
-    public void updateTokenStatus(
-            final String updateTokenStatus
-    ) {
+    public void updateTokenStatus(final String updateTokenStatus) {
         this.tokenStatus = updateTokenStatus;
     }
 
-    public void passwordEncode(
-            final PasswordEncoder passwordEncoder
-    ) {
+    public void passwordEncode(final PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
     }
 
@@ -90,4 +80,5 @@ public class Member extends BaseEntity {
     ) {
         this.password = passwordEncoder.encode(updatePassword);
     }
+
 }

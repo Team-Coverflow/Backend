@@ -84,10 +84,10 @@ public class OAuthAttributes {
     }
 
     /**
+     * [회원가입 시 기본값]
      * of메소드로 OAuthAttributes 객체가 생성되어, 유저 정보들이 담긴 OAuth2UserInfo가 소셜 타입별로 주입된 상태
      * OAuth2UserInfo에서 socialId(식별값)을 가져와서 build
-     * email에는 UUID로 중복 없는 랜덤 값 생성
-     * role은 MEMBER로 설정
+     * email, age, gender에는 소셜 서버의 값이 있으면 그대로 쓰고 없으면 디폴트값
      */
     public Member toEntity(
             final SocialType socialType,
