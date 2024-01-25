@@ -2,8 +2,6 @@ package com.coverflow.member.presentation;
 
 import com.coverflow.member.application.MemberService;
 import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
-import com.coverflow.member.dto.request.MemberVerifyDuplicationNicknameRequest;
-import com.coverflow.member.dto.response.MemberVerifyDuplicationNicknameResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,20 +16,36 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/verify-duplication-nickname")
-    public ResponseEntity<MemberVerifyDuplicationNicknameResponse> verifyDuplicationNickname(
-            @RequestBody @Valid final MemberVerifyDuplicationNicknameRequest request
-    ) {
-        MemberVerifyDuplicationNicknameResponse duplicationNicknameResponse = memberService.verifyDuplicationNickname(request);
-        return ResponseEntity.ok().body(duplicationNicknameResponse);
-    }
-
     @PostMapping("/save-member-info")
     public ResponseEntity<Void> saveMemberInfo(
-            @AuthenticationPrincipal UserDetails userDetails,
+            @AuthenticationPrincipal final UserDetails userDetails,
             @RequestBody @Valid final MemberSaveMemberInfoRequest request
     ) {
         memberService.saveMemberInfo(userDetails.getUsername(), request);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/update-nickname")
+    public ResponseEntity<Void> updateNickname(
+            @AuthenticationPrincipal final UserDetails userDetails
+    ) {
+        memberService.updateNickname(userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<Void> logout(
+            @AuthenticationPrincipal final UserDetails userDetails
+    ) {
+        memberService.logout(userDetails.getUsername());
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/leave")
+    public ResponseEntity<Void> deleteMember(
+            @AuthenticationPrincipal final UserDetails userDetails
+    ) {
+        memberService.leaveMember(userDetails.getUsername());
         return ResponseEntity.ok().build();
     }
 }

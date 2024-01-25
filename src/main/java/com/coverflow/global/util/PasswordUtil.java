@@ -2,11 +2,13 @@ package com.coverflow.global.util;
 
 import java.util.Random;
 
+
+/**
+ * 폼 로그인 구현 시 사용 예정
+ */
 public class PasswordUtil {
 
-    public static String generateRandomPassword(
-            
-    ) {
+    public static String generateRandomPassword() {
         int index = 0;
         char[] charSet = new char[]{
                 '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',

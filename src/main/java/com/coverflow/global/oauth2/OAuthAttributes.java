@@ -4,6 +4,7 @@ import com.coverflow.global.oauth2.userinfo.GoogleOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.KakaoOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.NaverOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.OAuth2UserInfo;
+import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.domain.SocialType;
@@ -83,18 +84,19 @@ public class OAuthAttributes {
     }
 
     /**
+     * [회원가입 시 기본값]
      * of메소드로 OAuthAttributes 객체가 생성되어, 유저 정보들이 담긴 OAuth2UserInfo가 소셜 타입별로 주입된 상태
      * OAuth2UserInfo에서 socialId(식별값)을 가져와서 build
-     * email에는 UUID로 중복 없는 랜덤 값 생성
-     * role은 GUEST로 설정
+     * email, age, gender에는 소셜 서버의 값이 있으면 그대로 쓰고 없으면 디폴트값
      */
     public Member toEntity(
             final SocialType socialType,
             final OAuth2UserInfo oauth2UserInfo
     ) {
+        final String randomNickname = NicknameUtil.generateRandomNickname();
         String email = UUID.randomUUID() + "@cofl.com";
-        String age = "20-29";
-        String gender = "Male";
+        String age = "Unknown";
+        String gender = "Unknown";
 
         if (oauth2UserInfo.getEmail() != null) {
             email = oauth2UserInfo.getEmail();
@@ -108,13 +110,14 @@ public class OAuthAttributes {
 
         return Member.builder()
                 .email(email)
-                .nickname(email)
+                .nickname(randomNickname)
                 .tag("취준생")
                 .age(age)
                 .gender(gender)
                 .fishShapedBun(500)
                 .status("가입")
-                .role(Role.GUEST)
+                .tokenStatus("로그인")
+                .role(Role.MEMBER)
                 .socialType(socialType)
                 .socialId(oauth2UserInfo.getId())
                 .build();

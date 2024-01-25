@@ -28,9 +28,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final MemberRepository memberRepository;
 
     @Override
-    public OAuth2User loadUser(
-            final OAuth2UserRequest userRequest
-    ) throws OAuth2AuthenticationException {
+    public OAuth2User loadUser(final OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("CustomOAuth2UserService.loadUser() 실행 - OAuth2 로그인 요청 진입");
 
         /**
@@ -55,7 +53,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
         // socialType에 따라 유저 정보를 통해 OAuthAttributes 객체 생성
         final OAuthAttributes extractAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
-
         final Member createdMember = getMember(extractAttributes, socialType); // getMember() 메소드로 Member 객체 생성 후 반환
 
         // DefaultOAuth2User를 구현한 CustomOAuth2User 객체를 생성해서 반환
@@ -68,9 +65,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         );
     }
 
-    private SocialType getSocialType(
-            final String registrationId
-    ) {
+    private SocialType getSocialType(final String registrationId) {
         if (NAVER.equals(registrationId)) {
             return SocialType.NAVER;
         }
@@ -82,7 +77,8 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     /**
      * SocialType과 attributes에 들어있는 소셜 로그인의 식별값 id를 통해 회원을 찾아 반환하는 메소드
-     * 만약 찾은 회원이 있다면, 그대로 반환하고 없다면 saveUser()를 호출하여 회원을 저장한다.
+     * 만약 회원이 존재하면 그대로 반환하고
+     * 없거나 탈퇴한 회원이면 saveMember()를 호출하여 회원을 저장한다.
      */
     private Member getMember(
             final OAuthAttributes attributes,
@@ -94,15 +90,15 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
                 )
                 .orElse(null);
 
-        if (findMember == null) {
+        if (findMember == null || findMember.getStatus().equals("탈퇴")) {
             return saveMember(attributes, socialType);
         }
         return findMember;
     }
 
     /**
-     * OAuthAttributes의 toEntity() 메소드를 통해 빌더로 User 객체 생성 후 반환
-     * 생성된 User 객체를 DB에 저장 : socialType, socialId, email, role 값만 있는 상태
+     * OAuthAttributes의 toEntity() 메소드를 통해 빌더로 Member 객체 생성 후 반환
+     * 생성된 Member 객체를 DB에 저장
      */
     private Member saveMember(
             final OAuthAttributes attributes,
