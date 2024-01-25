@@ -54,11 +54,6 @@ public class MemberService {
                         member -> result.set(false),
                         () -> result.set(true)
                 );
-
-//        if (nickname.isPresent()) {
-//            return new DuplicationNicknameResponse(HttpStatus.OK, HttpStatus.OK.toString(), "이미 존재하는 닉네임입니다.");
-//        }
-//        return new DuplicationNicknameResponse(HttpStatus.OK, HttpStatus.OK.toString(), "사용 가능한 닉네임입니다.");
         return MemberVerifyDuplicationNicknameResponse.of(result.get());
     }
 
