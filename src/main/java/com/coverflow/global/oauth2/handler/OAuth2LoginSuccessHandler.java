@@ -2,9 +2,6 @@ package com.coverflow.global.oauth2.handler;
 
 import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.oauth2.CustomOAuth2User;
-import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.MemberRepository;
-import com.coverflow.member.domain.Role;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +26,6 @@ import java.net.URI;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
-    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
@@ -52,14 +48,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 리프레쉬 토큰 DB에 저장
         jwtService.updateRefreshToken(oAuth2User.getMemberId(), refreshToken);
 
-        // 처음 로그인 한 회원은 GUEST -> MEMBER 로 권한 변경
-        if (oAuth2User.getRole() == Role.GUEST) {
-            final Member member = memberRepository.findByMemberId(oAuth2User.getMemberId())
-                    .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
-
-            member.authorizeMember();
-        }
-        response.sendRedirect(targetUrl); // 프론트의 토큰 관리 페이지로 리다이렉트
+        // 프론트의 토큰 관리 페이지로 리다이렉트
+        response.sendRedirect(targetUrl);
     }
 
     // JWT를 쿼리 파라미터로 담아 리다이렉트
