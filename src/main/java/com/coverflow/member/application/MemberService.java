@@ -53,6 +53,7 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
         member.saveMemberInfo(request);
+        member.updateAuthorization(Role.MEMBER);
     }
 
     @Transactional
