@@ -83,8 +83,8 @@ Entity(도메인) + Controller/Service/Repository/...
 
 ### Repository Layer
 
-- ```Spring Data Jpa```가 지원하는 쿼리 메서드를 작성하는 네이밍 방식과 통일한다.
-  [[Spring Data Jpa 쿼리 메서드]](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods)
+- ```Spring Data JPA```가 지원하는 쿼리 메서드를 작성하는 네이밍 방식과 통일한다.
+  [[Spring Data JPA 쿼리 메서드]](https://docs.spring.io/spring-data/jpa/docs/current/reference/html/#jpa.query-methods)
 
 - 조회에 관한 메서드는 ```get```으로 시작한다.
 
