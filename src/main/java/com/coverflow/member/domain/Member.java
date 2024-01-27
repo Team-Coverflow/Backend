@@ -40,7 +40,6 @@ public class Member extends BaseEntity {
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
     public void saveMemberInfo(final MemberSaveMemberInfoRequest request) {
-        this.nickname = request.nickname();
         this.tag = request.tag();
         this.age = request.age();
         this.gender = request.gender();
@@ -57,7 +56,7 @@ public class Member extends BaseEntity {
     public void updateAge(final String updateAge) {
         this.age = updateAge;
     }
-    
+
     public void updateAuthorization(final Role role) {
         this.role = role;
     }
