@@ -28,7 +28,7 @@ public class Member extends BaseEntity {
     private String gender;
     private int fishShapedBun;
     private String status;
-    private LocalDateTime lastLoginTime;
+    private LocalDateTime connected_at;
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
     private String refreshToken; // 리프레쉬 토큰
     private String tokenStatus; // 리프레쉬 토큰 상태
@@ -55,6 +55,10 @@ public class Member extends BaseEntity {
 
     public void updateAge(final String updateAge) {
         this.age = updateAge;
+    }
+
+    public void updateConnectedAt() {
+        this.connected_at = LocalDateTime.now();
     }
 
     public void updateAuthorization(final Role role) {
