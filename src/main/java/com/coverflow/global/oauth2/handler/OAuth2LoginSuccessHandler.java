@@ -3,7 +3,7 @@ package com.coverflow.global.oauth2.handler;
 import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.oauth2.CustomOAuth2User;
 import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.MemberRepository;
+import com.coverflow.member.infrastructure.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

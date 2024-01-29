@@ -9,7 +9,7 @@ import com.coverflow.global.login.service.LoginService;
 import com.coverflow.global.oauth2.handler.OAuth2LoginFailureHandler;
 import com.coverflow.global.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.coverflow.global.oauth2.service.CustomOAuth2UserService;
-import com.coverflow.member.domain.MemberRepository;
+import com.coverflow.member.infrastructure.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -64,9 +64,9 @@ public class SecurityConfig {
                 )
 
 
-        // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
-        // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
-        // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
+                // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
+                // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
+                // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
                 .addFilterAfter(jwtAuthenticationFilter(), LogoutFilter.class)
 //                .addFilterBefore(jwtAuthenticationFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
 //                .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)

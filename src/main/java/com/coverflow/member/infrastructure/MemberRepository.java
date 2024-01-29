@@ -1,5 +1,7 @@
-package com.coverflow.member.domain;
+package com.coverflow.member.infrastructure;
 
+import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.SocialType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

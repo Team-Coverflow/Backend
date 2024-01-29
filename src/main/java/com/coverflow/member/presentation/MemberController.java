@@ -1,5 +1,6 @@
 package com.coverflow.member.presentation;
 
+import com.coverflow.global.response.ResponseHandler;
 import com.coverflow.member.application.MemberService;
 import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
 import jakarta.validation.Valid;
@@ -17,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/save-member-info")
-    public ResponseEntity<Void> saveMemberInfo(
+    public ResponseEntity<ResponseHandler<Void>> saveMemberInfo(
             @AuthenticationPrincipal final UserDetails userDetails,
             @RequestBody @Valid final MemberSaveMemberInfoRequest request
     ) {

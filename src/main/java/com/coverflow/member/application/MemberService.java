@@ -2,9 +2,9 @@ package com.coverflow.member.application;
 
 import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.MemberRepository;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
+import com.coverflow.member.infrastructure.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
