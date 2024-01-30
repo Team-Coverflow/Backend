@@ -4,13 +4,11 @@ import com.coverflow.global.oauth2.userinfo.GoogleOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.KakaoOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.NaverOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.OAuth2UserInfo;
-import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.domain.SocialType;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
 import java.util.UUID;
@@ -24,9 +22,6 @@ public class OAuthAttributes {
 
     private final String nameAttributeKey; // OAuth2 로그인 진행 시 키가 되는 필드 값, PK와 같은 의미
     private final OAuth2UserInfo oauth2UserInfo; // 소셜 타입별 로그인 유저 정보(닉네임, 이메일, 프로필 사진 등등)\
-
-    @Autowired
-    private NicknameUtil nicknameUtil;
 
     @Builder
     private OAuthAttributes(
