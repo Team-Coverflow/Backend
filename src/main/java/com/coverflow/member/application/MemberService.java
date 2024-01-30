@@ -2,15 +2,19 @@ package com.coverflow.member.application;
 
 import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.MemberRepository;
 import com.coverflow.member.domain.Role;
-import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
+import com.coverflow.member.dto.request.SaveMemberInfoRequest;
+import com.coverflow.member.dto.response.FindMemberInfoResponse;
+import com.coverflow.member.exception.MemberException;
+import com.coverflow.member.infrastructure.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Log4j2
@@ -45,10 +49,34 @@ public class MemberService {
 //        member.passwordEncode(passwordEncoder);
 //        memberRepository.save(member);
 //    }
+
+    /**
+     * [특정 회원 조회 메서드]
+     */
+    public FindMemberInfoResponse findMemberById(String username) {
+        final Member member = memberRepository.findByMemberId(UUID.fromString(username))
+                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
+        return FindMemberInfoResponse.of(member);
+    }
+
+    /**
+     * [모든 회원 조회 메서드]
+     */
+    public List<FindMemberInfoResponse> findAllMember() {
+        final List<Member> members = memberRepository.findAllMember()
+                .orElseThrow(() -> new MemberException.AllMemberNotFoundException());
+        final List<FindMemberInfoResponse> findMembers = new ArrayList<>();
+
+        for (int i = 0; i < members.size(); i++) {
+            findMembers.add(i, FindMemberInfoResponse.of(members.get(i)));
+        }
+        return findMembers;
+    }
+
     @Transactional
     public void saveMemberInfo(
             final String username,
-            final MemberSaveMemberInfoRequest request
+            final SaveMemberInfoRequest request
     ) {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));

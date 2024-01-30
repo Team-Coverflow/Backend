@@ -1,12 +1,17 @@
-package com.coverflow.member.domain;
+package com.coverflow.member.infrastructure;
 
+import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.SocialType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 public interface MemberRepository extends JpaRepository<Member, UUID> {
     Optional<Member> findByMemberId(UUID memberId);
+
+    Optional<List<Member>> findAllMember();
 
     Optional<Member> findByEmail(final String email);
 

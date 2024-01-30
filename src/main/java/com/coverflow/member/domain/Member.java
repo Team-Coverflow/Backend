@@ -1,7 +1,7 @@
 package com.coverflow.member.domain;
 
 import com.coverflow.global.entity.BaseEntity;
-import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
+import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,7 +39,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
-    public void saveMemberInfo(final MemberSaveMemberInfoRequest request) {
+    public void saveMemberInfo(final SaveMemberInfoRequest request) {
         this.tag = request.tag();
         this.age = request.age();
         this.gender = request.gender();
