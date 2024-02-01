@@ -4,6 +4,7 @@ import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.oauth2.CustomOAuth2User;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.visitor.application.VisitorService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +30,8 @@ import java.util.UUID;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
-
     private final MemberRepository memberRepository;
+    private final VisitorService visitorService;
 
     @Override
     @Transactional
@@ -56,9 +57,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 접속 시간 업데이트
         updateConnectedAt(oAuth2User.getMemberId());
 
-
         // 프론트의 토큰 관리 페이지로 리다이렉트
         response.sendRedirect(targetUrl);
+        log.info("리다이렉트 성공");
+        // 일일 방문자 수 증가
+        visitorService.updateDailyVisitor();
     }
 
     private void updateConnectedAt(final UUID memberId) {
@@ -79,8 +82,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         queryParams.add("refresh_token", refreshToken);
 
         return UriComponentsBuilder.newInstance()
-                .scheme("https")
-                .host("coverflow.co.kr")
+                .scheme("http")
+                .host("15.165.1.48:8081")
                 .path("/auth/token")
                 .queryParams(queryParams)
                 .build()
