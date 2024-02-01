@@ -16,15 +16,15 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 @Service
 public class VisitorService {
-
+    private final String NOW = String.valueOf(LocalDateTime.now()).substring(0, 10);
     private final VisitorRepository visitorRepository;
 
     /**
      * [일일 방문자 수 조회 메서드]
      */
     public FindDailyVisitorResponse findDailyCount() {
-        final Visitor visitor = visitorRepository.findByToday(LocalDateTime.now())
-                .orElseThrow(() -> new VisitorException.DayNotFoundException(LocalDateTime.now()));
+        final Visitor visitor = visitorRepository.findByToday(NOW)
+                .orElseThrow(() -> new VisitorException.DayNotFoundException(NOW));
         return FindDailyVisitorResponse.of(visitor);
     }
 
@@ -35,11 +35,11 @@ public class VisitorService {
      */
     @Transactional
     public void updateDailyVisitor() {
-        log.info(LocalDateTime.now());
-        final Visitor visitor = visitorRepository.findByToday(LocalDateTime.now()).orElse(null);
+        log.info(NOW);
+        final Visitor visitor = visitorRepository.findByToday(NOW).orElse(null);
         final Visitor newVisitor = Visitor.builder()
-                .today(LocalDateTime.now())
-                .count(0)
+                .today(NOW)
+                .count(1)
                 .build();
 
         if (visitor == null) {

@@ -3,6 +3,7 @@ package com.coverflow.member.infrastructure;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.SocialType;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +12,7 @@ import java.util.UUID;
 public interface MemberRepository extends JpaRepository<Member, UUID> {
     Optional<Member> findByMemberId(UUID memberId);
 
+    @Query(value = "SELECT * FROM tbl_member", nativeQuery = true)
     Optional<List<Member>> findAllMember();
 
     Optional<Member> findByEmail(final String email);

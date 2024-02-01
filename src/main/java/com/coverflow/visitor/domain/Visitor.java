@@ -3,8 +3,6 @@ package com.coverflow.visitor.domain;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -17,16 +15,11 @@ public class Visitor {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column
-    private LocalDateTime today;
+    private String today;
     @Column
     private int count;
 
     public void updateVisitors(final int count) {
-        this.count = count;
-    }
-
-    public void updateToday(final LocalDateTime today, final int count) {
-        this.today = today;
         this.count = count;
     }
 }
