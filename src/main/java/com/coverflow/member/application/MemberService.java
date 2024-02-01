@@ -5,6 +5,7 @@ import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
+import com.coverflow.member.dto.response.UpdateNicknameResponse;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -80,27 +81,26 @@ public class MemberService {
             final SaveMemberInfoRequest request
     ) {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.saveMemberInfo(request);
         member.updateAuthorization(Role.MEMBER);
     }
 
     @Transactional
-    public void updateNickname(
-            final String username
-    ) {
+    public UpdateNicknameResponse updateNickname(final String username) {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
         final String nickname = nicknameUtil.generateRandomNickname();
 
         member.updateNickname(nickname);
+        return UpdateNicknameResponse.of(nickname);
     }
 
     @Transactional
     public void logout(final String username) {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.updateTokenStatus("로그아웃");
     }
@@ -108,7 +108,7 @@ public class MemberService {
     @Transactional
     public void leaveMember(final String username) {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.updateTokenStatus("로그아웃");
         member.updateAuthorization(Role.GUEST);
