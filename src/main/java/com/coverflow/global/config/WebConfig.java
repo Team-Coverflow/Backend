@@ -11,7 +11,7 @@ public class WebConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         // 모든 uri에 대해 http://localhost:3000, http://localhost:3001 도메인은 접근을 허용한다.
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000","http://localhost:3001","http://172.17.0.3:3001","https://coverflow.co.kr")
+                .allowedOrigins("http://localhost:3000", "http://localhost:3001")
                 .allowedMethods("GET", "POST")
                 .allowCredentials(true);
     }

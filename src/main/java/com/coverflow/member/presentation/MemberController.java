@@ -6,6 +6,7 @@ import com.coverflow.global.response.ResponseHandler;
 import com.coverflow.member.application.MemberService;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
+import com.coverflow.member.dto.response.UpdateNicknameResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -53,16 +54,25 @@ public class MemberController {
             @RequestBody @Valid final SaveMemberInfoRequest request
     ) {
         memberService.saveMemberInfo(userDetails.getUsername(), request);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("회원 정보 등록에 성공했습니다.")
+                        .build());
     }
 
     @PostMapping("/update-nickname")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> updateNickname(
+    public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         memberService.updateNickname(userDetails.getUsername());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<UpdateNicknameResponse>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("닉네임 변경에 성공했습니다.")
+                        .data(memberService.updateNickname(userDetails.getUsername()))
+                        .build());
     }
 
     @GetMapping("/logout")
@@ -71,7 +81,11 @@ public class MemberController {
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         memberService.logout(userDetails.getUsername());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("로그아웃에 성공했습니다.")
+                        .build());
     }
 
     @PostMapping("/leave")
@@ -80,6 +94,10 @@ public class MemberController {
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         memberService.leaveMember(userDetails.getUsername());
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("회원 탈퇴에 성공했습니다.")
+                        .build());
     }
 }
