@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Log4j2
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class MemberService {
