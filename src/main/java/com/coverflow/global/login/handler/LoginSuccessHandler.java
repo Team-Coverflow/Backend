@@ -1,7 +1,7 @@
 package com.coverflow.global.login.handler;
 
 import com.coverflow.global.jwt.service.JwtService;
-import com.coverflow.member.domain.MemberRepository;
+import com.coverflow.member.infrastructure.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

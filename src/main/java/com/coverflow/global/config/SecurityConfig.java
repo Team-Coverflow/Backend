@@ -9,7 +9,7 @@ import com.coverflow.global.login.service.LoginService;
 import com.coverflow.global.oauth2.handler.OAuth2LoginFailureHandler;
 import com.coverflow.global.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.coverflow.global.oauth2.service.CustomOAuth2UserService;
-import com.coverflow.member.domain.MemberRepository;
+import com.coverflow.member.infrastructure.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +20,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -48,9 +49,9 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
-                .headers(AbstractHttpConfigurer::disable)
-//                .headers(headers ->
-//                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+//                .headers(AbstractHttpConfigurer::disable)
+                .headers(headers ->
+                        headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -64,9 +65,9 @@ public class SecurityConfig {
                 )
 
 
-        // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
-        // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
-        // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
+                // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
+                // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
+                // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
                 .addFilterAfter(jwtAuthenticationFilter(), LogoutFilter.class)
 //                .addFilterBefore(jwtAuthenticationFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
 //                .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)

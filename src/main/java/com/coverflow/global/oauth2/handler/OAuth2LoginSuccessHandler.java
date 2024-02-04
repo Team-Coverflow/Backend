@@ -2,6 +2,9 @@ package com.coverflow.global.oauth2.handler;
 
 import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.oauth2.CustomOAuth2User;
+import com.coverflow.member.domain.Member;
+import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.visitor.application.VisitorService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.UUID;
 
 /**
  * 소셜 로그인 및 자체 로그인 성공 후 행동을 정하는 핸들러
@@ -26,6 +30,8 @@ import java.net.URI;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
+    private final MemberRepository memberRepository;
+    private final VisitorService visitorService;
 
     @Override
     @Transactional
@@ -48,8 +54,21 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 리프레쉬 토큰 DB에 저장
         jwtService.updateRefreshToken(oAuth2User.getMemberId(), refreshToken);
 
+        // 접속 시간 업데이트
+        updateConnectedAt(oAuth2User.getMemberId());
+
         // 프론트의 토큰 관리 페이지로 리다이렉트
         response.sendRedirect(targetUrl);
+        log.info("리다이렉트 성공");
+        // 일일 방문자 수 증가
+        visitorService.updateDailyVisitor();
+    }
+
+    private void updateConnectedAt(final UUID memberId) {
+        final Member member = memberRepository.findByMemberId(memberId)
+                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+
+        member.updateConnectedAt();
     }
 
     // JWT를 쿼리 파라미터로 담아 리다이렉트
@@ -63,8 +82,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         queryParams.add("refresh_token", refreshToken);
 
         return UriComponentsBuilder.newInstance()
-                .scheme("https")
-                .host("coverflow.co.kr")
+                .scheme("http")
+                .host("15.165.1.48:8081")
+//                .scheme("https")
+//                .host("coverflow.co.kr")
                 .path("/auth/token")
                 .queryParams(queryParams)
                 .build()

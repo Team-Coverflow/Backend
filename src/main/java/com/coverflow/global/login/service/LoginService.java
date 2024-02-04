@@ -1,7 +1,7 @@
 package com.coverflow.global.login.service;
 
 import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.MemberRepository;
+import com.coverflow.member.infrastructure.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -4,8 +4,8 @@ import com.coverflow.global.oauth2.CustomOAuth2User;
 import com.coverflow.global.oauth2.OAuthAttributes;
 import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.MemberRepository;
 import com.coverflow.member.domain.SocialType;
+import com.coverflow.member.infrastructure.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,11 +15,13 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.Map;
 
 @Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
@@ -30,6 +32,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final NicknameUtil nicknameUtil;
 
     @Override
+    @Transactional
     public OAuth2User loadUser(final OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("CustomOAuth2UserService.loadUser() 실행 - OAuth2 로그인 요청 진입");
 

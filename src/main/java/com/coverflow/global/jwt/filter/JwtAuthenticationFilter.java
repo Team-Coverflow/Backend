@@ -3,7 +3,7 @@ package com.coverflow.global.jwt.filter;
 import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.util.PasswordUtil;
 import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.MemberRepository;
+import com.coverflow.member.infrastructure.MemberRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

@@ -1,7 +1,7 @@
 package com.coverflow.member.domain;
 
 import com.coverflow.global.entity.BaseEntity;
-import com.coverflow.member.dto.request.MemberSaveMemberInfoRequest;
+import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +28,7 @@ public class Member extends BaseEntity {
     private String gender;
     private int fishShapedBun;
     private String status;
-    private LocalDateTime lastLoginTime;
+    private LocalDateTime connected_at;
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
     private String refreshToken; // 리프레쉬 토큰
     private String tokenStatus; // 리프레쉬 토큰 상태
@@ -39,7 +39,7 @@ public class Member extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
-    public void saveMemberInfo(final MemberSaveMemberInfoRequest request) {
+    public void saveMemberInfo(final SaveMemberInfoRequest request) {
         this.tag = request.tag();
         this.age = request.age();
         this.gender = request.gender();
@@ -55,6 +55,10 @@ public class Member extends BaseEntity {
 
     public void updateAge(final String updateAge) {
         this.age = updateAge;
+    }
+
+    public void updateConnectedAt() {
+        this.connected_at = LocalDateTime.now();
     }
 
     public void updateAuthorization(final Role role) {

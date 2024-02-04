@@ -1,6 +1,6 @@
 package com.coverflow.member.dto.request;
 
-public record MemberSaveMemberInfoRequest(
+public record SaveMemberInfoRequest(
         String tag,
         String age,
         String gender
