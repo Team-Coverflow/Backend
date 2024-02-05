@@ -26,7 +26,7 @@ public class CompanyService {
      * 특정 이름으로 시작하는 회사 리스트를 검색하는 메서드
      */
     public List<FindCompanyResponse> findCompaniesByName(String name) {
-        Pageable pageable = PageRequest.of(0, 5, Sort.by("name").descending());
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
         final List<Company> companies = companyRepository.findByNameStartingWith(name, pageable)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<FindCompanyResponse> findCompanies = new ArrayList<>();
