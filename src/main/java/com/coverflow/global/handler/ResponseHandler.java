@@ -1,4 +1,4 @@
-package com.coverflow.global.response;
+package com.coverflow.global.handler;
 
 import lombok.Builder;
 import org.springframework.http.HttpStatus;
