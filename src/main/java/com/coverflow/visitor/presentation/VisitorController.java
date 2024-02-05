@@ -19,11 +19,13 @@ public class VisitorController {
 
     @GetMapping("/find-daily-count")
     public ResponseEntity<ResponseHandler<FindDailyVisitorResponse>> findDailyCount() {
-        return ResponseEntity.ok(ResponseHandler.<FindDailyVisitorResponse>builder()
-                .statusCode(HttpStatus.OK)
-                .message("일일 방문자 수 조회를 성공했습니다.")
-                .data(visitorService.findDailyCount())
-                .build());
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<FindDailyVisitorResponse>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("일일 방문자 수 조회를 성공했습니다.")
+                        .data(visitorService.findDailyCount())
+                        .build()
+                );
     }
 
 }
