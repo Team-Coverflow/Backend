@@ -19,7 +19,9 @@ public class Company {
     @Column
     private String type;
     @Column
-    private String address;
+    private String city;
+    @Column
+    private String district;
     @Column
     private String establishment;
 }
