@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
         final String defaultErrorMessage = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         log.warn(defaultErrorMessage);
-    
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(defaultErrorMessage));
@@ -72,15 +72,15 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(message));
     }
 
-    @ExceptionHandler()
-    public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
-        final String message = exception.getMessage();
-        log.warn(message);
-
-        return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(message));
-    }
+//    @ExceptionHandler()
+//    public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
+//        final String message = exception.getMessage();
+//        log.warn(message);
+//
+//        return ResponseEntity
+//                .status(HttpStatus.BAD_REQUEST)
+//                .body(new ErrorResponse(message));
+//    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(final RuntimeException exception) {
