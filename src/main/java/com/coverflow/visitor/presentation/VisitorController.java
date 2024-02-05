@@ -1,6 +1,6 @@
 package com.coverflow.visitor.presentation;
 
-import com.coverflow.global.response.ResponseHandler;
+import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.visitor.application.VisitorService;
 import com.coverflow.visitor.dto.FindDailyVisitorResponse;
 import lombok.RequiredArgsConstructor;

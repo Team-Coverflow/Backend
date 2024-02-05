@@ -2,7 +2,7 @@ package com.coverflow.member.presentation;
 
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
-import com.coverflow.global.response.ResponseHandler;
+import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.member.application.MemberService;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
