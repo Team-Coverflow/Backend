@@ -82,10 +82,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         queryParams.add("refresh_token", refreshToken);
 
         return UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("localhost:3001")
                 // .scheme("http")
-                // .host("15.165.1.48:8081")
+                // .host("localhost:3001")
+                .scheme("http")
+                .host("15.165.1.48")
 //               .scheme("https")
 //               .host("coverflow.co.kr")
                 .path("/auth/token")
