@@ -75,7 +75,7 @@ public class MemberController {
                         .build());
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> logout(
             final @AuthenticationPrincipal UserDetails userDetails
