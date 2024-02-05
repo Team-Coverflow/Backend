@@ -72,7 +72,7 @@ public class LogAspect {
     @AfterThrowing(pointcut = "controller()", throwing = "e")
     public void afterThrowingLogging(JoinPoint joinPoint, Exception e) {
         log.error("### Occured error in request {}", joinPoint.getSignature().toShortString());
-        log.error("\t{}", e.getMessage());
+        log.error("{}", e.getMessage());
     }
 
     // JoinPoint로 메서드 정보 가져오기
