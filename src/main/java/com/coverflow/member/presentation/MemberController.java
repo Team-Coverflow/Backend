@@ -27,7 +27,7 @@ public class MemberController {
     @GetMapping("/find-member")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindMemberInfoResponse>> findMemberById(
-            @AuthenticationPrincipal final UserDetails userDetails
+            final @AuthenticationPrincipal UserDetails userDetails
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindMemberInfoResponse>builder()
@@ -50,8 +50,8 @@ public class MemberController {
 
     @PostMapping("/save-member-info")
     public ResponseEntity<ResponseHandler<Void>> saveMemberInfo(
-            @AuthenticationPrincipal final UserDetails userDetails,
-            @RequestBody @Valid final SaveMemberInfoRequest request
+            final @AuthenticationPrincipal UserDetails userDetails,
+            final @RequestBody @Valid SaveMemberInfoRequest request
     ) {
         memberService.saveMemberInfo(userDetails.getUsername(), request);
         return ResponseEntity.ok()
@@ -64,7 +64,7 @@ public class MemberController {
     @PostMapping("/update-nickname")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
-            @AuthenticationPrincipal final UserDetails userDetails
+            final @AuthenticationPrincipal UserDetails userDetails
     ) {
         memberService.updateNickname(userDetails.getUsername());
         return ResponseEntity.ok()
@@ -78,7 +78,7 @@ public class MemberController {
     @GetMapping("/logout")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> logout(
-            @AuthenticationPrincipal final UserDetails userDetails
+            final @AuthenticationPrincipal UserDetails userDetails
     ) {
         memberService.logout(userDetails.getUsername());
         return ResponseEntity.ok()
@@ -91,7 +91,7 @@ public class MemberController {
     @PostMapping("/leave")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteMember(
-            @AuthenticationPrincipal final UserDetails userDetails
+            final @AuthenticationPrincipal UserDetails userDetails
     ) {
         memberService.leaveMember(userDetails.getUsername());
         return ResponseEntity.ok()
