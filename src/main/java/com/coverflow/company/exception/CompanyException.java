@@ -12,4 +12,11 @@ public class CompanyException extends RuntimeException {
             super(String.format("회사가 존재하지 않습니다. - request info { name : %s }", name));
         }
     }
+
+    public static class CompanyExistException extends CompanyException {
+
+        public CompanyExistException(final String name) {
+            super(String.format("이미 회사가 존재합니다. - request info { name : %s }", name));
+        }
+    }
 }
