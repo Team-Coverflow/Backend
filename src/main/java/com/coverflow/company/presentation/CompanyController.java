@@ -72,4 +72,17 @@ public class CompanyController {
                         .data(companyService.updateCompany(request))
                         .build());
     }
+
+    @PostMapping("/delete-company")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<Void>> deleteCompany(
+            final @RequestBody @Valid CompanyRequest request
+    ) {
+        companyService.deleteCompany(request);
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("회사 삭제에 성공했습니다.")
+                        .build());
+    }
 }

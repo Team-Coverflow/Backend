@@ -62,16 +62,33 @@ public class CompanyService {
                 .city(request.city())
                 .district(request.district())
                 .establishment(request.establishment())
+                .status("등록")
                 .build();
 
         companyRepository.save(company);
         return CompanyResponse.of(company);
     }
 
+    /**
+     * [회사 수정 메서드]
+     */
+    @Transactional
     public CompanyResponse updateCompany(final CompanyRequest request) {
         final Company company = companyRepository.findByName(request.name())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
 
+        company.updateCompany(company);
         return CompanyResponse.of(company);
+    }
+
+    /**
+     * [회사 삭제 메서드]
+     */
+    @Transactional
+    public void deleteCompany(final CompanyRequest request) {
+        final Company company = companyRepository.findByName(request.name())
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
+
+        company.updateStatus("삭제");
     }
 }
