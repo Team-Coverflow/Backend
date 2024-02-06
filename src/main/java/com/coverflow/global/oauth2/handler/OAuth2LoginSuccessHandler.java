@@ -80,6 +80,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", refreshToken);
+        log.info("토큰 담기 성공");
 
         return UriComponentsBuilder.newInstance()
                 .scheme("http")
