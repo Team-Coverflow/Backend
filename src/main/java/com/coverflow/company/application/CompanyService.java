@@ -1,7 +1,8 @@
 package com.coverflow.company.application;
 
 import com.coverflow.company.domain.Company;
-import com.coverflow.company.dto.response.FindCompanyResponse;
+import com.coverflow.company.dto.request.CompanyRequest;
+import com.coverflow.company.dto.response.CompanyResponse;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +26,14 @@ public class CompanyService {
      * [회사 리스트 검색 메서드]
      * 특정 이름으로 시작하는 회사 리스트를 검색하는 메서드
      */
-    public List<FindCompanyResponse> findCompaniesByName(String name) {
+    public List<CompanyResponse> findCompaniesByName(final String name) {
         Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
         final List<Company> companies = companyRepository.findByNameStartingWith(name, pageable)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        final List<FindCompanyResponse> findCompanies = new ArrayList<>();
+        final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, FindCompanyResponse.of(companies.get(i)));
+            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
         }
         return findCompanies;
     }
@@ -41,9 +42,53 @@ public class CompanyService {
      * [회사 조회 메서드]
      * 특정 회사를 조회하는 메서드
      */
-    public FindCompanyResponse findCompanyByName(String name) {
+    public CompanyResponse findCompanyByName(final String name) {
         final Company company = companyRepository.findByName(name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        return FindCompanyResponse.of(company);
+        return CompanyResponse.of(company);
+    }
+
+    /**
+     * [회사 등록 메서드]
+     */
+    public CompanyResponse saveCompany(final CompanyRequest request) {
+        if (companyRepository.findByName(request.name()).isPresent()) {
+            throw new CompanyException.CompanyExistException(request.name());
+        }
+
+        final Company company = Company.builder()
+                .name(request.name())
+                .type(request.type())
+                .city(request.city())
+                .district(request.district())
+                .establishment(request.establishment())
+                .status("등록")
+                .build();
+
+        companyRepository.save(company);
+        return CompanyResponse.of(company);
+    }
+
+    /**
+     * [회사 수정 메서드]
+     */
+    @Transactional
+    public CompanyResponse updateCompany(final CompanyRequest request) {
+        final Company company = companyRepository.findByName(request.name())
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
+
+        company.updateCompany(company);
+        return CompanyResponse.of(company);
+    }
+
+    /**
+     * [회사 삭제 메서드]
+     */
+    @Transactional
+    public void deleteCompany(final CompanyRequest request) {
+        final Company company = companyRepository.findByName(request.name())
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
+
+        company.updateStatus("삭제");
     }
 }

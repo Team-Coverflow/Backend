@@ -25,4 +25,18 @@ public class Company extends BaseTimeEntity {
     private String district;
     @Column
     private String establishment;
+    @Column
+    private String status;
+
+    public void updateCompany(final Company company) {
+        this.name = company.getName();
+        this.type = company.getType();
+        this.city = company.getCity();
+        this.district = company.getDistrict();
+        this.establishment = company.getEstablishment();
+    }
+
+    public void updateStatus(final String status) {
+        this.status = status;
+    }
 }
