@@ -84,8 +84,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         return UriComponentsBuilder.newInstance()
                 .scheme("http")
-                .host("localhost:3001")
-            // .host("15.165.1.48")
+                .host("15.165.1.48")
 //               .scheme("https")
 //               .host("coverflow.co.kr")
                 .path("/auth/token")
