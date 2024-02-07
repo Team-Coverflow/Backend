@@ -61,8 +61,8 @@ public class MemberService {
     /**
      * [모든 회원 조회 메서드]
      */
-    public List<FindMemberInfoResponse> findAllMember() {
-        final List<Member> members = memberRepository.findAllMember()
+    public List<FindMemberInfoResponse> findAllMembers() {
+        final List<Member> members = memberRepository.findAllMembers()
                 .orElseThrow(() -> new MemberException.AllMemberNotFoundException());
         final List<FindMemberInfoResponse> findMembers = new ArrayList<>();
 

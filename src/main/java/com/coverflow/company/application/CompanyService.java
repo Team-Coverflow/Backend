@@ -23,10 +23,10 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
 
     /**
-     * [회사 리스트 검색 메서드]
-     * 특정 이름으로 시작하는 회사 리스트를 검색하는 메서드
+     * [자동 완성 메서드]
+     * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
      */
-    public List<CompanyResponse> findCompaniesByName(final String name) {
+    public List<CompanyResponse> autoComplete(final String name) {
         Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
         final List<Company> companies = companyRepository.findByNameStartingWith(name, pageable)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
@@ -39,13 +39,43 @@ public class CompanyService {
     }
 
     /**
-     * [회사 조회 메서드]
+     * [회사 검색 메서드]
+     * 특정 이름으로 시작하는 회사 n개를 조회하는 메서드
+     */
+    public List<CompanyResponse> searchCompanies(final String name) {
+        final List<Company> companies = companyRepository.findAllCompaniesStartingWithName(name + "%")
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
+        final List<CompanyResponse> findCompanies = new ArrayList<>();
+
+        for (int i = 0; i < companies.size(); i++) {
+            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+        }
+        return findCompanies;
+    }
+
+    /**
+     * [특정 회사 조회 메서드]
      * 특정 회사를 조회하는 메서드
      */
     public CompanyResponse findCompanyByName(final String name) {
         final Company company = companyRepository.findByName(name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         return CompanyResponse.of(company);
+    }
+
+    /**
+     * [전체 회사 조회 메서드]
+     * 전체 회사를 조회하는 메서드
+     */
+    public List<CompanyResponse> findAllCompanies(final String name) {
+        final List<Company> companies = companyRepository.findAllCompanies()
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
+        final List<CompanyResponse> findCompanies = new ArrayList<>();
+
+        for (int i = 0; i < companies.size(); i++) {
+            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+        }
+        return findCompanies;
     }
 
     /**
@@ -91,4 +121,5 @@ public class CompanyService {
 
         company.updateStatus("삭제");
     }
+
 }

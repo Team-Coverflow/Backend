@@ -21,14 +21,27 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping("/auto-complete")
-    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findCompaniesByName(
+    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> autoComplete(
             final @RequestParam @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회사 리스트 검색에 성공했습니다.")
-                        .data(companyService.findCompaniesByName(name))
+                        .message("자동 완성 검색에 성공했습니다.")
+                        .data(companyService.autoComplete(name))
+                        .build()
+                );
+    }
+
+    @GetMapping("/search-companies")
+    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> searchCompanies(
+            final @RequestParam @Valid String name
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<CompanyResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("회사 검색에 성공했습니다.")
+                        .data(companyService.searchCompanies(name))
                         .build()
                 );
     }
@@ -42,6 +55,20 @@ public class CompanyController {
                         .statusCode(HttpStatus.OK)
                         .message("회사 조회에 성공했습니다.")
                         .data(companyService.findCompanyByName(name))
+                        .build()
+                );
+    }
+
+    @GetMapping("/find-all-companies")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompanies(
+            final @RequestParam @Valid String name
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<CompanyResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("전체 회사 리스트 검색에 성공했습니다.")
+                        .data(companyService.findAllCompanies(name))
                         .build()
                 );
     }
