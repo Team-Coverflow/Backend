@@ -67,9 +67,9 @@ public class CompanyService {
      * [전체 회사 조회 메서드]
      * 전체 회사를 조회하는 메서드
      */
-    public List<CompanyResponse> findAllCompanies(final String name) {
+    public List<CompanyResponse> findAllCompanies() {
         final List<Company> companies = companyRepository.findAllCompanies()
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException());
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
