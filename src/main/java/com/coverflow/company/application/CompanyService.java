@@ -23,8 +23,8 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
 
     /**
-     * [회사 리스트 검색 메서드]
-     * 특정 이름으로 시작하는 회사 리스트를 검색하는 메서드
+     * [회사 5개 조회 메서드]
+     * 특정 이름으로 시작하는 회사 리스트를 상위 5개 검색하는 메서드
      */
     public List<CompanyResponse> findCompaniesByName(final String name) {
         Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
@@ -39,7 +39,7 @@ public class CompanyService {
     }
 
     /**
-     * [회사 조회 메서드]
+     * [특정 회사 조회 메서드]
      * 특정 회사를 조회하는 메서드
      */
     public CompanyResponse findCompanyByName(final String name) {
