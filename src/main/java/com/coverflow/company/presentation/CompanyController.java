@@ -20,7 +20,7 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    @GetMapping("/auto-complete")
+    @GetMapping("/auto-complete/{name}")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> autoComplete(
             final @PathVariable @Valid String name
     ) {
@@ -33,7 +33,7 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/search-companies")
+    @GetMapping("/search-companies/{name}")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> searchCompanies(
             final @PathVariable @Valid String name
     ) {
@@ -46,7 +46,7 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/find-company")
+    @GetMapping("/find-company/{name}")
     public ResponseEntity<ResponseHandler<CompanyResponse>> findCompanyByName(
             final @PathVariable @Valid String name
     ) {
@@ -100,12 +100,12 @@ public class CompanyController {
                         .build());
     }
 
-    @PostMapping("/delete-company")
+    @PostMapping("/delete-company/{name}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
-            final @RequestBody @Valid CompanyRequest request
+            final @PathVariable @Valid String name
     ) {
-        companyService.deleteCompany(request);
+        companyService.deleteCompany(name);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
