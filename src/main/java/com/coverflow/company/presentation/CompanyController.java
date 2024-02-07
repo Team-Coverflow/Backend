@@ -20,9 +20,9 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    @GetMapping("/auto-complete/{name}")
+    @GetMapping("/auto-complete")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> autoComplete(
-            final @PathVariable @Valid String name
+            final @RequestParam("name") @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -33,9 +33,9 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/search-companies/{name}")
+    @GetMapping("/search-companies")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> searchCompanies(
-            final @PathVariable @Valid String name
+            final @RequestParam("name") @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -46,9 +46,9 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/find-company/{name}")
+    @GetMapping("/find-company")
     public ResponseEntity<ResponseHandler<CompanyResponse>> findCompanyByName(
-            final @PathVariable @Valid String name
+            final @RequestParam("name") @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<CompanyResponse>builder()
@@ -62,7 +62,7 @@ public class CompanyController {
     @GetMapping("/find-all-companies")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompanies(
-            final @RequestParam @Valid String name
+            final @RequestParam("name") @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -103,7 +103,7 @@ public class CompanyController {
     @PostMapping("/delete-company/{name}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
-            final @PathVariable @Valid String name
+            final @RequestParam("name") @Valid String name
     ) {
         companyService.deleteCompany(name);
         return ResponseEntity.ok()
