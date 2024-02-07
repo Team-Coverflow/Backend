@@ -23,10 +23,10 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
 
     /**
-     * [회사 5개 조회 메서드]
+     * [자동 완성 메서드]
      * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
      */
-    public List<CompanyResponse> findCompaniesByName(final String name) {
+    public List<CompanyResponse> autoComplete(final String name) {
         Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
         final List<Company> companies = companyRepository.findByNameStartingWith(name, pageable)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
@@ -39,10 +39,10 @@ public class CompanyService {
     }
 
     /**
-     * [회사 n개 조회 메서드]
+     * [회사 검색 메서드]
      * 특정 이름으로 시작하는 회사 n개를 조회하는 메서드
      */
-    public List<CompanyResponse> findAllCompaniesStartingWithName(final String name) {
+    public List<CompanyResponse> searchCompanies(final String name) {
         final List<Company> companies = companyRepository.findAllCompaniesStartingWithName(name + "%")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<CompanyResponse> findCompanies = new ArrayList<>();
