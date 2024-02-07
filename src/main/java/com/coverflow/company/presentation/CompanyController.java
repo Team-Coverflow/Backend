@@ -22,7 +22,7 @@ public class CompanyController {
 
     @GetMapping("/auto-complete")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> autoComplete(
-            final @RequestParam @Valid String name
+            final @PathVariable @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -35,7 +35,7 @@ public class CompanyController {
 
     @GetMapping("/search-companies")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> searchCompanies(
-            final @RequestParam @Valid String name
+            final @PathVariable @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -48,7 +48,7 @@ public class CompanyController {
 
     @GetMapping("/find-company")
     public ResponseEntity<ResponseHandler<CompanyResponse>> findCompanyByName(
-            final @RequestParam @Valid String name
+            final @PathVariable @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<CompanyResponse>builder()
