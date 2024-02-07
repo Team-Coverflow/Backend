@@ -46,6 +46,19 @@ public class CompanyController {
                 );
     }
 
+    @GetMapping("/find-all-company")
+    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompany(
+            final @RequestParam @Valid String name
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<CompanyResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("전체 회사 리스트 검색에 성공했습니다.")
+                        .data(companyService.findAllCompany(name))
+                        .build()
+                );
+    }
+
     @PostMapping("/save-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<CompanyResponse>> saveCompany(

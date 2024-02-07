@@ -49,6 +49,21 @@ public class CompanyService {
     }
 
     /**
+     * [전체 회사 조회 메서드]
+     * 전체 회사를 조회하는 메서드
+     */
+    public List<CompanyResponse> findAllCompany(final String name) {
+        final List<Company> companies = companyRepository.findAllCompaniesStartingWithName(name + "%")
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
+        final List<CompanyResponse> findCompanies = new ArrayList<>();
+
+        for (int i = 0; i < companies.size(); i++) {
+            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+        }
+        return findCompanies;
+    }
+
+    /**
      * [회사 등록 메서드]
      */
     public CompanyResponse saveCompany(final CompanyRequest request) {
@@ -91,4 +106,5 @@ public class CompanyService {
 
         company.updateStatus("삭제");
     }
+
 }
