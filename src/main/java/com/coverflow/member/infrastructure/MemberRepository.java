@@ -12,8 +12,8 @@ import java.util.UUID;
 public interface MemberRepository extends JpaRepository<Member, UUID> {
     Optional<Member> findByMemberId(UUID memberId);
 
-    @Query(value = "SELECT * FROM tbl_member", nativeQuery = true)
-    Optional<List<Member>> findAllMember();
+    @Query(value = "SELECT m FROM Member m ORDER BY m.createdAt ASC")
+    Optional<List<Member>> findAllMembers();
 
     Optional<Member> findByEmail(final String email);
 
