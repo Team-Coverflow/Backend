@@ -24,11 +24,26 @@ public class CompanyService {
 
     /**
      * [회사 5개 조회 메서드]
-     * 특정 이름으로 시작하는 회사 리스트를 상위 5개 검색하는 메서드
+     * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
      */
     public List<CompanyResponse> findCompaniesByName(final String name) {
         Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
         final List<Company> companies = companyRepository.findByNameStartingWith(name, pageable)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
+        final List<CompanyResponse> findCompanies = new ArrayList<>();
+
+        for (int i = 0; i < companies.size(); i++) {
+            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+        }
+        return findCompanies;
+    }
+
+    /**
+     * [회사 n개 조회 메서드]
+     * 특정 이름으로 시작하는 회사 n개를 조회하는 메서드
+     */
+    public List<CompanyResponse> findAllCompaniesStartingWithName(final String name) {
+        final List<Company> companies = companyRepository.findAllCompaniesStartingWithName(name + "%")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
@@ -52,8 +67,8 @@ public class CompanyService {
      * [전체 회사 조회 메서드]
      * 전체 회사를 조회하는 메서드
      */
-    public List<CompanyResponse> findAllCompany(final String name) {
-        final List<Company> companies = companyRepository.findAllCompaniesStartingWithName(name + "%")
+    public List<CompanyResponse> findAllCompanies(final String name) {
+        final List<Company> companies = companyRepository.findAllCompanies()
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 

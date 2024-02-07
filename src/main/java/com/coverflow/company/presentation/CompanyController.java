@@ -46,15 +46,15 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/find-all-company")
-    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompany(
+    @GetMapping("/find-all-companies")
+    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompanies(
             final @RequestParam @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 회사 리스트 검색에 성공했습니다.")
-                        .data(companyService.findAllCompany(name))
+                        .data(companyService.findAllCompanies(name))
                         .build()
                 );
     }

@@ -17,4 +17,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     @Query(value = "SELECT c FROM Company c WHERE c.name LIKE :name ORDER BY c.name ASC")
     Optional<List<Company>> findAllCompaniesStartingWithName(@Param("name") String name);
+
+    @Query(value = "SELECT c FROM Company c ORDER BY c.name ASC")
+    Optional<List<Company>> findAllCompanies();
 }
