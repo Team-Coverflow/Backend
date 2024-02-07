@@ -44,7 +44,7 @@ public class MemberController {
                 .body(ResponseHandler.<List<FindMemberInfoResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("모든 회원 조회 성공했습니다.")
-                        .data(memberService.findAllMember())
+                        .data(memberService.findAllMembers())
                         .build());
     }
 
