@@ -11,12 +11,22 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
-    Optional<List<Company>> findByNameStartingWith(String name, Pageable pageable);
+    Optional<List<Company>> findByNameStartingWithAndStatus(
+            final String name,
+            final Pageable pageable,
+            final String status
+    );
 
-    Optional<Company> findByName(String name);
+    Optional<Company> findByNameAndStatus(
+            final String name,
+            final String status
+    );
 
-    @Query(value = "SELECT c FROM Company c WHERE c.name LIKE :name ORDER BY c.name ASC")
-    Optional<List<Company>> findAllCompaniesStartingWithName(@Param("name") String name);
+    @Query(value = "SELECT c FROM Company c WHERE c.name LIKE :name AND c.status = :status ORDER BY c.name ASC")
+    Optional<List<Company>> findAllCompaniesStartingWithNameAndStatus(
+            @Param("name") final String name,
+            @Param("status") final String status
+    );
 
     @Query(value = "SELECT c FROM Company c ORDER BY c.name ASC")
     Optional<List<Company>> findAllCompanies();

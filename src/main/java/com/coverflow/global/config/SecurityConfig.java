@@ -32,7 +32,9 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final String[] ALLOWED_URIS = {"/", "/index.html", "/api/company/auto-complete", "/api/company/find-company"};
+    private final String[] ALLOWED_URLS = {
+            "/", "/index.html", "/api/company/auto-complete", "/api/company/search-companies", "/api/company/find-company"
+    };
     private final LoginService loginService;
     private final JwtService jwtService;
     private final MemberRepository memberRepository;
@@ -56,7 +58,7 @@ public class SecurityConfig {
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(ALLOWED_URIS).permitAll()
+                        request.requestMatchers(ALLOWED_URLS).permitAll()
                                 .anyRequest().authenticated())
                 .oauth2Login(oauth2Login -> oauth2Login
                         .successHandler(oAuth2LoginSuccessHandler) // 동의하기 눌렀을 때 핸들러 설정

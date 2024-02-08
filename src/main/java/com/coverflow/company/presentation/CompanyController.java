@@ -22,7 +22,7 @@ public class CompanyController {
 
     @GetMapping("/auto-complete")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> autoComplete(
-            final @RequestParam @Valid String name
+            final @RequestParam("name") @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -35,7 +35,7 @@ public class CompanyController {
 
     @GetMapping("/search-companies")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> searchCompanies(
-            final @RequestParam @Valid String name
+            final @RequestParam("name") @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -48,7 +48,7 @@ public class CompanyController {
 
     @GetMapping("/find-company")
     public ResponseEntity<ResponseHandler<CompanyResponse>> findCompanyByName(
-            final @RequestParam @Valid String name
+            final @RequestParam("name") @Valid String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<CompanyResponse>builder()
@@ -61,14 +61,12 @@ public class CompanyController {
 
     @GetMapping("/find-all-companies")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompanies(
-            final @RequestParam @Valid String name
-    ) {
+    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompanies() {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 회사 리스트 검색에 성공했습니다.")
-                        .data(companyService.findAllCompanies(name))
+                        .data(companyService.findAllCompanies())
                         .build()
                 );
     }
@@ -91,7 +89,6 @@ public class CompanyController {
     public ResponseEntity<ResponseHandler<CompanyResponse>> updateNickname(
             final @RequestBody @Valid CompanyRequest request
     ) {
-        companyService.updateCompany(request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<CompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
@@ -100,12 +97,12 @@ public class CompanyController {
                         .build());
     }
 
-    @PostMapping("/delete-company")
+    @PostMapping("/delete-company/{name}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
-            final @RequestBody @Valid CompanyRequest request
+            final @RequestParam("name") @Valid String name
     ) {
-        companyService.deleteCompany(request);
+        companyService.deleteCompany(name);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)

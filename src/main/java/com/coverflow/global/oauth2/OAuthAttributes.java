@@ -114,7 +114,7 @@ public class OAuthAttributes {
                 .age(age)
                 .gender(gender)
                 .fishShapedBun(500)
-                .status("가입")
+                .status("등록")
                 .tokenStatus("로그인")
                 .role(Role.GUEST)
                 .socialType(socialType)
