@@ -13,7 +13,7 @@ public class Visitor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
     @Column
     private String today;
     @Column
