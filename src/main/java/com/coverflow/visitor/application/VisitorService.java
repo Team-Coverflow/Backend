@@ -20,7 +20,7 @@ public class VisitorService {
     private final VisitorRepository visitorRepository;
 
     /**
-     * [일일 방문자 수 조회 메서드]
+     * [관리자 전용: 일일 방문자 수 조회 메서드]
      */
     public FindDailyVisitorResponse findDailyCount() {
         final Visitor visitor = visitorRepository.findByToday(NOW)
