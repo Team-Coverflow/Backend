@@ -1,6 +1,7 @@
 package com.coverflow.board.domain;
 
 import com.coverflow.company.domain.Company;
+import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +12,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "tbl_question")
-public class Question {
+public class Question extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
