@@ -1,8 +1,12 @@
 package com.coverflow.company.domain;
 
+import com.coverflow.board.domain.Question;
 import com.coverflow.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -27,6 +31,9 @@ public class Company extends BaseTimeEntity {
     private String establishment;
     @Column
     private String status;
+
+    @OneToMany(mappedBy = "company")
+    private List<Question> questions = new ArrayList<>();
 
     public void updateCompany(final Company company) {
         this.name = company.getName();

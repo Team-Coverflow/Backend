@@ -1,5 +1,6 @@
 package com.coverflow.board.domain;
 
+import com.coverflow.company.domain.Company;
 import com.coverflow.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,6 +23,10 @@ public class Question {
     private int count;
     @Column
     private String status;
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
