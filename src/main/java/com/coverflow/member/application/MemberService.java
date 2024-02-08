@@ -63,7 +63,7 @@ public class MemberService {
      */
     public List<FindMemberInfoResponse> findAllMembers() {
         final List<Member> members = memberRepository.findAllMembers()
-                .orElseThrow(() -> new MemberException.AllMemberNotFoundException());
+                .orElseThrow(MemberException.AllMemberNotFoundException::new);
         final List<FindMemberInfoResponse> findMembers = new ArrayList<>();
 
         for (int i = 0; i < members.size(); i++) {
