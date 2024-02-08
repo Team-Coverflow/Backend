@@ -13,6 +13,7 @@ import lombok.*;
 @Entity
 @Table(name = "tbl_question")
 public class Question extends BaseTimeEntity {
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 질문 글 고유 번호
