@@ -43,7 +43,7 @@ public class Member extends BaseTimeEntity {
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
     @OneToMany(mappedBy = "member")
-    private List<Question> questionList = new ArrayList<>();
+    private List<Question> questions = new ArrayList<>();
 
     public void saveMemberInfo(final SaveMemberInfoRequest request) {
         this.tag = request.tag();
