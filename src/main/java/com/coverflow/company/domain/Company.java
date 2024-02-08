@@ -18,19 +18,19 @@ public class Company extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long id; // 회사 고유 번호
     @Column
-    private String name;
+    private String name; // 이름
     @Column
-    private String type;
+    private String type; // 업종
     @Column
-    private String city;
+    private String city; // 도시
     @Column
-    private String district;
+    private String district; // 구
     @Column
-    private String establishment;
+    private String establishment; // 설립일
     @Column
-    private String status;
+    private String status; // 상태 (등록/삭제)
 
     @OneToMany(mappedBy = "company")
     private List<Question> questions = new ArrayList<>();
