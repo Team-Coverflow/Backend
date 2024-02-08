@@ -22,18 +22,30 @@ public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID memberId;
+    private UUID id;
+    @Column
     private String password;
+    @Column
     private String email;
+    @Column
     private String nickname;
+    @Column
     private String tag;
+    @Column
     private String age;
+    @Column
     private String gender;
+    @Column
     private int fishShapedBun;
+    @Column
     private String status;
+    @Column
     private LocalDateTime connected_at;
+    @Column
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
+    @Column
     private String refreshToken; // 리프레쉬 토큰
+    @Column
     private String tokenStatus; // 리프레쉬 토큰 상태
 
     @Enumerated(EnumType.STRING)

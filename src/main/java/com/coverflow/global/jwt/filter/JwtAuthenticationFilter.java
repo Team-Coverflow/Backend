@@ -92,7 +92,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     if (user.getTokenStatus().equals("로그인")) {
                         jwtService.sendAccessAndRefreshToken(
                                 response,
-                                jwtService.createAccessToken(String.valueOf(user.getMemberId()), user.getRole()),
+                                jwtService.createAccessToken(String.valueOf(user.getId()), user.getRole()),
                                 reIssueRefreshToken(user)
                         );
                     }
@@ -134,7 +134,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .ifPresent(accessToken -> {
                     jwtService.extractMemberId(accessToken)
                             .ifPresent(memberId -> {
-                                memberRepository.findByMemberIdAndStatus(memberId, "등록")
+                                memberRepository.findByIdAndStatus(memberId, "등록")
                                         .ifPresent(this::saveAuthentication);
                             });
                 });
@@ -166,7 +166,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-                .username(String.valueOf(myMember.getMemberId()))
+                .username(String.valueOf(myMember.getId()))
                 .password(password)
                 .roles(myMember.getRole().name())
                 .build();

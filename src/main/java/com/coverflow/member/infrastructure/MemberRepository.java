@@ -11,8 +11,8 @@ import java.util.UUID;
 
 public interface MemberRepository extends JpaRepository<Member, UUID> {
 
-    Optional<Member> findByMemberIdAndStatus(
-            final UUID memberId,
+    Optional<Member> findByIdAndStatus(
+            final UUID id,
             final String status
     );
 
