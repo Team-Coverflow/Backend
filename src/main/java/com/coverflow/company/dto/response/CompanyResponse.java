@@ -8,7 +8,7 @@ public record CompanyResponse(
         String address,
         String establishment
 ) {
-    public static CompanyResponse of(Company company) {
+    public static CompanyResponse of(final Company company) {
         return new CompanyResponse(
                 company.getName(),
                 company.getType(),
