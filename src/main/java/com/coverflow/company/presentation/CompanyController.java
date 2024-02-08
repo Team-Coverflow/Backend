@@ -89,7 +89,6 @@ public class CompanyController {
     public ResponseEntity<ResponseHandler<CompanyResponse>> updateNickname(
             final @RequestBody @Valid CompanyRequest request
     ) {
-        companyService.updateCompany(request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<CompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
