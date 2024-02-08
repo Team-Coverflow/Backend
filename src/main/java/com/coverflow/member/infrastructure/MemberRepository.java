@@ -11,7 +11,10 @@ import java.util.UUID;
 
 public interface MemberRepository extends JpaRepository<Member, UUID> {
 
-    Optional<Member> findByMemberId(final UUID memberId);
+    Optional<Member> findByMemberIdAndStatus(
+            final UUID memberId,
+            final String status
+    );
 
     @Query(value = "SELECT m FROM Member m ORDER BY m.createdAt ASC")
     Optional<List<Member>> findAllMembers();
@@ -28,9 +31,10 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
      * 유저 객체는 DB에 있지만, 추가 정보가 빠진 상태이다.
      * 따라서 추가 정보를 입력받아 진행할 때 소셜 타입, 식별자로 해당 회원을 찾기 위한 메소드
      */
-    Optional<Member> findBySocialTypeAndSocialId(
+    Optional<Member> findBySocialTypeAndSocialIdAndStatus(
             final SocialType socialType,
-            final String socialId
+            final String socialId,
+            final String status
     );
 
 }

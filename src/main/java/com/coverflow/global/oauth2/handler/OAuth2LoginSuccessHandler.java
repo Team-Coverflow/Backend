@@ -65,7 +65,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private void updateConnectedAt(final UUID memberId) {
-        final Member member = memberRepository.findByMemberId(memberId)
+        final Member member = memberRepository.findByMemberIdAndStatus(memberId, "등록")
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
         member.updateConnectedAt();

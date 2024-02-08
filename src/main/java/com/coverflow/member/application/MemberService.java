@@ -53,13 +53,13 @@ public class MemberService {
      * [특정 회원 조회 메서드]
      */
     public FindMemberInfoResponse findMemberById(String username) {
-        final Member member = memberRepository.findByMemberId(UUID.fromString(username))
+        final Member member = memberRepository.findByMemberIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
         return FindMemberInfoResponse.of(member);
     }
 
     /**
-     * [모든 회원 조회 메서드]
+     * [관리자 전용: 전체 회원 조회 메서드]
      */
     public List<FindMemberInfoResponse> findAllMembers() {
         final List<Member> members = memberRepository.findAllMembers()
@@ -80,7 +80,7 @@ public class MemberService {
             final String username,
             final SaveMemberInfoRequest request
     ) {
-        final Member member = memberRepository.findByMemberId(UUID.fromString(username))
+        final Member member = memberRepository.findByMemberIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.saveMemberInfo(request);
@@ -92,7 +92,7 @@ public class MemberService {
      */
     @Transactional
     public UpdateNicknameResponse updateNickname(final String username) {
-        final Member member = memberRepository.findByMemberId(UUID.fromString(username))
+        final Member member = memberRepository.findByMemberIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
         final String nickname = nicknameUtil.generateRandomNickname();
 
@@ -105,7 +105,7 @@ public class MemberService {
      */
     @Transactional
     public void logout(final String username) {
-        final Member member = memberRepository.findByMemberId(UUID.fromString(username))
+        final Member member = memberRepository.findByMemberIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.updateTokenStatus("로그아웃");
@@ -116,7 +116,7 @@ public class MemberService {
      */
     @Transactional
     public void leaveMember(final String username) {
-        final Member member = memberRepository.findByMemberId(UUID.fromString(username))
+        final Member member = memberRepository.findByMemberIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.updateTokenStatus("로그아웃");
