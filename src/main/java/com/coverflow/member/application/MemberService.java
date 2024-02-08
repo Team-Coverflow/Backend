@@ -72,6 +72,9 @@ public class MemberService {
         return findMembers;
     }
 
+    /**
+     * [회원 추가 정보 등록 메서드]
+     */
     @Transactional
     public void saveMemberInfo(
             final String username,
@@ -84,6 +87,9 @@ public class MemberService {
         member.updateAuthorization(Role.MEMBER);
     }
 
+    /**
+     * [닉네임 변경 메서드]
+     */
     @Transactional
     public UpdateNicknameResponse updateNickname(final String username) {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
@@ -94,6 +100,9 @@ public class MemberService {
         return UpdateNicknameResponse.of(nickname);
     }
 
+    /**
+     * [로그아웃 메서드]
+     */
     @Transactional
     public void logout(final String username) {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
@@ -102,6 +111,9 @@ public class MemberService {
         member.updateTokenStatus("로그아웃");
     }
 
+    /**
+     * [회원 탈퇴 메서드]
+     */
     @Transactional
     public void leaveMember(final String username) {
         final Member member = memberRepository.findByMemberId(UUID.fromString(username))
