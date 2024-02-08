@@ -2,7 +2,7 @@ package com.coverflow.member.presentation;
 
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
-import com.coverflow.global.response.ResponseHandler;
+import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.member.application.MemberService;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
@@ -27,7 +27,7 @@ public class MemberController {
     @GetMapping("/find-member")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindMemberInfoResponse>> findMemberById(
-            @AuthenticationPrincipal final UserDetails userDetails
+            final @AuthenticationPrincipal UserDetails userDetails
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindMemberInfoResponse>builder()
@@ -44,14 +44,14 @@ public class MemberController {
                 .body(ResponseHandler.<List<FindMemberInfoResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("모든 회원 조회 성공했습니다.")
-                        .data(memberService.findAllMember())
+                        .data(memberService.findAllMembers())
                         .build());
     }
 
     @PostMapping("/save-member-info")
     public ResponseEntity<ResponseHandler<Void>> saveMemberInfo(
-            @AuthenticationPrincipal final UserDetails userDetails,
-            @RequestBody @Valid final SaveMemberInfoRequest request
+            final @AuthenticationPrincipal UserDetails userDetails,
+            final @RequestBody @Valid SaveMemberInfoRequest request
     ) {
         memberService.saveMemberInfo(userDetails.getUsername(), request);
         return ResponseEntity.ok()
@@ -64,7 +64,7 @@ public class MemberController {
     @PostMapping("/update-nickname")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
-            @AuthenticationPrincipal final UserDetails userDetails
+            final @AuthenticationPrincipal UserDetails userDetails
     ) {
         memberService.updateNickname(userDetails.getUsername());
         return ResponseEntity.ok()
@@ -75,10 +75,10 @@ public class MemberController {
                         .build());
     }
 
-    @GetMapping("/logout")
+    @PostMapping("/logout")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> logout(
-            @AuthenticationPrincipal final UserDetails userDetails
+            final @AuthenticationPrincipal UserDetails userDetails
     ) {
         memberService.logout(userDetails.getUsername());
         return ResponseEntity.ok()
@@ -91,7 +91,7 @@ public class MemberController {
     @PostMapping("/leave")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteMember(
-            @AuthenticationPrincipal final UserDetails userDetails
+            final @AuthenticationPrincipal UserDetails userDetails
     ) {
         memberService.leaveMember(userDetails.getUsername());
         return ResponseEntity.ok()

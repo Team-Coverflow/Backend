@@ -80,12 +80,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", refreshToken);
+        log.info("토큰 담기 성공");
 
         return UriComponentsBuilder.newInstance()
                 // .scheme("http")
-                // .host("15.165.1.48:8081")
-               .scheme("https")
-               .host("coverflow.co.kr")
+                // .host("15.165.1.48")
+                .scheme("https")
+                .host("coverflow.co.kr")
                 .path("/auth/token")
                 .queryParams(queryParams)
                 .build()

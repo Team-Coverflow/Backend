@@ -1,6 +1,6 @@
 package com.coverflow.member.domain;
 
-import com.coverflow.global.entity.BaseEntity;
+import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import jakarta.persistence.*;
 import lombok.*;
@@ -15,7 +15,7 @@ import java.util.UUID;
 @Builder
 @Entity
 @Table(name = "tbl_member")
-public class Member extends BaseEntity {
+public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
