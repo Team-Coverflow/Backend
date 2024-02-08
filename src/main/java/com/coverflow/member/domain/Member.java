@@ -22,23 +22,23 @@ public class Member extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID id; // 회원 고유 번호
     @Column
-    private String password;
+    private String password; // 비밀번호
     @Column
-    private String email;
+    private String email; // 이메일
     @Column
-    private String nickname;
+    private String nickname; // 닉네임
     @Column
-    private String tag;
+    private String tag; // 태그
     @Column
-    private String age;
+    private String age; // 연령대
     @Column
-    private String gender;
+    private String gender; // 성별
     @Column
-    private int fishShapedBun;
+    private int fishShapedBun; // 붕어빵
     @Column
-    private String status;
+    private String status; // 상태 (등록/탈퇴)
     @Column
     private LocalDateTime connected_at;
     @Column
@@ -46,10 +46,10 @@ public class Member extends BaseTimeEntity {
     @Column
     private String refreshToken; // 리프레쉬 토큰
     @Column
-    private String tokenStatus; // 리프레쉬 토큰 상태
+    private String tokenStatus; // 리프레쉬 토큰 상태 (로그인/로그아웃)
 
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private Role role; // 권한
 
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
