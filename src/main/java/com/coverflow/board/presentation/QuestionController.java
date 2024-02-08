@@ -1,6 +1,7 @@
 package com.coverflow.board.presentation;
 
 import com.coverflow.board.application.QuestionService;
+import com.coverflow.board.dto.request.QuestionRequest;
 import com.coverflow.board.dto.response.QuestionResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
@@ -9,10 +10,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class QuestionController {
     @GetMapping("/find-question")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<QuestionResponse>> findQuestionById(
-            @RequestParam("id") @Valid long id
+            final @RequestParam("id") @Valid long id
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<QuestionResponse>builder()
@@ -39,7 +39,7 @@ public class QuestionController {
 
     @GetMapping("/find-all-questions")
     public ResponseEntity<ResponseHandler<List<QuestionResponse>>> findAllQuestionsByCompanyId(
-            @RequestParam("id") @Valid long id
+            final @RequestParam("id") @Valid long id
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<QuestionResponse>>builder()
@@ -60,5 +60,19 @@ public class QuestionController {
                         .data(questionService.findAllQuestions())
                         .build()
                 );
+    }
+
+    @PostMapping("/save-question")
+    @MemberAuthorize
+    public ResponseEntity<ResponseHandler<QuestionResponse>> saveQuestion(
+            final @AuthenticationPrincipal UserDetails userDetails,
+            final @RequestBody @Valid QuestionRequest questionRequest
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<QuestionResponse>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("질문 등록에 성공했습니다.")
+                        .data(questionService.saveQuestion(questionRequest, userDetails.getUsername()))
+                        .build());
     }
 }
