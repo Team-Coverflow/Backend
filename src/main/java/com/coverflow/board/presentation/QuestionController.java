@@ -65,14 +65,42 @@ public class QuestionController {
     @PostMapping("/save-question")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<QuestionResponse>> saveQuestion(
-            final @AuthenticationPrincipal UserDetails userDetails,
-            final @RequestBody @Valid QuestionRequest questionRequest
+            final @RequestBody @Valid QuestionRequest questionRequest,
+            final @AuthenticationPrincipal UserDetails userDetails
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<QuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("질문 등록에 성공했습니다.")
+                        .message("질문 글 등록에 성공했습니다.")
                         .data(questionService.saveQuestion(questionRequest, userDetails.getUsername()))
+                        .build());
+    }
+
+    @PostMapping("/update-question")
+    @MemberAuthorize
+    public ResponseEntity<ResponseHandler<QuestionResponse>> updateQuestion(
+            final @RequestBody @Valid QuestionRequest questionRequest,
+            final @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<QuestionResponse>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("질문 글 삭제에 성공했습니다.")
+                        .data(questionService.updateQuestion(questionRequest, userDetails.getUsername()))
+                        .build());
+    }
+
+    @PostMapping("/delete-question")
+    @MemberAuthorize
+    public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
+            final @RequestBody @Valid QuestionRequest questionRequest,
+            final @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        questionService.deleteQuestion(questionRequest, userDetails.getUsername());
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("질문 글 삭제에 성공했습니다.")
                         .build());
     }
 }

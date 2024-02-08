@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
@@ -16,4 +17,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query(value = "SELECT q FROM Question q ORDER BY q.createdAt ASC")
     Optional<List<Question>> findAllQuestions();
+
+    Optional<Question> findByIdAndMemberId(Long id, UUID member_id);
 }

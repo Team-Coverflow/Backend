@@ -67,7 +67,7 @@ public class QuestionService {
      */
     public QuestionResponse saveQuestion(
             final QuestionRequest request,
-            final String username
+            final String memberId
     ) {
         final Question question = Question.builder()
                 .title(request.title())
@@ -78,11 +78,43 @@ public class QuestionService {
                         .id(request.companyId())
                         .build())
                 .member(Member.builder()
-                        .id(UUID.fromString(username))
+                        .id(UUID.fromString(memberId))
                         .build())
                 .build();
 
         questionRepository.save(question);
         return QuestionResponse.of(question);
+    }
+
+    /**
+     * [질문 글 수정 메서드]
+     */
+    @Transactional
+    public QuestionResponse updateQuestion(
+            final QuestionRequest request,
+            final String memberId
+    ) {
+        final Question question = questionRepository.findByIdAndMemberId(request.id(), UUID.fromString(memberId))
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.id()));
+
+        question.updateQuestion(Question.builder()
+                .title(request.title())
+                .content(request.content())
+                .build());
+        return QuestionResponse.of(question);
+    }
+
+    /**
+     * [질문 글 삭제 메서드]
+     */
+    @Transactional
+    public void deleteQuestion(
+            final QuestionRequest request,
+            final String memberId
+    ) {
+        final Question question = questionRepository.findByIdAndMemberId(request.id(), UUID.fromString(memberId))
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.id()));
+
+        question.updateStatus("삭제");
     }
 }
