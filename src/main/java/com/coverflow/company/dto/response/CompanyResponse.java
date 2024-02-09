@@ -9,7 +9,7 @@ public record CompanyResponse(
         String address,
         String establishment
 ) {
-    public static CompanyResponse of(final Company company) {
+    public static CompanyResponse from(final Company company) {
         return new CompanyResponse(
                 company.getId(),
                 company.getName(),

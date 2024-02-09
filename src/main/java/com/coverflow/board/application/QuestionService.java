@@ -29,7 +29,7 @@ public class QuestionService {
     public QuestionResponse findQuestionById(final Long id) {
         final Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(id));
-        return QuestionResponse.of(question);
+        return QuestionResponse.from(question);
     }
 
     /**
@@ -42,7 +42,7 @@ public class QuestionService {
         final List<QuestionResponse> findQuestions = new ArrayList<>();
 
         for (int i = 0; i < questions.size(); i++) {
-            findQuestions.add(i, QuestionResponse.of(questions.get(i)));
+            findQuestions.add(i, QuestionResponse.from(questions.get(i)));
         }
         return findQuestions;
     }
@@ -57,7 +57,7 @@ public class QuestionService {
         final List<QuestionResponse> findQuestions = new ArrayList<>();
 
         for (int i = 0; i < questions.size(); i++) {
-            findQuestions.add(i, QuestionResponse.of(questions.get(i)));
+            findQuestions.add(i, QuestionResponse.from(questions.get(i)));
         }
         return findQuestions;
     }
@@ -83,7 +83,7 @@ public class QuestionService {
                 .build();
 
         questionRepository.save(question);
-        return QuestionResponse.of(question);
+        return QuestionResponse.from(question);
     }
 
     /**
@@ -101,7 +101,7 @@ public class QuestionService {
                 .title(request.title())
                 .content(request.content())
                 .build());
-        return QuestionResponse.of(question);
+        return QuestionResponse.from(question);
     }
 
     /**

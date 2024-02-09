@@ -13,7 +13,7 @@ public record QuestionResponse(
         UUID memberId
 ) {
 
-    public static QuestionResponse of(final Question question) {
+    public static QuestionResponse from(final Question question) {
         return new QuestionResponse(
                 question.getId(),
                 question.getTitle(),

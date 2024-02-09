@@ -55,7 +55,7 @@ public class MemberService {
     public FindMemberInfoResponse findMemberById(String username) {
         final Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
-        return FindMemberInfoResponse.of(member);
+        return FindMemberInfoResponse.from(member);
     }
 
     /**
@@ -67,7 +67,7 @@ public class MemberService {
         final List<FindMemberInfoResponse> findMembers = new ArrayList<>();
 
         for (int i = 0; i < members.size(); i++) {
-            findMembers.add(i, FindMemberInfoResponse.of(members.get(i)));
+            findMembers.add(i, FindMemberInfoResponse.from(members.get(i)));
         }
         return findMembers;
     }
@@ -97,7 +97,7 @@ public class MemberService {
         final String nickname = nicknameUtil.generateRandomNickname();
 
         member.updateNickname(nickname);
-        return UpdateNicknameResponse.of(nickname);
+        return UpdateNicknameResponse.from(nickname);
     }
 
     /**

@@ -33,7 +33,7 @@ public class CompanyService {
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
         }
         return findCompanies;
     }
@@ -48,7 +48,7 @@ public class CompanyService {
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
         }
         return findCompanies;
     }
@@ -60,7 +60,7 @@ public class CompanyService {
     public CompanyResponse findCompanyByName(final String name) {
         final Company company = companyRepository.findByNameAndStatus(name, "등록")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        return CompanyResponse.of(company);
+        return CompanyResponse.from(company);
     }
 
     /**
@@ -73,7 +73,7 @@ public class CompanyService {
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
         }
         return findCompanies;
     }
@@ -96,7 +96,7 @@ public class CompanyService {
                 .build();
 
         companyRepository.save(company);
-        return CompanyResponse.of(company);
+        return CompanyResponse.from(company);
     }
 
     /**
@@ -114,7 +114,7 @@ public class CompanyService {
                 .district(request.district())
                 .establishment(request.establishment())
                 .build());
-        return CompanyResponse.of(company);
+        return CompanyResponse.from(company);
     }
 
     /**
