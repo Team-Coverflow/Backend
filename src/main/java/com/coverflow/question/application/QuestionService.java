@@ -1,12 +1,15 @@
-package com.coverflow.board.application;
+package com.coverflow.question.application;
 
-import com.coverflow.board.domain.Question;
-import com.coverflow.board.dto.request.QuestionRequest;
-import com.coverflow.board.dto.response.QuestionResponse;
-import com.coverflow.board.exception.QuestionException;
-import com.coverflow.board.infrastructure.QuestionRepository;
 import com.coverflow.company.domain.Company;
 import com.coverflow.member.domain.Member;
+import com.coverflow.question.domain.Question;
+import com.coverflow.question.dto.request.DeleteQuestionRequest;
+import com.coverflow.question.dto.request.SaveQuestionRequest;
+import com.coverflow.question.dto.request.UpdateQuestionRequest;
+import com.coverflow.question.dto.response.FindQuestionResponse;
+import com.coverflow.question.dto.response.QuestionResponse;
+import com.coverflow.question.exception.QuestionException;
+import com.coverflow.question.infrastructure.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,17 +26,7 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     /**
-     * [특정 질문 글 조회 메서드]
-     * 질문 글의 id로 조회
-     */
-    public QuestionResponse findQuestionById(final Long id) {
-        final Question question = questionRepository.findById(id)
-                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(id));
-        return QuestionResponse.from(question);
-    }
-
-    /**
-     * [특정 회사의 전체 질문 글 조회 메서드]
+     * [특정 회사의 전체 질문 조회 메서드]
      * 회사 id로 조회
      */
     public List<QuestionResponse> findAllQuestionsByCompanyId(final Long id) {
@@ -48,7 +41,17 @@ public class QuestionService {
     }
 
     /**
-     * [관리자 전용: 전체 질문 글 조회 메서드]
+     * [특정 질문 조회 메서드]
+     * 특정 질문 id로 질문 및 답변 리스트 조회
+     */
+    public FindQuestionResponse findQuestionById(final Long id) {
+        final Question question = questionRepository.findByIdWithAnswers(id)
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(id));
+        return FindQuestionResponse.from(question);
+    }
+
+    /**
+     * [관리자 전용: 전체 질문 조회 메서드]
      * 회사 id로 조회
      */
     public List<QuestionResponse> findAllQuestions() {
@@ -63,10 +66,10 @@ public class QuestionService {
     }
 
     /**
-     * [질문 글 등록 메서드]
+     * [질문 등록 메서드]
      */
-    public QuestionResponse saveQuestion(
-            final QuestionRequest request,
+    public void saveQuestion(
+            final SaveQuestionRequest request,
             final String memberId
     ) {
         final Question question = Question.builder()
@@ -83,36 +86,32 @@ public class QuestionService {
                 .build();
 
         questionRepository.save(question);
-        return QuestionResponse.from(question);
     }
 
     /**
-     * [질문 글 수정 메서드]
+     * [관리자 전용: 질문 수정 메서드]
      */
     @Transactional
-    public QuestionResponse updateQuestion(
-            final QuestionRequest request,
-            final String memberId
+    public void updateQuestion(
+            final UpdateQuestionRequest request
     ) {
-        final Question question = questionRepository.findByIdAndMemberId(request.id(), UUID.fromString(memberId))
+        final Question question = questionRepository.findById(request.id())
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.id()));
 
         question.updateQuestion(Question.builder()
                 .title(request.title())
                 .content(request.content())
                 .build());
-        return QuestionResponse.from(question);
     }
 
     /**
-     * [질문 글 삭제 메서드]
+     * [관리자 전용: 질문 삭제 메서드]
      */
     @Transactional
     public void deleteQuestion(
-            final QuestionRequest request,
-            final String memberId
+            final DeleteQuestionRequest request
     ) {
-        final Question question = questionRepository.findByIdAndMemberId(request.id(), UUID.fromString(memberId))
+        final Question question = questionRepository.findById(request.id())
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.id()));
 
         question.updateStatus("삭제");

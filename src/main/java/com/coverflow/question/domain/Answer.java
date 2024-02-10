@@ -1,4 +1,4 @@
-package com.coverflow.board.domain;
+package com.coverflow.question.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
@@ -19,15 +19,15 @@ public class Answer extends BaseTimeEntity {
     @Column
     private String content; // 내용
     @Column
-    private String status; // 상태
+    private String status; // 상태 (등록/삭제)
 
     @ManyToOne
     @JoinColumn(name = "question_id")
-    private Question question;
+    private Question question; // 질문 정보
 
     @ManyToOne
     @JoinColumn(name = "member_id")
-    private Member member;
+    private Member member; // 답변 작성자 정보
 
     public void updateAnswer(final Answer answer) {
         this.content = answer.getContent();

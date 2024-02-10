@@ -1,4 +1,4 @@
-package com.coverflow.board.exception;
+package com.coverflow.question.exception;
 
 public class AnswerException extends RuntimeException {
 
