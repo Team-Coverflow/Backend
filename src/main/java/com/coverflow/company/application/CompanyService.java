@@ -82,7 +82,7 @@ public class CompanyService {
      * [관리자 전용: 회사 등록 메서드]
      */
     public CompanyResponse saveCompany(final CompanyRequest request) {
-        if (companyRepository.findByNameAndStatus(request.name(), "등록").isPresent()) {
+        if (companyRepository.findByName(request.name()).isPresent()) {
             throw new CompanyException.CompanyExistException(request.name());
         }
 
@@ -92,7 +92,7 @@ public class CompanyService {
                 .city(request.city())
                 .district(request.district())
                 .establishment(request.establishment())
-                .status("등록")
+                .status("검토")
                 .build();
 
         companyRepository.save(company);
@@ -104,7 +104,7 @@ public class CompanyService {
      */
     @Transactional
     public CompanyResponse updateCompany(final CompanyRequest request) {
-        final Company company = companyRepository.findByNameAndStatus(request.name(), "등록")
+        final Company company = companyRepository.findByName(request.name())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
 
         company.updateCompany(Company.builder()
@@ -122,7 +122,7 @@ public class CompanyService {
      */
     @Transactional
     public void deleteCompany(final String name) {
-        final Company company = companyRepository.findByNameAndStatus(name, "등록")
+        final Company company = companyRepository.findByName(name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
 
         company.updateStatus("삭제");

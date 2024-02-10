@@ -30,4 +30,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     @Query(value = "SELECT c FROM Company c ORDER BY c.name ASC")
     Optional<List<Company>> findAllCompanies();
+
+    Optional<Company> findByName(final String name);
 }

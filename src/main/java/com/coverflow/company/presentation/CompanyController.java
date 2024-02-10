@@ -97,7 +97,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PostMapping("/delete-company/{name}")
+    @PostMapping("/delete-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
             final @RequestParam("name") @Valid String name
