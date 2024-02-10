@@ -1,6 +1,6 @@
-package com.coverflow.board.dto.response;
+package com.coverflow.question.dto.response;
 
-import com.coverflow.board.domain.Question;
+import com.coverflow.question.domain.Question;
 
 import java.util.UUID;
 
