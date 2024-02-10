@@ -28,12 +28,12 @@ public class CompanyService {
      */
     public List<CompanyResponse> autoComplete(final String name) {
         Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
-        final List<Company> companies = companyRepository.findByNameStartingWith(name, pageable)
+        final List<Company> companies = companyRepository.findByNameStartingWithAndStatus(name, pageable, "등록")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
         }
         return findCompanies;
     }
@@ -43,12 +43,12 @@ public class CompanyService {
      * 특정 이름으로 시작하는 회사 n개를 조회하는 메서드
      */
     public List<CompanyResponse> searchCompanies(final String name) {
-        final List<Company> companies = companyRepository.findAllCompaniesStartingWithName(name + "%")
+        final List<Company> companies = companyRepository.findAllCompaniesStartingWithNameAndStatus(name + "%", "등록")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
         }
         return findCompanies;
     }
@@ -58,28 +58,28 @@ public class CompanyService {
      * 특정 회사를 조회하는 메서드
      */
     public CompanyResponse findCompanyByName(final String name) {
-        final Company company = companyRepository.findByName(name)
+        final Company company = companyRepository.findByNameAndStatus(name, "등록")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        return CompanyResponse.of(company);
+        return CompanyResponse.from(company);
     }
 
     /**
-     * [전체 회사 조회 메서드]
+     * [관리자 전용: 전체 회사 조회 메서드]
      * 전체 회사를 조회하는 메서드
      */
-    public List<CompanyResponse> findAllCompanies(final String name) {
+    public List<CompanyResponse> findAllCompanies() {
         final List<Company> companies = companyRepository.findAllCompanies()
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
+                .orElseThrow(CompanyException.CompanyNotFoundException::new);
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
         }
         return findCompanies;
     }
 
     /**
-     * [회사 등록 메서드]
+     * [관리자 전용: 회사 등록 메서드]
      */
     public CompanyResponse saveCompany(final CompanyRequest request) {
         if (companyRepository.findByName(request.name()).isPresent()) {
@@ -92,32 +92,38 @@ public class CompanyService {
                 .city(request.city())
                 .district(request.district())
                 .establishment(request.establishment())
-                .status("등록")
+                .status("검토")
                 .build();
 
         companyRepository.save(company);
-        return CompanyResponse.of(company);
+        return CompanyResponse.from(company);
     }
 
     /**
-     * [회사 수정 메서드]
+     * [관리자 전용: 회사 수정 메서드]
      */
     @Transactional
     public CompanyResponse updateCompany(final CompanyRequest request) {
         final Company company = companyRepository.findByName(request.name())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
 
-        company.updateCompany(company);
-        return CompanyResponse.of(company);
+        company.updateCompany(Company.builder()
+                .name(request.name())
+                .type(request.type())
+                .city(request.city())
+                .district(request.district())
+                .establishment(request.establishment())
+                .build());
+        return CompanyResponse.from(company);
     }
 
     /**
-     * [회사 삭제 메서드]
+     * [관리자 전용: 회사 삭제 메서드]
      */
     @Transactional
-    public void deleteCompany(final CompanyRequest request) {
-        final Company company = companyRepository.findByName(request.name())
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
+    public void deleteCompany(final String name) {
+        final Company company = companyRepository.findByName(name)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
 
         company.updateStatus("삭제");
     }

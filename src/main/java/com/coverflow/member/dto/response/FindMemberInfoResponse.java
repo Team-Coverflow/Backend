@@ -16,7 +16,7 @@ public record FindMemberInfoResponse(
         LocalDateTime connected_at,
         Role role
 ) {
-    public static FindMemberInfoResponse of(final Member member) {
+    public static FindMemberInfoResponse from(final Member member) {
         return new FindMemberInfoResponse(
                 member.getEmail(),
                 member.getNickname(),

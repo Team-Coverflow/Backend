@@ -65,7 +65,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private void updateConnectedAt(final UUID memberId) {
-        final Member member = memberRepository.findByMemberId(memberId)
+        final Member member = memberRepository.findByIdAndStatus(memberId, "등록")
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
         member.updateConnectedAt();
@@ -85,8 +85,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         return UriComponentsBuilder.newInstance()
                 // .scheme("http")
                 // .host("15.165.1.48")
-                .scheme("https")
-                .host("coverflow.co.kr")
+              .scheme("https")
+              .host("coverflow.co.kr")
                 .path("/auth/token")
                 .queryParams(queryParams)
                 .build()
