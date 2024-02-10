@@ -5,7 +5,7 @@ import com.coverflow.visitor.domain.Visitor;
 public record FindDailyVisitorResponse(
         int count
 ) {
-    public static FindDailyVisitorResponse of(Visitor visitor) {
+    public static FindDailyVisitorResponse from(Visitor visitor) {
         return new FindDailyVisitorResponse(visitor.getCount());
     }
 }

@@ -33,7 +33,7 @@ public class CompanyService {
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
         }
         return findCompanies;
     }
@@ -48,7 +48,7 @@ public class CompanyService {
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
         }
         return findCompanies;
     }
@@ -60,7 +60,7 @@ public class CompanyService {
     public CompanyResponse findCompanyByName(final String name) {
         final Company company = companyRepository.findByNameAndStatus(name, "등록")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        return CompanyResponse.of(company);
+        return CompanyResponse.from(company);
     }
 
     /**
@@ -73,7 +73,7 @@ public class CompanyService {
         final List<CompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.of(companies.get(i)));
+            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
         }
         return findCompanies;
     }
@@ -82,7 +82,7 @@ public class CompanyService {
      * [관리자 전용: 회사 등록 메서드]
      */
     public CompanyResponse saveCompany(final CompanyRequest request) {
-        if (companyRepository.findByNameAndStatus(request.name(), "등록").isPresent()) {
+        if (companyRepository.findByName(request.name()).isPresent()) {
             throw new CompanyException.CompanyExistException(request.name());
         }
 
@@ -92,11 +92,11 @@ public class CompanyService {
                 .city(request.city())
                 .district(request.district())
                 .establishment(request.establishment())
-                .status("등록")
+                .status("검토")
                 .build();
 
         companyRepository.save(company);
-        return CompanyResponse.of(company);
+        return CompanyResponse.from(company);
     }
 
     /**
@@ -104,7 +104,7 @@ public class CompanyService {
      */
     @Transactional
     public CompanyResponse updateCompany(final CompanyRequest request) {
-        final Company company = companyRepository.findByNameAndStatus(request.name(), "등록")
+        final Company company = companyRepository.findByName(request.name())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
 
         company.updateCompany(Company.builder()
@@ -114,7 +114,7 @@ public class CompanyService {
                 .district(request.district())
                 .establishment(request.establishment())
                 .build());
-        return CompanyResponse.of(company);
+        return CompanyResponse.from(company);
     }
 
     /**
@@ -122,7 +122,7 @@ public class CompanyService {
      */
     @Transactional
     public void deleteCompany(final String name) {
-        final Company company = companyRepository.findByNameAndStatus(name, "등록")
+        final Company company = companyRepository.findByName(name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
 
         company.updateStatus("삭제");

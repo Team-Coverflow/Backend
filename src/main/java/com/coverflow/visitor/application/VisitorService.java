@@ -25,7 +25,7 @@ public class VisitorService {
     public FindDailyVisitorResponse findDailyCount() {
         final Visitor visitor = visitorRepository.findByToday(NOW)
                 .orElseThrow(() -> new VisitorException.DayNotFoundException(NOW));
-        return FindDailyVisitorResponse.of(visitor);
+        return FindDailyVisitorResponse.from(visitor);
     }
 
     /**

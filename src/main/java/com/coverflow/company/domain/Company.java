@@ -1,7 +1,7 @@
 package com.coverflow.company.domain;
 
-import com.coverflow.board.domain.Question;
 import com.coverflow.global.entity.BaseTimeEntity;
+import com.coverflow.question.domain.Question;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,9 +30,9 @@ public class Company extends BaseTimeEntity {
     @Column
     private String establishment; // 설립일
     @Column
-    private String status; // 상태 (등록/삭제)
+    private String status; // 상태 (검토/등록/삭제)
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     private List<Question> questions = new ArrayList<>();
 
     public void updateCompany(final Company company) {

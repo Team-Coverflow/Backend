@@ -1,6 +1,6 @@
-package com.coverflow.board.dto.request;
+package com.coverflow.question.dto.request;
 
-public record QuestionRequest(
+public record SaveQuestionRequest(
         Long id,
         String title,
         String content,

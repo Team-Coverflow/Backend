@@ -1,8 +1,9 @@
 package com.coverflow.member.domain;
 
-import com.coverflow.board.domain.Question;
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
+import com.coverflow.question.domain.Answer;
+import com.coverflow.question.domain.Question;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -54,8 +55,11 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
-    @OneToMany(mappedBy = "member")
-    private List<Question> questions = new ArrayList<>();
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Question> questions = new ArrayList<>(); // 회원의 질문 리스트
+
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Answer> answers = new ArrayList<>(); // 회원의 답변 리스트
 
     public void saveMemberInfo(final SaveMemberInfoRequest request) {
         this.tag = request.tag();

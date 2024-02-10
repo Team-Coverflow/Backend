@@ -2,6 +2,8 @@ package com.coverflow.global.handler;
 
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.member.exception.MemberException;
+import com.coverflow.question.exception.AnswerException;
+import com.coverflow.question.exception.QuestionException;
 import com.coverflow.visitor.exception.VisitorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -61,7 +63,9 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             MemberException.MemberNotFoundException.class,
             CompanyException.CompanyNotFoundException.class,
-            VisitorException.DayNotFoundException.class
+            VisitorException.DayNotFoundException.class,
+            QuestionException.QuestionNotFoundException.class,
+            AnswerException.AnswerNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(final RuntimeException exception) {
         final String message = exception.getMessage();
@@ -72,6 +76,21 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(message));
     }
 
+    @ExceptionHandler(value = {
+            CompanyException.CompanyExistException.class,
+            QuestionException.QuestionExistException.class,
+            AnswerException.AnswerExistException.class
+    })
+    public ResponseEntity<ErrorResponse> handleExistException(final RuntimeException exception) {
+        final String message = exception.getMessage();
+        log.warn(message);
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(message));
+    }
+
+    // 커스텀 예외 사용 시
 //    @ExceptionHandler()
 //    public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
 //        final String message = exception.getMessage();

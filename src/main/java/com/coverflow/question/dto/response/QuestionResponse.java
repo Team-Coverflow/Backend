@@ -1,6 +1,6 @@
-package com.coverflow.board.dto.response;
+package com.coverflow.question.dto.response;
 
-import com.coverflow.board.domain.Question;
+import com.coverflow.question.domain.Question;
 
 import java.util.UUID;
 
@@ -13,7 +13,7 @@ public record QuestionResponse(
         UUID memberId
 ) {
 
-    public static QuestionResponse of(final Question question) {
+    public static QuestionResponse from(final Question question) {
         return new QuestionResponse(
                 question.getId(),
                 question.getTitle(),
