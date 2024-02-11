@@ -4,7 +4,6 @@ import com.coverflow.question.domain.Question;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public record FindQuestionResponse(
@@ -12,8 +11,8 @@ public record FindQuestionResponse(
         String title,
         String questionContent,
         int count,
-        Long companyId,
-        UUID memberId,
+        String nickname,
+        String tag,
         LocalDateTime createAt,
         List<FindAnswerResponse> answers
 ) {
@@ -24,8 +23,8 @@ public record FindQuestionResponse(
                 question.getTitle(),
                 question.getContent(),
                 question.getCount(),
-                question.getCompany().getId(),
-                question.getMember().getId(),
+                question.getMember().getNickname(),
+                question.getMember().getTag(),
                 question.getCreatedAt(),
                 question.getAnswers().stream()
                         .map(answer -> new FindAnswerResponse(
