@@ -59,7 +59,7 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/find-all-companies")
+    @GetMapping("/admin/find-companies")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompanies() {
         return ResponseEntity.ok()
@@ -71,7 +71,7 @@ public class CompanyController {
                 );
     }
 
-    @PostMapping("/save-company")
+    @PostMapping("/admin/save-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<CompanyResponse>> saveCompany(
             final @RequestBody @Valid CompanyRequest request
@@ -84,7 +84,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PostMapping("/update-company")
+    @PostMapping("/admin/update-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<CompanyResponse>> updateNickname(
             final @RequestBody @Valid CompanyRequest request
@@ -97,7 +97,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PostMapping("/delete-company")
+    @PostMapping("/admin/delete-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
             final @RequestParam("name") @Valid String name
