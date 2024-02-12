@@ -4,7 +4,6 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.question.application.QuestionService;
-import com.coverflow.question.dto.request.DeleteQuestionRequest;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindQuestionResponse;
@@ -92,12 +91,12 @@ public class QuestionController {
                         .build());
     }
 
-    @PostMapping("/admin/delete-question")
+    @PostMapping("/admin/delete-question/{questionId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
-            @RequestBody @Valid final DeleteQuestionRequest deleteAnswerRequest
+            @PathVariable @Valid final Long questionId
     ) {
-        questionService.deleteQuestion(deleteAnswerRequest);
+        questionService.deleteQuestion(questionId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
