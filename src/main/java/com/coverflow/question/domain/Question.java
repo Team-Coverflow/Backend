@@ -27,7 +27,7 @@ public class Question extends BaseTimeEntity {
     @Column
     private int viewCount; // 질문 조회 수
     @Column
-    private int answerCount; // 답변 개수
+    private int answerCount; // 답변 수
     @Column
     private String status; // 상태 (등록/삭제)
 
