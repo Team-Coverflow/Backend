@@ -7,7 +7,9 @@ import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
 import com.coverflow.question.exception.AnswerException;
+import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.AnswerRepository;
+import com.coverflow.question.infrastructure.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ import java.util.UUID;
 @Service
 public class AnswerService {
 
+    private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
 
     /**
@@ -49,10 +52,13 @@ public class AnswerService {
     /**
      * [답변 등록 메서드]
      */
+    @Transactional
     public void saveAnswer(
             final SaveAnswerRequest request,
             final String memberId
     ) {
+        final Question question = questionRepository.findById(request.questionId())
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
         final Answer answer = Answer.builder()
                 .content(request.content())
                 .status("등록")
@@ -65,6 +71,7 @@ public class AnswerService {
                 .build();
 
         answerRepository.save(answer);
+        question.updateAnswerCount(question.getAnswerCount() + 1);
     }
 
     /**

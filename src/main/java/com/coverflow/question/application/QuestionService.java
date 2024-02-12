@@ -43,9 +43,12 @@ public class QuestionService {
      * [특정 질문 조회 메서드]
      * 특정 질문 id로 질문 및 답변 리스트 조회
      */
+    @Transactional
     public FindQuestionResponse findQuestionById(final Long questionId) {
         final Question question = questionRepository.findByIdWithAnswers(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
+
+        question.updateViewCount(question.getViewCount() + 1);
         return FindQuestionResponse.from(question);
     }
 
@@ -73,7 +76,8 @@ public class QuestionService {
         final Question question = Question.builder()
                 .title(request.title())
                 .content(request.content())
-                .count(1)
+                .viewCount(1)
+                .answerCount(0)
                 .status("등록")
                 .company(Company.builder()
                         .id(request.companyId())

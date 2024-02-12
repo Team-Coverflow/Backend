@@ -8,7 +8,8 @@ public record QuestionResponse(
         Long questionId,
         String title,
         String content,
-        int count,
+        int viewCount,
+        int answerCount,
         Long companyId,
         UUID memberId
 ) {
@@ -18,7 +19,8 @@ public record QuestionResponse(
                 question.getId(),
                 question.getTitle(),
                 question.getContent(),
-                question.getCount(),
+                question.getViewCount(),
+                question.getAnswerCount(),
                 question.getCompany().getId(),
                 question.getMember().getId()
         );
