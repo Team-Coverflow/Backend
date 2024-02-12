@@ -1,6 +1,8 @@
 package com.coverflow.question.application;
 
 import com.coverflow.company.domain.Company;
+import com.coverflow.company.exception.CompanyException;
+import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
@@ -22,6 +24,7 @@ import java.util.UUID;
 @Service
 public class QuestionService {
 
+    private final CompanyRepository companyRepository;
     private final QuestionRepository questionRepository;
 
     /**
@@ -69,10 +72,13 @@ public class QuestionService {
     /**
      * [질문 등록 메서드]
      */
+    @Transactional
     public void saveQuestion(
             final SaveQuestionRequest request,
             final String memberId
     ) {
+        final Company company = companyRepository.findById(request.companyId())
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.companyId()));
         final Question question = Question.builder()
                 .title(request.title())
                 .content(request.content())
@@ -88,6 +94,7 @@ public class QuestionService {
                 .build();
 
         questionRepository.save(question);
+        company.updateQuestionCount(company.getQuestionCount() + 1);
     }
 
     /**
