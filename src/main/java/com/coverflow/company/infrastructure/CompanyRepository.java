@@ -22,14 +22,28 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             final String status
     );
 
-    @Query(value = "SELECT c FROM Company c WHERE c.name LIKE :name AND c.status = :status ORDER BY c.name ASC")
+    @Query("SELECT c " +
+            "FROM Company c " +
+            "WHERE c.name LIKE :name " +
+            "AND c.status = :status " +
+            "ORDER BY c.name ASC")
     Optional<List<Company>> findAllCompaniesStartingWithNameAndStatus(
             @Param("name") final String name,
             @Param("status") final String status
     );
 
-    @Query(value = "SELECT c FROM Company c ORDER BY c.name ASC")
+    @Query("SELECT c " +
+            "FROM Company c " +
+            "ORDER BY c.name ASC")
     Optional<List<Company>> findAllCompanies();
 
     Optional<Company> findByName(final String name);
+
+    @Query("SELECT c " +
+            "FROM Company c " +
+            "JOIN FETCH c.questions q " +
+            "WHERE c.name = :name " +
+            "AND q.status = '등록' " +
+            "ORDER BY q.createdAt DESC")
+    Optional<Company> findByNameWithQuestion(@Param("name") final String name);
 }

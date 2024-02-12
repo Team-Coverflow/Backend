@@ -2,17 +2,19 @@ package com.coverflow.question.dto.response;
 
 import com.coverflow.question.domain.Question;
 
+import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public record FindQuestionResponse(
         Long questionId,
         String title,
         String questionContent,
-        int count,
-        Long companyId,
-        UUID memberId,
+        int viewCount,
+        int answerCount,
+        String questionNickname,
+        String questionTag,
+        LocalDateTime createAt,
         List<FindAnswerResponse> answers
 ) {
 
@@ -21,16 +23,19 @@ public record FindQuestionResponse(
                 question.getId(),
                 question.getTitle(),
                 question.getContent(),
-                question.getCount(),
-                question.getCompany().getId(),
-                question.getMember().getId(),
+                question.getViewCount(),
+                question.getAnswerCount(),
+                question.getMember().getNickname(),
+                question.getMember().getTag(),
+                question.getCreatedAt(),
                 question.getAnswers().stream()
                         .map(answer -> new FindAnswerResponse(
                                 answer.getId(),
                                 answer.getContent(),
-                                answer.getCreatedAt(),
                                 answer.getMember().getNickname(),
-                                answer.getMember().getTag()))
+                                answer.getMember().getTag(),
+                                answer.getCreatedAt()
+                        ))
                         .collect(Collectors.toList())
         );
     }

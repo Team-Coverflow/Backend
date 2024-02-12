@@ -5,20 +5,20 @@ import com.coverflow.question.domain.Answer;
 import java.time.LocalDateTime;
 
 public record FindAnswerResponse(
-        Long id,
-        String content,
-        LocalDateTime createAt,
-        String nickname,
-        String tag
+        Long answerId,
+        String answerContent,
+        String answerNickname,
+        String answerTag,
+        LocalDateTime createAt
 ) {
 
     public static FindAnswerResponse from(final Answer answer) {
         return new FindAnswerResponse(
                 answer.getId(),
                 answer.getContent(),
-                answer.getCreatedAt(),
                 answer.getMember().getNickname(),
-                answer.getMember().getTag()
+                answer.getMember().getTag(),
+                answer.getCreatedAt()
         );
     }
 }

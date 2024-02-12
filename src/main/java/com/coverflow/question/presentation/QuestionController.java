@@ -4,7 +4,6 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.question.application.QuestionService;
-import com.coverflow.question.dto.request.DeleteQuestionRequest;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindQuestionResponse;
@@ -26,29 +25,29 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
-    @GetMapping("/find-questions")
+    @GetMapping("/find-questions/{companyId}")
     public ResponseEntity<ResponseHandler<List<QuestionResponse>>> findAllQuestionsByCompanyId(
-            final @RequestParam("id") @Valid Long id
+            @PathVariable @Valid final Long companyId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<QuestionResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회사의 전체 질문 조회에 성공했습니다.")
-                        .data(questionService.findAllQuestionsByCompanyId(id))
+                        .data(questionService.findAllQuestionsByCompanyId(companyId))
                         .build()
                 );
     }
 
-    @GetMapping("/find-question")
+    @GetMapping("/find-question/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
-            final @RequestParam("id") @Valid Long id
+            @PathVariable @Valid final Long questionId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 질문 조회에 성공했습니다.")
-                        .data(questionService.findQuestionById(id))
+                        .message("특정 질문과 답변 조회에 성공했습니다.")
+                        .data(questionService.findQuestionById(questionId))
                         .build()
                 );
     }
@@ -68,8 +67,8 @@ public class QuestionController {
     @PostMapping("/save-question")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveQuestion(
-            final @RequestBody @Valid SaveQuestionRequest saveQuestionRequest,
-            final @AuthenticationPrincipal UserDetails userDetails
+            @RequestBody @Valid final SaveQuestionRequest saveQuestionRequest,
+            @AuthenticationPrincipal final UserDetails userDetails
     ) {
         questionService.saveQuestion(saveQuestionRequest, userDetails.getUsername());
         return ResponseEntity.ok()
@@ -82,7 +81,7 @@ public class QuestionController {
     @PostMapping("/admin/update-question")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateQuestion(
-            final @RequestBody @Valid UpdateQuestionRequest updateQuestionRequest
+            @RequestBody @Valid final UpdateQuestionRequest updateQuestionRequest
     ) {
         questionService.updateQuestion(updateQuestionRequest);
         return ResponseEntity.ok()
@@ -92,12 +91,12 @@ public class QuestionController {
                         .build());
     }
 
-    @PostMapping("/admin/delete-question")
+    @PostMapping("/admin/delete-question/{questionId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
-            final @RequestBody @Valid DeleteQuestionRequest deleteAnswerRequest
+            @PathVariable @Valid final Long questionId
     ) {
-        questionService.deleteQuestion(deleteAnswerRequest);
+        questionService.deleteQuestion(questionId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
