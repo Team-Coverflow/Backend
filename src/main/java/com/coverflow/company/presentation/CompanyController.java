@@ -3,6 +3,7 @@ package com.coverflow.company.presentation;
 import com.coverflow.company.application.CompanyService;
 import com.coverflow.company.dto.request.CompanyRequest;
 import com.coverflow.company.dto.response.CompanyResponse;
+import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import jakarta.validation.Valid;
@@ -47,11 +48,11 @@ public class CompanyController {
     }
 
     @GetMapping("/find-company/{companyName}")
-    public ResponseEntity<ResponseHandler<CompanyResponse>> findCompanyByName(
+    public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyByName(
             @PathVariable @Valid final String companyName
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<CompanyResponse>builder()
+                .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회사와 질문 조회에 성공했습니다.")
                         .data(companyService.findCompanyByName(companyName))

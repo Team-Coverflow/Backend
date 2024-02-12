@@ -25,6 +25,7 @@ public record FindCompanyResponse(
                 company.getQuestions().stream()
                         .map(question -> new QuestionDTO(
                                 question.getMember().getNickname(),
+                                question.getMember().getTag(),
                                 question.getContent(),
                                 question.getViewCount(),
                                 question.getAnswerCount(),

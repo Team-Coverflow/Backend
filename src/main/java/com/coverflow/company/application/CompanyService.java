@@ -3,6 +3,7 @@ package com.coverflow.company.application;
 import com.coverflow.company.domain.Company;
 import com.coverflow.company.dto.request.CompanyRequest;
 import com.coverflow.company.dto.response.CompanyResponse;
+import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -57,10 +58,10 @@ public class CompanyService {
      * [특정 회사와 질문 조회 메서드]
      * 특정 회사와 질문 리스트를 조회하는 메서드
      */
-    public CompanyResponse findCompanyByName(final String name) {
+    public FindCompanyResponse findCompanyByName(final String name) {
         final Company company = companyRepository.findByNameWithQuestion(name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        return CompanyResponse.from(company);
+        return FindCompanyResponse.from(company);
     }
 
     /**

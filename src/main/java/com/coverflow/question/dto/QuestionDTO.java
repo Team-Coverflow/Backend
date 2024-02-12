@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class QuestionDTO {
 
     private String nickname;
+    private String tag;
     private String content;
     private int viewCount;
     private int answerCount;
