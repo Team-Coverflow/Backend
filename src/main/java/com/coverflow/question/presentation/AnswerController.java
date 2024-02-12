@@ -24,10 +24,10 @@ public class AnswerController {
 
     private final AnswerService answerService;
 
-    @GetMapping("/find-answer")
+    @GetMapping("/find-answers/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswer(
-            @RequestParam("id") @Valid final Long questionId
+            @PathVariable @Valid final Long questionId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAnswerResponse>>builder()
@@ -38,10 +38,10 @@ public class AnswerController {
                 );
     }
 
-    @GetMapping("/admin/find-answer")
+    @GetMapping("/admin/find-answer/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindAnswerResponse>> findAnswerById(
-            @RequestParam("id") @Valid final Long answerId
+            @PathVariable @Valid final Long answerId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAnswerResponse>builder()
