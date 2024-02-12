@@ -53,7 +53,7 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<CompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회사 조회에 성공했습니다.")
+                        .message("특정 회사와 질문 조회에 성공했습니다.")
                         .data(companyService.findCompanyByName(companyName))
                         .build()
                 );
