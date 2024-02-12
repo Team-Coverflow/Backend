@@ -1,7 +1,8 @@
 package com.coverflow.company.presentation;
 
 import com.coverflow.company.application.CompanyService;
-import com.coverflow.company.dto.request.CompanyRequest;
+import com.coverflow.company.dto.request.SaveCompanyRequest;
+import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.CompanyResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
@@ -75,9 +76,9 @@ public class CompanyController {
     @PostMapping("/admin/save-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveCompany(
-            @RequestBody @Valid final CompanyRequest request
+            @RequestBody @Valid final SaveCompanyRequest saveCompanyRequest
     ) {
-        companyService.saveCompany(request);
+        companyService.saveCompany(saveCompanyRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
@@ -88,9 +89,9 @@ public class CompanyController {
     @PostMapping("/admin/update-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateNickname(
-            @RequestBody @Valid final CompanyRequest request
+            @RequestBody @Valid final UpdateCompanyRequest updateCompanyRequest
     ) {
-        companyService.updateCompany(request);
+        companyService.updateCompany(updateCompanyRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)

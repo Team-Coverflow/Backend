@@ -1,7 +1,8 @@
 package com.coverflow.company.application;
 
 import com.coverflow.company.domain.Company;
-import com.coverflow.company.dto.request.CompanyRequest;
+import com.coverflow.company.dto.request.SaveCompanyRequest;
+import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.CompanyResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.exception.CompanyException;
@@ -83,7 +84,7 @@ public class CompanyService {
      * [관리자 전용: 회사 등록 메서드]
      */
     @Transactional
-    public void saveCompany(final CompanyRequest request) {
+    public void saveCompany(final SaveCompanyRequest request) {
         if (companyRepository.findByName(request.name()).isPresent()) {
             throw new CompanyException.CompanyExistException(request.name());
         }
@@ -104,7 +105,7 @@ public class CompanyService {
      * [관리자 전용: 회사 수정 메서드]
      */
     @Transactional
-    public void updateCompany(final CompanyRequest request) {
+    public void updateCompany(final UpdateCompanyRequest request) {
         final Company company = companyRepository.findByName(request.name())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
 
@@ -114,6 +115,7 @@ public class CompanyService {
                 .city(request.city())
                 .district(request.district())
                 .establishment(request.establishment())
+                .status(request.status())
                 .build());
     }
 
