@@ -120,9 +120,9 @@ public class CompanyService {
      * [관리자 전용: 회사 삭제 메서드]
      */
     @Transactional
-    public void deleteCompany(final String name) {
-        final Company company = companyRepository.findByName(name)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
+    public void deleteCompany(final Long companyId) {
+        final Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
         company.updateStatus("삭제");
     }

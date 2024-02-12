@@ -97,12 +97,12 @@ public class CompanyController {
                         .build());
     }
 
-    @PostMapping("/admin/delete-company")
+    @PostMapping("/admin/delete-company/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
-            @RequestParam("name") @Valid final String name
+            @PathVariable @Valid final Long companyId
     ) {
-        companyService.deleteCompany(name);
+        companyService.deleteCompany(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
