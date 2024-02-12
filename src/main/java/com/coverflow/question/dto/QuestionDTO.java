@@ -15,6 +15,7 @@ public class QuestionDTO {
 
     private String nickname;
     private String tag;
+    private String title;
     private String content;
     private int viewCount;
     private int answerCount;
