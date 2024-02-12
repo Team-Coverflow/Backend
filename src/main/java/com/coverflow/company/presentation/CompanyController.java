@@ -73,27 +73,27 @@ public class CompanyController {
 
     @PostMapping("/admin/save-company")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<CompanyResponse>> saveCompany(
+    public ResponseEntity<ResponseHandler<Void>> saveCompany(
             @RequestBody @Valid final CompanyRequest request
     ) {
+        companyService.saveCompany(request);
         return ResponseEntity.ok()
-                .body(ResponseHandler.<CompanyResponse>builder()
+                .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 등록에 성공했습니다.")
-                        .data(companyService.saveCompany(request))
                         .build());
     }
 
     @PostMapping("/admin/update-company")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<CompanyResponse>> updateNickname(
+    public ResponseEntity<ResponseHandler<Void>> updateNickname(
             @RequestBody @Valid final CompanyRequest request
     ) {
+        companyService.updateCompany(request);
         return ResponseEntity.ok()
-                .body(ResponseHandler.<CompanyResponse>builder()
+                .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 수정에 성공했습니다.")
-                        .data(companyService.updateCompany(request))
                         .build());
     }
 

@@ -81,7 +81,8 @@ public class CompanyService {
     /**
      * [관리자 전용: 회사 등록 메서드]
      */
-    public CompanyResponse saveCompany(final CompanyRequest request) {
+    @Transactional
+    public void saveCompany(final CompanyRequest request) {
         if (companyRepository.findByName(request.name()).isPresent()) {
             throw new CompanyException.CompanyExistException(request.name());
         }
@@ -96,14 +97,13 @@ public class CompanyService {
                 .build();
 
         companyRepository.save(company);
-        return CompanyResponse.from(company);
     }
 
     /**
      * [관리자 전용: 회사 수정 메서드]
      */
     @Transactional
-    public CompanyResponse updateCompany(final CompanyRequest request) {
+    public void updateCompany(final CompanyRequest request) {
         final Company company = companyRepository.findByName(request.name())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
 
@@ -114,7 +114,6 @@ public class CompanyService {
                 .district(request.district())
                 .establishment(request.establishment())
                 .build());
-        return CompanyResponse.from(company);
     }
 
     /**
