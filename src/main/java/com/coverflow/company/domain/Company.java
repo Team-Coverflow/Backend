@@ -30,6 +30,8 @@ public class Company extends BaseTimeEntity {
     @Column
     private String establishment; // 설립일
     @Column
+    private int questionCount; // 질문 수
+    @Column
     private String status; // 상태 (검토/등록/삭제)
 
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
@@ -41,6 +43,10 @@ public class Company extends BaseTimeEntity {
         this.city = company.getCity();
         this.district = company.getDistrict();
         this.establishment = company.getEstablishment();
+    }
+
+    public void updateQuestionCount(final int questionCount) {
+        this.questionCount = questionCount;
     }
 
     public void updateStatus(final String status) {
