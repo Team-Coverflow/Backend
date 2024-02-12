@@ -46,7 +46,7 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 질문 조회에 성공했습니다.")
+                        .message("특정 질문과 답변 조회에 성공했습니다.")
                         .data(questionService.findQuestionById(questionId))
                         .build()
                 );
