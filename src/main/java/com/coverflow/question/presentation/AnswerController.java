@@ -82,7 +82,7 @@ public class AnswerController {
     @PostMapping("/admin/delete-answer/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
-            @RequestBody @Valid final Long answerId
+            @PathVariable @Valid final Long answerId
     ) {
         answerService.deleteAnswer(answerId);
         return ResponseEntity.ok()
