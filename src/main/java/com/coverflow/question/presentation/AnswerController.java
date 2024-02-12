@@ -4,7 +4,6 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.question.application.AnswerService;
-import com.coverflow.question.dto.request.DeleteAnswerRequest;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
@@ -28,7 +27,7 @@ public class AnswerController {
     @GetMapping("/find-answer")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswer(
-            final @RequestParam("id") @Valid Long id
+            @RequestParam("id") @Valid final Long id
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAnswerResponse>>builder()
@@ -42,7 +41,7 @@ public class AnswerController {
     @GetMapping("/admin/find-answer")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindAnswerResponse>> findAnswerById(
-            final @RequestParam("id") @Valid Long id
+            @RequestParam("id") @Valid final Long id
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAnswerResponse>builder()
@@ -56,8 +55,8 @@ public class AnswerController {
     @PostMapping("/save-answer")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveAnswer(
-            final @RequestBody @Valid SaveAnswerRequest saveAnswerRequest,
-            final @AuthenticationPrincipal UserDetails userDetails
+            @RequestBody @Valid final SaveAnswerRequest saveAnswerRequest,
+            @AuthenticationPrincipal final UserDetails userDetails
     ) {
         answerService.saveAnswer(saveAnswerRequest, userDetails.getUsername());
         return ResponseEntity.ok()
@@ -70,7 +69,7 @@ public class AnswerController {
     @PostMapping("/admin/update-answer")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateAnswer(
-            final @RequestBody @Valid UpdateAnswerRequest updateAnswerRequest
+            @RequestBody @Valid final UpdateAnswerRequest updateAnswerRequest
     ) {
         answerService.updateAnswer(updateAnswerRequest);
         return ResponseEntity.ok()
@@ -80,12 +79,12 @@ public class AnswerController {
                         .build());
     }
 
-    @PostMapping("/admin/delete-answer")
+    @PostMapping("/admin/delete-answer/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
-            final @RequestBody @Valid DeleteAnswerRequest deleteAnswerRequest
+            @RequestBody @Valid final Long answerId
     ) {
-        answerService.deleteAnswer(deleteAnswerRequest);
+        answerService.deleteAnswer(answerId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)

@@ -3,7 +3,6 @@ package com.coverflow.question.application;
 import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
-import com.coverflow.question.dto.request.DeleteAnswerRequest;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
@@ -72,9 +71,7 @@ public class AnswerService {
      * [관리자 전용: 답변 수정 메서드]
      */
     @Transactional
-    public void updateAnswer(
-            final UpdateAnswerRequest request
-    ) {
+    public void updateAnswer(final UpdateAnswerRequest request) {
         final Answer answer = answerRepository.findById(request.id())
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.id()));
 
@@ -87,11 +84,9 @@ public class AnswerService {
      * [관리자 전용: 답변 삭제 메서드]
      */
     @Transactional
-    public void deleteAnswer(
-            final DeleteAnswerRequest request
-    ) {
-        final Answer answer = answerRepository.findById(request.id())
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.id()));
+    public void deleteAnswer(final Long answerId) {
+        final Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
 
         answer.updateStatus("삭제");
     }
