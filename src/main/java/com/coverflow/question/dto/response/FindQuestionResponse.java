@@ -11,8 +11,8 @@ public record FindQuestionResponse(
         String title,
         String questionContent,
         int count,
-        String nickname,
-        String tag,
+        String questionNickname,
+        String questionTag,
         LocalDateTime createAt,
         List<FindAnswerResponse> answers
 ) {
@@ -30,9 +30,10 @@ public record FindQuestionResponse(
                         .map(answer -> new FindAnswerResponse(
                                 answer.getId(),
                                 answer.getContent(),
-                                answer.getCreatedAt(),
                                 answer.getMember().getNickname(),
-                                answer.getMember().getTag()))
+                                answer.getMember().getTag(),
+                                answer.getCreatedAt()
+                        ))
                         .collect(Collectors.toList())
         );
     }
