@@ -17,14 +17,14 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("SELECT q " +
             "FROM Question q " +
-            "ORDER BY q.createdAt ASC")
+            "ORDER BY q.createdAt DESC")
     Optional<List<Question>> findAllQuestions();
 
     @Query("SELECT q " +
             "FROM Question q " +
             "JOIN FETCH q.answers a " +
             "WHERE q.id = :questionId " +
-            "AND a.status != '삭제' " +
-            "ORDER BY a.createdAt ASC")
-    Optional<Question> findByIdWithAnswers(@Param("questionId") Long questionId);
+            "AND a.status = '등록' " +
+            "ORDER BY a.createdAt DESC")
+    Optional<Question> findByIdWithAnswers(@Param("questionId") final Long questionId);
 }

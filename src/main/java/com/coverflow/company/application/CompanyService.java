@@ -1,8 +1,10 @@
 package com.coverflow.company.application;
 
 import com.coverflow.company.domain.Company;
-import com.coverflow.company.dto.request.CompanyRequest;
+import com.coverflow.company.dto.request.SaveCompanyRequest;
+import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.CompanyResponse;
+import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -54,13 +56,13 @@ public class CompanyService {
     }
 
     /**
-     * [특정 회사 조회 메서드]
-     * 특정 회사를 조회하는 메서드
+     * [특정 회사와 질문 조회 메서드]
+     * 특정 회사와 질문 리스트를 조회하는 메서드
      */
-    public CompanyResponse findCompanyByName(final String name) {
-        final Company company = companyRepository.findByNameAndStatus(name, "등록")
+    public FindCompanyResponse findCompanyByName(final String name) {
+        final Company company = companyRepository.findByNameWithQuestion(name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        return CompanyResponse.from(company);
+        return FindCompanyResponse.from(company);
     }
 
     /**
@@ -81,7 +83,8 @@ public class CompanyService {
     /**
      * [관리자 전용: 회사 등록 메서드]
      */
-    public CompanyResponse saveCompany(final CompanyRequest request) {
+    @Transactional
+    public void saveCompany(final SaveCompanyRequest request) {
         if (companyRepository.findByName(request.name()).isPresent()) {
             throw new CompanyException.CompanyExistException(request.name());
         }
@@ -96,14 +99,13 @@ public class CompanyService {
                 .build();
 
         companyRepository.save(company);
-        return CompanyResponse.from(company);
     }
 
     /**
      * [관리자 전용: 회사 수정 메서드]
      */
     @Transactional
-    public CompanyResponse updateCompany(final CompanyRequest request) {
+    public void updateCompany(final UpdateCompanyRequest request) {
         final Company company = companyRepository.findByName(request.name())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
 
@@ -113,17 +115,17 @@ public class CompanyService {
                 .city(request.city())
                 .district(request.district())
                 .establishment(request.establishment())
+                .status(request.status())
                 .build());
-        return CompanyResponse.from(company);
     }
 
     /**
      * [관리자 전용: 회사 삭제 메서드]
      */
     @Transactional
-    public void deleteCompany(final String name) {
-        final Company company = companyRepository.findByName(name)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
+    public void deleteCompany(final Long companyId) {
+        final Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
         company.updateStatus("삭제");
     }

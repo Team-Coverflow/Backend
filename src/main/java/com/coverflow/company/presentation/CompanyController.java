@@ -1,8 +1,10 @@
 package com.coverflow.company.presentation;
 
 import com.coverflow.company.application.CompanyService;
-import com.coverflow.company.dto.request.CompanyRequest;
+import com.coverflow.company.dto.request.SaveCompanyRequest;
+import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.CompanyResponse;
+import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import jakarta.validation.Valid;
@@ -22,7 +24,7 @@ public class CompanyController {
 
     @GetMapping("/auto-complete")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> autoComplete(
-            final @RequestParam("name") @Valid String name
+            @RequestParam("name") @Valid final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -35,7 +37,7 @@ public class CompanyController {
 
     @GetMapping("/search-companies")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> searchCompanies(
-            final @RequestParam("name") @Valid String name
+            @RequestParam("name") @Valid final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -46,20 +48,20 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/find-company")
-    public ResponseEntity<ResponseHandler<CompanyResponse>> findCompanyByName(
-            final @RequestParam("name") @Valid String name
+    @GetMapping("/find-company/{companyName}")
+    public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyByName(
+            @PathVariable @Valid final String companyName
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<CompanyResponse>builder()
+                .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회사 조회에 성공했습니다.")
-                        .data(companyService.findCompanyByName(name))
+                        .message("특정 회사와 질문 조회에 성공했습니다.")
+                        .data(companyService.findCompanyByName(companyName))
                         .build()
                 );
     }
 
-    @GetMapping("/find-all-companies")
+    @GetMapping("/admin/find-companies")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompanies() {
         return ResponseEntity.ok()
@@ -71,38 +73,38 @@ public class CompanyController {
                 );
     }
 
-    @PostMapping("/save-company")
+    @PostMapping("/admin/save-company")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<CompanyResponse>> saveCompany(
-            final @RequestBody @Valid CompanyRequest request
+    public ResponseEntity<ResponseHandler<Void>> saveCompany(
+            @RequestBody @Valid final SaveCompanyRequest saveCompanyRequest
     ) {
+        companyService.saveCompany(saveCompanyRequest);
         return ResponseEntity.ok()
-                .body(ResponseHandler.<CompanyResponse>builder()
+                .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 등록에 성공했습니다.")
-                        .data(companyService.saveCompany(request))
                         .build());
     }
 
-    @PostMapping("/update-company")
+    @PostMapping("/admin/update-company")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<CompanyResponse>> updateNickname(
-            final @RequestBody @Valid CompanyRequest request
+    public ResponseEntity<ResponseHandler<Void>> updateNickname(
+            @RequestBody @Valid final UpdateCompanyRequest updateCompanyRequest
     ) {
+        companyService.updateCompany(updateCompanyRequest);
         return ResponseEntity.ok()
-                .body(ResponseHandler.<CompanyResponse>builder()
+                .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 수정에 성공했습니다.")
-                        .data(companyService.updateCompany(request))
                         .build());
     }
 
-    @PostMapping("/delete-company")
+    @PostMapping("/admin/delete-company/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
-            final @RequestParam("name") @Valid String name
+            @PathVariable @Valid final Long companyId
     ) {
-        companyService.deleteCompany(name);
+        companyService.deleteCompany(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)

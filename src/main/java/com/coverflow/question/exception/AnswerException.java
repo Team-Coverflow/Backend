@@ -8,8 +8,8 @@ public class AnswerException extends RuntimeException {
 
     public static class AnswerNotFoundException extends AnswerException {
 
-        public AnswerNotFoundException(final long id) {
-            super(String.format("답변이 존재하지 않습니다. - request info { id : %d }", id));
+        public AnswerNotFoundException(final long questionId) {
+            super(String.format("답변이 존재하지 않습니다. - request info { id : %d }", questionId));
         }
 
         public AnswerNotFoundException() {
