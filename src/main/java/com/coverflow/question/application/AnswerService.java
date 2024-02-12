@@ -26,9 +26,9 @@ public class AnswerService {
     /**
      * [특정 질문에 대한 전체 답변 조회 메서드]
      */
-    public List<FindAnswerResponse> findAnswer(final Long id) {
-        final List<Answer> answers = answerRepository.findAllAnswersByQuestionIdAndStatus(id, "등록")
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(id));
+    public List<FindAnswerResponse> findAnswer(final Long questionId) {
+        final List<Answer> answers = answerRepository.findAllAnswersByQuestionIdAndStatus(questionId, "등록")
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(questionId));
         final List<FindAnswerResponse> findAnswers = new ArrayList<>();
 
         for (int i = 0; i < answers.size(); i++) {
@@ -40,9 +40,9 @@ public class AnswerService {
     /**
      * [관리자 전용: 특정 답변 조회 메서드]
      */
-    public FindAnswerResponse findById(final Long id) {
-        final Answer answer = answerRepository.findByIdAndStatus(id, "등록")
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(id));
+    public FindAnswerResponse findById(final Long answerId) {
+        final Answer answer = answerRepository.findByIdAndStatus(answerId, "등록")
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
         return FindAnswerResponse.from(answer);
     }
 
@@ -72,8 +72,8 @@ public class AnswerService {
      */
     @Transactional
     public void updateAnswer(final UpdateAnswerRequest request) {
-        final Answer answer = answerRepository.findById(request.id())
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.id()));
+        final Answer answer = answerRepository.findById(request.answerId())
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
 
         answer.updateAnswer(Answer.builder()
                 .content(request.content())

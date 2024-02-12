@@ -27,13 +27,13 @@ public class AnswerController {
     @GetMapping("/find-answer")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswer(
-            @RequestParam("id") @Valid final Long id
+            @RequestParam("id") @Valid final Long questionId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAnswerResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 질문에 대한 전체 답변 조회에 성공했습니다.")
-                        .data(answerService.findAnswer(id))
+                        .data(answerService.findAnswer(questionId))
                         .build()
                 );
     }
@@ -41,13 +41,13 @@ public class AnswerController {
     @GetMapping("/admin/find-answer")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindAnswerResponse>> findAnswerById(
-            @RequestParam("id") @Valid final Long id
+            @RequestParam("id") @Valid final Long answerId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAnswerResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 답변 조회에 성공했습니다.")
-                        .data(answerService.findById(id))
+                        .data(answerService.findById(answerId))
                         .build()
                 );
     }

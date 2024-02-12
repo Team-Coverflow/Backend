@@ -28,9 +28,9 @@ public class QuestionService {
      * [특정 회사의 전체 질문 조회 메서드]
      * 회사 id로 조회
      */
-    public List<QuestionResponse> findAllQuestionsByCompanyId(final Long id) {
-        final List<Question> questions = questionRepository.findAllQuestionsByCompanyIdAndStatus(id, "등록")
-                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(id));
+    public List<QuestionResponse> findAllQuestionsByCompanyId(final Long companyId) {
+        final List<Question> questions = questionRepository.findAllQuestionsByCompanyIdAndStatus(companyId, "등록")
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(companyId));
         final List<QuestionResponse> findQuestions = new ArrayList<>();
 
         for (int i = 0; i < questions.size(); i++) {
@@ -43,15 +43,14 @@ public class QuestionService {
      * [특정 질문 조회 메서드]
      * 특정 질문 id로 질문 및 답변 리스트 조회
      */
-    public FindQuestionResponse findQuestionById(final Long id) {
-        final Question question = questionRepository.findByIdWithAnswers(id)
-                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(id));
+    public FindQuestionResponse findQuestionById(final Long questionId) {
+        final Question question = questionRepository.findByIdWithAnswers(questionId)
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
         return FindQuestionResponse.from(question);
     }
 
     /**
      * [관리자 전용: 전체 질문 조회 메서드]
-     * 회사 id로 조회
      */
     public List<QuestionResponse> findAllQuestions() {
         final List<Question> questions = questionRepository.findAllQuestions()
@@ -92,8 +91,8 @@ public class QuestionService {
      */
     @Transactional
     public void updateQuestion(final UpdateQuestionRequest request) {
-        final Question question = questionRepository.findById(request.id())
-                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.id()));
+        final Question question = questionRepository.findById(request.questionId())
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
 
         question.updateQuestion(Question.builder()
                 .title(request.title())
