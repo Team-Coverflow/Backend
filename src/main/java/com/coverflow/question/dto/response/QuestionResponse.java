@@ -5,7 +5,7 @@ import com.coverflow.question.domain.Question;
 import java.util.UUID;
 
 public record QuestionResponse(
-        Long id,
+        Long questionId,
         String title,
         String content,
         int count,
