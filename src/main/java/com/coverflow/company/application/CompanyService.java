@@ -95,6 +95,7 @@ public class CompanyService {
                 .city(request.city())
                 .district(request.district())
                 .establishment(request.establishment())
+                .questionCount(0)
                 .status("검토")
                 .build();
 
