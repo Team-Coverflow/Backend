@@ -22,7 +22,7 @@ public class CompanyController {
 
     @GetMapping("/auto-complete")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> autoComplete(
-            final @RequestParam("name") @Valid String name
+            @RequestParam("name") @Valid final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -35,7 +35,7 @@ public class CompanyController {
 
     @GetMapping("/search-companies")
     public ResponseEntity<ResponseHandler<List<CompanyResponse>>> searchCompanies(
-            final @RequestParam("name") @Valid String name
+            @RequestParam("name") @Valid final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<CompanyResponse>>builder()
@@ -46,15 +46,15 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/find-company")
+    @GetMapping("/find-company/{companyName}")
     public ResponseEntity<ResponseHandler<CompanyResponse>> findCompanyByName(
-            final @RequestParam("name") @Valid String name
+            @PathVariable @Valid final String companyName
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<CompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 조회에 성공했습니다.")
-                        .data(companyService.findCompanyByName(name))
+                        .data(companyService.findCompanyByName(companyName))
                         .build()
                 );
     }
@@ -74,7 +74,7 @@ public class CompanyController {
     @PostMapping("/admin/save-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<CompanyResponse>> saveCompany(
-            final @RequestBody @Valid CompanyRequest request
+            @RequestBody @Valid final CompanyRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<CompanyResponse>builder()
@@ -87,7 +87,7 @@ public class CompanyController {
     @PostMapping("/admin/update-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<CompanyResponse>> updateNickname(
-            final @RequestBody @Valid CompanyRequest request
+            @RequestBody @Valid final CompanyRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<CompanyResponse>builder()
@@ -100,7 +100,7 @@ public class CompanyController {
     @PostMapping("/admin/delete-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
-            final @RequestParam("name") @Valid String name
+            @RequestParam("name") @Valid final String name
     ) {
         companyService.deleteCompany(name);
         return ResponseEntity.ok()
