@@ -48,6 +48,7 @@ public class SecurityConfig {
             final HttpSecurity http
     ) throws Exception {
         http
+                .cors(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .csrf(AbstractHttpConfigurer::disable)
