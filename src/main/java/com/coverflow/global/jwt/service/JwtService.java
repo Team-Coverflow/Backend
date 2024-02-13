@@ -194,6 +194,7 @@ public class JwtService {
             final String token
     ) {
         try {
+            System.out.println("액토:"+token);
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
             return true;
         } catch (Exception e) {
