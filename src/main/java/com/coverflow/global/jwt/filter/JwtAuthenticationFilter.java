@@ -134,6 +134,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .ifPresent(accessToken -> {
                     jwtService.extractMemberId(accessToken)
                             .ifPresent(memberId -> {
+                                System.out.println(memberId);
                                 memberRepository.findByIdAndStatus(memberId, "등록")
                                         .ifPresent(this::saveAuthentication);
                             });
