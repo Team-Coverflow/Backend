@@ -133,7 +133,7 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회사 삭제에 성공했습니다.")
+                        .message("회사 물리 삭제에 성공했습니다.")
                         .build());
     }
 }
