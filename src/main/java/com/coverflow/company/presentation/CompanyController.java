@@ -123,4 +123,17 @@ public class CompanyController {
                         .message("회사 삭제에 성공했습니다.")
                         .build());
     }
+
+    @PostMapping("/admin/delete-real/{companyId}")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<Void>> deleteCompanyReal(
+            @PathVariable @Valid final Long companyId
+    ) {
+        companyService.deleteCompanyReal(companyId);
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("회사 삭제에 성공했습니다.")
+                        .build());
+    }
 }

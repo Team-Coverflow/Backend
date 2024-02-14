@@ -147,4 +147,13 @@ public class CompanyService {
         company.updateStatus("삭제");
     }
 
+    /**
+     * [관리자 전용: 회사 물리 삭제 메서드]
+     */
+    public void deleteCompanyReal(final Long companyId) {
+        final Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
+
+        companyRepository.delete(company);
+    }
 }
