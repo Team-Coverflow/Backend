@@ -5,6 +5,7 @@ import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.CompanyResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
+import com.coverflow.company.dto.response.FindPendingResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import jakarta.validation.Valid;
@@ -69,6 +70,18 @@ public class CompanyController {
                         .statusCode(HttpStatus.OK)
                         .message("전체 회사 리스트 검색에 성공했습니다.")
                         .data(companyService.findAllCompanies())
+                        .build()
+                );
+    }
+
+    @GetMapping("/admin/find-pending")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending() {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<FindPendingResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("검토 중인 회사 리스트 검색에 성공했습니다.")
+                        .data(companyService.findPending())
                         .build()
                 );
     }

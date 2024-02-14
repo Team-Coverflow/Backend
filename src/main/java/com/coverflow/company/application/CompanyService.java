@@ -5,6 +5,7 @@ import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.CompanyResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
+import com.coverflow.company.dto.response.FindPendingResponse;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -76,6 +77,21 @@ public class CompanyService {
 
         for (int i = 0; i < companies.size(); i++) {
             findCompanies.add(i, CompanyResponse.from(companies.get(i)));
+        }
+        return findCompanies;
+    }
+
+    /**
+     * [관리자 전용: 검토 중인 회사 조회 메서드]
+     * 검토 중인 회사를 조회하는 메서드
+     */
+    public List<FindPendingResponse> findPending() {
+        final List<Company> companies = companyRepository.findByStatus("검토")
+                .orElseThrow(CompanyException.CompanyNotFoundException::new);
+        final List<FindPendingResponse> findCompanies = new ArrayList<>();
+
+        for (int i = 0; i < companies.size(); i++) {
+            findCompanies.add(i, FindPendingResponse.from(companies.get(i)));
         }
         return findCompanies;
     }

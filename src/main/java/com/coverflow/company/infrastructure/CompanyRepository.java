@@ -17,11 +17,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             final String status
     );
 
-    Optional<Company> findByNameAndStatus(
-            final String name,
-            final String status
-    );
-
     @Query("SELECT c " +
             "FROM Company c " +
             "WHERE c.name LIKE :name " +
@@ -46,4 +41,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             "AND q.status = '등록' " +
             "ORDER BY q.createdAt DESC")
     Optional<Company> findByNameWithQuestion(@Param("name") final String name);
+
+    Optional<List<Company>> findByStatus(final String status);
 }
