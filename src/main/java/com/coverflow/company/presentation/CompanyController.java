@@ -62,9 +62,9 @@ public class CompanyController {
 
     @GetMapping("/admin/find-companies")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompanies() {
+    public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies() {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<CompanyResponse>>builder()
+                .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 회사 리스트 검색에 성공했습니다.")
                         .data(companyService.findAllCompanies())
