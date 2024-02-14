@@ -55,9 +55,11 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Question> questions = new ArrayList<>(); // 회원의 질문 리스트
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Answer> answers = new ArrayList<>(); // 회원의 답변 리스트
 

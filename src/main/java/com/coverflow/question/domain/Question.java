@@ -39,6 +39,7 @@ public class Question extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member; // 질문 작성자 정보
 
+    @Builder.Default
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private List<Answer> answers = new ArrayList<>(); // 질문에 대한 답변 리스트
 
