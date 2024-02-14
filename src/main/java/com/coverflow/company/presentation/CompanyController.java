@@ -3,8 +3,7 @@ package com.coverflow.company.presentation;
 import com.coverflow.company.application.CompanyService;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
-import com.coverflow.company.dto.response.CompanyResponse;
-import com.coverflow.company.dto.response.FindCompanyResponse;
+import com.coverflow.company.dto.response.*;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import jakarta.validation.Valid;
@@ -23,11 +22,11 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping("/auto-complete")
-    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> autoComplete(
+    public ResponseEntity<ResponseHandler<List<FindAutoCompleteResponse>>> autoComplete(
             @RequestParam("name") @Valid final String name
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<CompanyResponse>>builder()
+                .body(ResponseHandler.<List<FindAutoCompleteResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("자동 완성 검색에 성공했습니다.")
                         .data(companyService.autoComplete(name))
@@ -36,11 +35,11 @@ public class CompanyController {
     }
 
     @GetMapping("/search-companies")
-    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> searchCompanies(
+    public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
             @RequestParam("name") @Valid final String name
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<CompanyResponse>>builder()
+                .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 검색에 성공했습니다.")
                         .data(companyService.searchCompanies(name))
@@ -63,9 +62,9 @@ public class CompanyController {
 
     @GetMapping("/admin/find-companies")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> findAllCompanies() {
+    public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies() {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<CompanyResponse>>builder()
+                .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 회사 리스트 검색에 성공했습니다.")
                         .data(companyService.findAllCompanies())
@@ -73,8 +72,21 @@ public class CompanyController {
                 );
     }
 
-    @PostMapping("/admin/save-company")
+    @GetMapping("/admin/find-pending")
     @AdminAuthorize
+    public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending(
+            @RequestParam("status") @Valid final String status
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<FindPendingResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("특정 상태의 회사 검색에 성공했습니다.")
+                        .data(companyService.findPending(status))
+                        .build()
+                );
+    }
+
+    @PostMapping("/save-company")
     public ResponseEntity<ResponseHandler<Void>> saveCompany(
             @RequestBody @Valid final SaveCompanyRequest saveCompanyRequest
     ) {
@@ -109,6 +121,19 @@ public class CompanyController {
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 삭제에 성공했습니다.")
+                        .build());
+    }
+
+    @PostMapping("/admin/delete-real/{companyId}")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<Void>> deleteCompanyReal(
+            @PathVariable @Valid final Long companyId
+    ) {
+        companyService.deleteCompanyReal(companyId);
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("회사 물리 삭제에 성공했습니다.")
                         .build());
     }
 }

@@ -12,6 +12,7 @@ public record FindCompanyResponse(
         String type,
         String address,
         String establishment,
+        int questionCount,
         List<QuestionDTO> questions
 ) {
 
@@ -22,6 +23,7 @@ public record FindCompanyResponse(
                 company.getType(),
                 company.getCity() + " " + company.getDistrict(),
                 company.getEstablishment(),
+                company.getQuestionCount(),
                 company.getQuestions().stream()
                         .map(question -> new QuestionDTO(
                                 question.getMember().getNickname(),
