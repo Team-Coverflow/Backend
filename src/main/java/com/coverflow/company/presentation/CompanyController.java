@@ -3,10 +3,7 @@ package com.coverflow.company.presentation;
 import com.coverflow.company.application.CompanyService;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
-import com.coverflow.company.dto.response.CompanyResponse;
-import com.coverflow.company.dto.response.FindAutoCompleteResponse;
-import com.coverflow.company.dto.response.FindCompanyResponse;
-import com.coverflow.company.dto.response.FindPendingResponse;
+import com.coverflow.company.dto.response.*;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import jakarta.validation.Valid;
@@ -38,11 +35,11 @@ public class CompanyController {
     }
 
     @GetMapping("/search-companies")
-    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> searchCompanies(
+    public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
             @RequestParam("name") @Valid final String name
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<CompanyResponse>>builder()
+                .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 검색에 성공했습니다.")
                         .data(companyService.searchCompanies(name))

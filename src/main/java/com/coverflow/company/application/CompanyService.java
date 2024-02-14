@@ -3,10 +3,7 @@ package com.coverflow.company.application;
 import com.coverflow.company.domain.Company;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
-import com.coverflow.company.dto.response.CompanyResponse;
-import com.coverflow.company.dto.response.FindAutoCompleteResponse;
-import com.coverflow.company.dto.response.FindCompanyResponse;
-import com.coverflow.company.dto.response.FindPendingResponse;
+import com.coverflow.company.dto.response.*;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import lombok.RequiredArgsConstructor;
@@ -46,13 +43,13 @@ public class CompanyService {
      * [회사 검색 메서드]
      * 특정 이름으로 시작하는 회사 n개를 조회하는 메서드
      */
-    public List<CompanyResponse> searchCompanies(final String name) {
+    public List<SearchCompanyResponse> searchCompanies(final String name) {
         final List<Company> companies = companyRepository.findAllCompaniesStartingWithNameAndStatus(name + "%", "등록")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        final List<CompanyResponse> findCompanies = new ArrayList<>();
+        final List<SearchCompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
+            findCompanies.add(i, SearchCompanyResponse.from(companies.get(i)));
         }
         return findCompanies;
     }
