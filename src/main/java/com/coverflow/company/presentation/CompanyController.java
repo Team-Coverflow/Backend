@@ -73,8 +73,7 @@ public class CompanyController {
                 );
     }
 
-    @PostMapping("/admin/save-company")
-    @AdminAuthorize
+    @PostMapping("/save-company")
     public ResponseEntity<ResponseHandler<Void>> saveCompany(
             @RequestBody @Valid final SaveCompanyRequest saveCompanyRequest
     ) {

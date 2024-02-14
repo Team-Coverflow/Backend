@@ -81,7 +81,7 @@ public class CompanyService {
     }
 
     /**
-     * [관리자 전용: 회사 등록 메서드]
+     * [회사 등록 메서드]
      */
     @Transactional
     public void saveCompany(final SaveCompanyRequest request) {
