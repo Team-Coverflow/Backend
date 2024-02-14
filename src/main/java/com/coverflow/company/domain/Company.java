@@ -34,6 +34,7 @@ public class Company extends BaseTimeEntity {
     @Column
     private String status; // 상태 (검토/등록/삭제)
 
+    @Builder.Default
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     private List<Question> questions = new ArrayList<>();
 

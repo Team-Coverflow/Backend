@@ -41,7 +41,7 @@ public class Member extends BaseTimeEntity {
     @Column
     private String status; // 상태 (등록/탈퇴)
     @Column
-    private LocalDateTime connected_at;
+    private LocalDateTime connected_at; // 마지막 접속 시간
     @Column
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
     @Column
@@ -55,9 +55,11 @@ public class Member extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Question> questions = new ArrayList<>(); // 회원의 질문 리스트
 
+    @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Answer> answers = new ArrayList<>(); // 회원의 답변 리스트
 
@@ -85,6 +87,10 @@ public class Member extends BaseTimeEntity {
 
     public void updateAuthorization(final Role role) {
         this.role = role;
+    }
+
+    public void updateFishShapedBun(final int fishShapedBun) {
+        this.fishShapedBun = fishShapedBun;
     }
 
     public void updateStatus(final String updateStatus) {
