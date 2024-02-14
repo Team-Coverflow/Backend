@@ -27,7 +27,7 @@ public class CurrencyService {
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         if (!member.getConnected_at().toString().substring(0, 10).equals(LocalDateTime.now().toString().substring(0, 10))) {
-            member.updateFishShapedBun(member.getFishShapedBun() + 30);
+            member.updateFishShapedBun(member.getFishShapedBun() + 5);
         }
     }
 
