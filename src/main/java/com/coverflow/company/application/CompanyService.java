@@ -80,12 +80,12 @@ public class CompanyService {
     }
 
     /**
-     * [관리자 전용: 검토 중인 회사 조회 메서드]
-     * 검토 중인 회사를 조회하는 메서드
+     * [관리자 전용: 특정 상태 회사 조회 메서드]
+     * 특정 상태(검토/등록/삭제)의 회사를 조회하는 메서드
      */
-    public List<FindPendingResponse> findPending() {
-        final List<Company> companies = companyRepository.findByStatus("검토")
-                .orElseThrow(CompanyException.CompanyNotFoundException::new);
+    public List<FindPendingResponse> findPending(final String status) {
+        final List<Company> companies = companyRepository.findByStatus(status)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
         final List<FindPendingResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {

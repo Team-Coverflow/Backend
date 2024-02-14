@@ -74,12 +74,14 @@ public class CompanyController {
 
     @GetMapping("/admin/find-pending")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending() {
+    public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending(
+            @RequestParam("status") @Valid final String status
+    ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindPendingResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("검토 중인 회사 리스트 검색에 성공했습니다.")
-                        .data(companyService.findPending())
+                        .message("특정 상태의 회사 검색에 성공했습니다.")
+                        .data(companyService.findPending(status))
                         .build()
                 );
     }
