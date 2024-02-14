@@ -52,7 +52,7 @@ public class MemberService {
     /**
      * [특정 회원 조회 메서드]
      */
-    public FindMemberInfoResponse findMemberById(String username) {
+    public FindMemberInfoResponse findMemberById(final String username) {
         final Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
         return FindMemberInfoResponse.from(member);
