@@ -22,11 +22,11 @@ public class CurrencyService {
      * 당일 첫 로그인 시 화폐 30 증가
      */
     @Transactional
-    public void dailyCheck(final String username) {
-        final Member member = memberRepository.findById(UUID.fromString(username))
+    public void dailyCheck(final UUID username) {
+        final Member member = memberRepository.findById(username)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
-        if (member.getConnected_at().toString().substring(0, 9).equals(LocalDateTime.now().toString().substring(0, 9))) {
+        if (!member.getConnected_at().toString().substring(0, 10).equals(LocalDateTime.now().toString().substring(0, 10))) {
             member.updateFishShapedBun(member.getFishShapedBun() + 30);
         }
     }

@@ -1,11 +1,17 @@
 package com.coverflow.member.exception;
 
+import java.util.UUID;
+
 public class MemberException extends RuntimeException {
     public MemberException(final String message) {
         super(message);
     }
 
     public static class MemberNotFoundException extends MemberException {
+
+        public MemberNotFoundException(final UUID memberId) {
+            super(String.format("회원이 존재하지 않습니다. - request info { memberId : %s }", memberId));
+        }
 
         public MemberNotFoundException(final String username) {
             super(String.format("회원이 존재하지 않습니다. - request info { username : %s }", username));
