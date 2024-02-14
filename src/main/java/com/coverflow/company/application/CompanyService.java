@@ -4,6 +4,7 @@ import com.coverflow.company.domain.Company;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.CompanyResponse;
+import com.coverflow.company.dto.response.FindAutoCompleteResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.dto.response.FindPendingResponse;
 import com.coverflow.company.exception.CompanyException;
@@ -29,14 +30,14 @@ public class CompanyService {
      * [자동 완성 메서드]
      * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
      */
-    public List<CompanyResponse> autoComplete(final String name) {
+    public List<FindAutoCompleteResponse> autoComplete(final String name) {
         Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
         final List<Company> companies = companyRepository.findByNameStartingWithAndStatus(name, pageable, "등록")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        final List<CompanyResponse> findCompanies = new ArrayList<>();
+        final List<FindAutoCompleteResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, CompanyResponse.from(companies.get(i)));
+            findCompanies.add(i, FindAutoCompleteResponse.from(companies.get(i)));
         }
         return findCompanies;
     }

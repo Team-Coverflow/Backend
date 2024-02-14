@@ -4,6 +4,7 @@ import com.coverflow.company.application.CompanyService;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.CompanyResponse;
+import com.coverflow.company.dto.response.FindAutoCompleteResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.dto.response.FindPendingResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
@@ -24,11 +25,11 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping("/auto-complete")
-    public ResponseEntity<ResponseHandler<List<CompanyResponse>>> autoComplete(
+    public ResponseEntity<ResponseHandler<List<FindAutoCompleteResponse>>> autoComplete(
             @RequestParam("name") @Valid final String name
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<CompanyResponse>>builder()
+                .body(ResponseHandler.<List<FindAutoCompleteResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("자동 완성 검색에 성공했습니다.")
                         .data(companyService.autoComplete(name))
