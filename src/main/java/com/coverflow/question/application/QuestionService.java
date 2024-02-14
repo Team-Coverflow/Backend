@@ -3,6 +3,7 @@ package com.coverflow.question.application;
 import com.coverflow.company.domain.Company;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
+import com.coverflow.member.application.CurrencyService;
 import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
@@ -24,6 +25,7 @@ import java.util.UUID;
 @Service
 public class QuestionService {
 
+    private final CurrencyService currencyService;
     private final CompanyRepository companyRepository;
     private final QuestionRepository questionRepository;
 
@@ -94,6 +96,7 @@ public class QuestionService {
                 .build();
 
         questionRepository.save(question);
+        currencyService.writeQuestion(memberId);
         company.updateQuestionCount(company.getQuestionCount() + 1);
     }
 
