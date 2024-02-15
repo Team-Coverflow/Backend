@@ -113,7 +113,7 @@ public class OAuthAttributes {
                 .tag("취준생")
                 .age(age)
                 .gender(gender)
-                .fishShapedBun(500)
+                .fishShapedBun(300)
                 .status("등록")
                 .tokenStatus("로그인")
                 .role(Role.GUEST)
