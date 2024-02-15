@@ -35,16 +35,18 @@ public class CurrencyService {
      * [질문 작성 시 화폐 감소 메서드]
      * 질문 작성 시 화폐 10 감소
      */
-    @Transactional
-    public void writeQuestion(final String username) {
-        final Member member = memberRepository.findById(UUID.fromString(username))
-                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
+    public void writeQuestion(
+            final String memberId,
+            final int currency
+    ) {
+        final Member member = memberRepository.findById(UUID.fromString(memberId))
+                .orElseThrow(() -> new MemberException.MemberNotFoundException(memberId));
 
-        if (member.getFishShapedBun() >= 10) {
-            member.updateFishShapedBun(member.getFishShapedBun() - 10);
+        if (member.getFishShapedBun() >= 10 + currency) {
+            member.updateFishShapedBun(member.getFishShapedBun() - 10 - currency);
             return;
         }
-        member.updateFishShapedBun(0);
+        throw new MemberException.NotEnoughCurrencyException();
     }
 
     /**

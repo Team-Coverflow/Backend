@@ -86,6 +86,7 @@ public class QuestionService {
                 .content(request.content())
                 .viewCount(1)
                 .answerCount(0)
+                .reward(request.currency())
                 .status("등록")
                 .company(Company.builder()
                         .id(request.companyId())
@@ -95,8 +96,8 @@ public class QuestionService {
                         .build())
                 .build();
 
+        currencyService.writeQuestion(memberId, request.currency());
         questionRepository.save(question);
-        currencyService.writeQuestion(memberId);
         company.updateQuestionCount(company.getQuestionCount() + 1);
     }
 
