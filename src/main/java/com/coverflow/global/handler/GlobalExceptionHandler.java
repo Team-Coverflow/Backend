@@ -91,15 +91,17 @@ public class GlobalExceptionHandler {
     }
 
     // 커스텀 예외 사용 시
-//    @ExceptionHandler()
-//    public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
-//        final String message = exception.getMessage();
-//        log.warn(message);
-//
-//        return ResponseEntity
-//                .status(HttpStatus.BAD_REQUEST)
-//                .body(new ErrorResponse(message));
-//    }
+    @ExceptionHandler(value = {
+            MemberException.NotEnoughCurrencyException.class
+    })
+    public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
+        final String message = exception.getMessage();
+        log.warn(message);
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(message));
+    }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(final RuntimeException exception) {
