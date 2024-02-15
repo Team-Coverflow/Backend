@@ -19,6 +19,8 @@ public class Answer extends BaseTimeEntity {
     @Column
     private String content; // 내용
     @Column
+    private boolean selection; // 채택(T/F)
+    @Column
     private String status; // 상태 (등록/삭제)
 
     @ManyToOne
@@ -31,6 +33,10 @@ public class Answer extends BaseTimeEntity {
 
     public void updateAnswer(final Answer answer) {
         this.content = answer.getContent();
+    }
+
+    public void updateSelection(final boolean selection) {
+        this.selection = selection;
     }
 
     public void updateStatus(final String status) {

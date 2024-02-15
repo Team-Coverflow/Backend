@@ -24,4 +24,11 @@ public class MemberException extends RuntimeException {
             super("모든 회원이 존재하지 않습니다.");
         }
     }
+
+    public static class NotEnoughCurrencyException extends MemberException {
+
+        public NotEnoughCurrencyException() {
+            super("화폐가 부족합니다.");
+        }
+    }
 }

@@ -6,6 +6,7 @@ import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.question.application.AnswerService;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
+import com.coverflow.question.dto.request.UpdateSelectionRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +64,19 @@ public class AnswerController {
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
                         .message("답변 등록에 성공했습니다.")
+                        .build());
+    }
+
+    @PostMapping("/update-selection")
+    @MemberAuthorize
+    public ResponseEntity<ResponseHandler<Void>> chooseAnswer(
+            @RequestBody @Valid final UpdateSelectionRequest updateSelectionRequest
+    ) {
+        answerService.chooseAnswer(updateSelectionRequest);
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("답변 채택에 성공했습니다.")
                         .build());
     }
 
