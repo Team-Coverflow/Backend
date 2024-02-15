@@ -41,7 +41,7 @@ public class Member extends BaseTimeEntity {
     @Column
     private String status; // 상태 (등록/탈퇴)
     @Column
-    private LocalDateTime connected_at; // 마지막 접속 시간
+    private LocalDateTime connectedAt; // 마지막 접속 시간
     @Column
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
     @Column
@@ -82,7 +82,7 @@ public class Member extends BaseTimeEntity {
     }
 
     public void updateConnectedAt() {
-        this.connected_at = LocalDateTime.now();
+        this.connectedAt = LocalDateTime.now();
     }
 
     public void updateAuthorization(final Role role) {
