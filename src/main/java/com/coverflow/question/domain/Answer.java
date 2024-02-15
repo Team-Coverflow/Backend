@@ -19,6 +19,8 @@ public class Answer extends BaseTimeEntity {
     @Column
     private String content; // 내용
     @Column
+    private boolean selection; // 채택(T/F)
+    @Column
     private String status; // 상태 (등록/삭제)
 
     @ManyToOne
