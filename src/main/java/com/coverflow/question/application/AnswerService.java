@@ -1,10 +1,13 @@
 package com.coverflow.question.application;
 
 import com.coverflow.member.domain.Member;
+import com.coverflow.member.exception.MemberException;
+import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
+import com.coverflow.question.dto.request.UpdateSelectionRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
 import com.coverflow.question.exception.AnswerException;
 import com.coverflow.question.exception.QuestionException;
@@ -23,6 +26,7 @@ import java.util.UUID;
 @Service
 public class AnswerService {
 
+    private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
 
@@ -61,6 +65,7 @@ public class AnswerService {
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
         final Answer answer = Answer.builder()
                 .content(request.content())
+                .selection(false)
                 .status("등록")
                 .question(Question.builder()
                         .id(request.questionId())
@@ -72,6 +77,20 @@ public class AnswerService {
 
         answerRepository.save(answer);
         question.updateAnswerCount(question.getAnswerCount() + 1);
+    }
+
+    /**
+     * [답변 채택 메서드]
+     */
+    @Transactional
+    public void chooseAnswer(final UpdateSelectionRequest request) {
+        final Answer answer = answerRepository.findById(request.answerId())
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
+        final Member member = memberRepository.findById(answer.getMember().getId())
+                .orElseThrow(() -> new MemberException.MemberNotFoundException(answer.getMember().getId()));
+
+        answer.updateSelection(request.selection());
+        member.updateFishShapedBun(member.getFishShapedBun() + answer.getQuestion().getReward());
     }
 
     /**
