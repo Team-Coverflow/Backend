@@ -26,7 +26,7 @@ public class CurrencyService {
         final Member member = memberRepository.findById(username)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
-        if (!member.getConnected_at().toString().substring(0, 10).equals(LocalDateTime.now().toString().substring(0, 10))) {
+        if (!member.getConnectedAt().toString().substring(0, 10).equals(LocalDateTime.now().toString().substring(0, 10))) {
             member.updateFishShapedBun(member.getFishShapedBun() + 5);
         }
     }

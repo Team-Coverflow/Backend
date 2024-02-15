@@ -25,7 +25,7 @@ public record FindMemberInfoResponse(
                 member.getGender(),
                 member.getFishShapedBun(),
                 member.getStatus(),
-                member.getConnected_at(),
+                member.getConnectedAt(),
                 member.getRole()
         );
     }
