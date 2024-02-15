@@ -29,6 +29,8 @@ public class Question extends BaseTimeEntity {
     @Column
     private int answerCount; // 답변 수
     @Column
+    private int reward; // 채택 시 보상
+    @Column
     private String status; // 상태 (등록/삭제)
 
     @ManyToOne
