@@ -35,6 +35,10 @@ public class Answer extends BaseTimeEntity {
         this.content = answer.getContent();
     }
 
+    public void updateSelection(final boolean selection) {
+        this.selection = selection;
+    }
+
     public void updateStatus(final String status) {
         this.status = status;
     }
