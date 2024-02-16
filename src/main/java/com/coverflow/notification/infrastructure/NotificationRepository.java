@@ -13,7 +13,6 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
 
     @Query("SELECT n " +
             "FROM Notification n " +
-            "JOIN FETCH n.member m " +
             "WHERE n.member.id = :member_id " +
             "AND n.status = true " +
             "ORDER BY n.createdAt DESC")
