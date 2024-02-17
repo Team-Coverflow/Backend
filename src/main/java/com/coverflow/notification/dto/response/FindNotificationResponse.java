@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record FindNotificationResponse(
         String content,
         NotificationType type,
+        String status,
         LocalDateTime createdAt
 ) {
 
@@ -15,6 +16,7 @@ public record FindNotificationResponse(
         return new FindNotificationResponse(
                 notification.getContent(),
                 notification.getType(),
+                notification.getStatus(),
                 notification.getCreatedAt()
         );
     }
