@@ -3,6 +3,9 @@ package com.coverflow.question.application;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.notification.domain.Notification;
+import com.coverflow.notification.domain.NotificationType;
+import com.coverflow.notification.infrastructure.NotificationRepository;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
@@ -29,6 +32,7 @@ public class AnswerService {
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final NotificationRepository notificationRepository;
 
     /**
      * [특정 질문에 대한 전체 답변 조회 메서드]
@@ -74,8 +78,17 @@ public class AnswerService {
                         .id(UUID.fromString(memberId))
                         .build())
                 .build();
+        final Notification notification = Notification.builder()
+                .content(question.getId().toString())
+                .type(NotificationType.QUESTION)
+                .status("안읽음")
+                .member(Member.builder()
+                        .id(question.getMember().getId())
+                        .build())
+                .build();
 
         answerRepository.save(answer);
+        notificationRepository.save(notification);
         question.updateAnswerCount(question.getAnswerCount() + 1);
     }
 
@@ -88,9 +101,18 @@ public class AnswerService {
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
         final Member member = memberRepository.findById(answer.getMember().getId())
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(answer.getMember().getId()));
+        final Notification notification = Notification.builder()
+                .content(answer.getQuestion().getId().toString())
+                .type(NotificationType.ANSWER)
+                .status("안읽음")
+                .member(Member.builder()
+                        .id(answer.getMember().getId())
+                        .build())
+                .build();
 
         answer.updateSelection(request.selection());
         member.updateFishShapedBun(member.getFishShapedBun() + answer.getQuestion().getReward());
+        notificationRepository.save(notification);
     }
 
     /**

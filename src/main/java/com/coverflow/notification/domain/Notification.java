@@ -19,7 +19,7 @@ public class Notification extends BaseTimeEntity {
     @Column
     private String content; // 내용 (질문 고유 번호, 답변 고유 번호 등)
     @Column
-    private boolean status; // 상태 (True/False)
+    private String status; // 상태 (안읽음/읽음/삭제)
 
     @Enumerated(EnumType.STRING)
     private NotificationType type; // 알림 종류 (DAILY, QUESTION, ANSWER)
@@ -28,4 +28,8 @@ public class Notification extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member; // 회원 정보
+
+    public void updateStatus(final String status) {
+        this.status = status;
+    }
 }
