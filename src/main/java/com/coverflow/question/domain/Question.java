@@ -19,7 +19,7 @@ public class Question extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 질문 글 고유 번호
+    private Long id; // 질문 고유 번호
     @Column
     private String title; // 제목
     @Column

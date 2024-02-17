@@ -4,6 +4,6 @@ public record SaveQuestionRequest(
         String title,
         String content,
         Long companyId,
-        int currency
+        int reward
 ) {
 }
