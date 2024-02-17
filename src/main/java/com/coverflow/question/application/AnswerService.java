@@ -80,7 +80,7 @@ public class AnswerService {
                 .build();
         final Notification notification = Notification.builder()
                 .content(question.getId().toString())
-                .type(NotificationType.QUESTION)
+                .type(NotificationType.ANSWER)
                 .status("안읽음")
                 .member(Member.builder()
                         .id(question.getMember().getId())
@@ -103,7 +103,7 @@ public class AnswerService {
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(answer.getMember().getId()));
         final Notification notification = Notification.builder()
                 .content(answer.getQuestion().getId().toString())
-                .type(NotificationType.ANSWER)
+                .type(NotificationType.SELECTION)
                 .status("안읽음")
                 .member(Member.builder()
                         .id(answer.getMember().getId())
