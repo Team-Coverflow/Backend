@@ -6,6 +6,7 @@ import com.coverflow.notification.dto.response.FindNotificationResponse;
 import com.coverflow.notification.exception.NotificationException;
 import com.coverflow.notification.infrastructure.NotificationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,6 +52,7 @@ public class NotificationService {
     /**
      * [알림 삭제 메서드]
      */
+    @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void deleteNotification() {
         LocalDateTime date = LocalDateTime.now().minusDays(30);
