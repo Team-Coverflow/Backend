@@ -130,7 +130,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final FilterChain filterChain
     ) throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentication() 호출");
-        System.out.println("요청: " + request.getRequestURI());
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
                 .ifPresent(accessToken -> {
