@@ -5,9 +5,6 @@ import com.coverflow.global.oauth2.CustomOAuth2User;
 import com.coverflow.member.application.CurrencyService;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.infrastructure.MemberRepository;
-import com.coverflow.notification.domain.Notification;
-import com.coverflow.notification.domain.NotificationType;
-import com.coverflow.notification.infrastructure.NotificationRepository;
 import com.coverflow.visitor.application.VisitorService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -37,7 +34,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final CurrencyService currencyService;
     private final VisitorService visitorService;
     private final MemberRepository memberRepository;
-    private final NotificationRepository notificationRepository;
 
     @Override
     @Transactional
@@ -62,13 +58,6 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // 출석 체크
         currencyService.dailyCheck(oAuth2User.getMemberId());
-
-        // 출석 체크 알림 저장
-        notificationRepository.save(Notification.builder()
-                .content(oAuth2User.getMemberId().toString())
-                .type(NotificationType.DAILY)
-                .status("안읽음")
-                .build());
 
         // 접속 시간 업데이트
         updateConnectedAt(oAuth2User.getMemberId());
