@@ -38,6 +38,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             "FROM Company c " +
             "LEFT JOIN FETCH c.questions q " +
             "WHERE c.id = :companyId " +
+            "AND c.status = '등록' " +
             "AND q.status = '등록' " +
             "ORDER BY q.createdAt DESC")
     Optional<Company> findByCompanyIdWithQuestion(@Param("companyId") final Long companyId);
