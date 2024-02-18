@@ -82,9 +82,7 @@ public class AnswerService {
                 .content(question.getId().toString())
                 .type(NotificationType.ANSWER)
                 .status("안읽음")
-                .member(Member.builder()
-                        .id(question.getMember().getId())
-                        .build())
+                .member(question.getMember())
                 .build();
 
         answerRepository.save(answer);
@@ -105,9 +103,7 @@ public class AnswerService {
                 .content(answer.getQuestion().getId().toString())
                 .type(NotificationType.SELECTION)
                 .status("안읽음")
-                .member(Member.builder()
-                        .id(answer.getMember().getId())
-                        .build())
+                .member(member)
                 .build();
 
         answer.updateSelection(request.selection());
