@@ -58,9 +58,9 @@ public class CompanyService {
      * [특정 회사와 질문 조회 메서드]
      * 특정 회사와 질문 리스트를 조회하는 메서드
      */
-    public FindCompanyResponse findCompanyByName(final String name) {
-        final Company company = companyRepository.findByNameWithQuestion(name)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
+    public FindCompanyResponse findCompanyById(final Long companyId) {
+        final Company company = companyRepository.findByCompanyIdWithQuestion(companyId)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
         return FindCompanyResponse.from(company);
     }
 

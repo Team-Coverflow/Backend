@@ -47,15 +47,15 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/find-company/{companyName}")
-    public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyByName(
-            @PathVariable @Valid final String companyName
+    @GetMapping("/find-company/{companyId}")
+    public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
+            @PathVariable @Valid final Long companyId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회사와 질문 조회에 성공했습니다.")
-                        .data(companyService.findCompanyByName(companyName))
+                        .data(companyService.findCompanyById(companyId))
                         .build()
                 );
     }
