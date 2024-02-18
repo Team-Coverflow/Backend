@@ -37,7 +37,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("SELECT c " +
             "FROM Company c " +
             "JOIN FETCH c.questions q " +
-            "WHERE c.name = :companyId " +
+            "WHERE c.id = :companyId " +
             "AND q.status = '등록' " +
             "ORDER BY q.createdAt DESC")
     Optional<Company> findByCompanyIdWithQuestion(@Param("companyId") final Long companyId);
