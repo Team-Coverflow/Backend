@@ -3,6 +3,9 @@ package com.coverflow.member.application;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.notification.domain.Notification;
+import com.coverflow.notification.domain.NotificationType;
+import com.coverflow.notification.infrastructure.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,7 @@ import java.util.UUID;
 public class CurrencyService {
 
     private final MemberRepository memberRepository;
+    private final NotificationRepository notificationRepository;
 
     /**
      * [출석 체크 메서드]
@@ -28,6 +32,14 @@ public class CurrencyService {
 
         if (!member.getConnectedAt().toString().substring(0, 10).equals(LocalDateTime.now().toString().substring(0, 10))) {
             member.updateFishShapedBun(member.getFishShapedBun() + 5);
+            
+            // 출석 체크 알림 저장
+            notificationRepository.save(Notification.builder()
+                    .content(member.getId().toString())
+                    .type(NotificationType.DAILY)
+                    .status("안읽음")
+                    .member(member)
+                    .build());
         }
     }
 
