@@ -3,6 +3,9 @@ package com.coverflow.member.application;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.notification.domain.Notification;
+import com.coverflow.notification.domain.NotificationType;
+import com.coverflow.notification.infrastructure.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,7 @@ import java.util.UUID;
 public class CurrencyService {
 
     private final MemberRepository memberRepository;
+    private final NotificationRepository notificationRepository;
 
     /**
      * [출석 체크 메서드]
@@ -26,8 +30,16 @@ public class CurrencyService {
         final Member member = memberRepository.findById(username)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
-        if (!member.getConnected_at().toString().substring(0, 10).equals(LocalDateTime.now().toString().substring(0, 10))) {
-            member.updateFishShapedBun(member.getFishShapedBun() + 30);
+        if (!member.getConnectedAt().toString().substring(0, 10).equals(LocalDateTime.now().toString().substring(0, 10))) {
+            member.updateFishShapedBun(member.getFishShapedBun() + 5);
+            
+            // 출석 체크 알림 저장
+            notificationRepository.save(Notification.builder()
+                    .content(member.getId().toString())
+                    .type(NotificationType.DAILY)
+                    .status("안읽음")
+                    .member(member)
+                    .build());
         }
     }
 
@@ -35,16 +47,18 @@ public class CurrencyService {
      * [질문 작성 시 화폐 감소 메서드]
      * 질문 작성 시 화폐 10 감소
      */
-    @Transactional
-    public void writeQuestion(final String username) {
-        final Member member = memberRepository.findById(UUID.fromString(username))
-                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
+    public void writeQuestion(
+            final String memberId,
+            final int currency
+    ) {
+        final Member member = memberRepository.findById(UUID.fromString(memberId))
+                .orElseThrow(() -> new MemberException.MemberNotFoundException(memberId));
 
-        if (member.getFishShapedBun() >= 10) {
-            member.updateFishShapedBun(member.getFishShapedBun() - 10);
+        if (member.getFishShapedBun() >= 10 + currency) {
+            member.updateFishShapedBun(member.getFishShapedBun() - 10 - currency);
             return;
         }
-        member.updateFishShapedBun(0);
+        throw new MemberException.NotEnoughCurrencyException();
     }
 
     /**

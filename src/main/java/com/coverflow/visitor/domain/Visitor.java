@@ -1,5 +1,6 @@
 package com.coverflow.visitor.domain;
 
+import com.coverflow.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -9,7 +10,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "tbl_visitor")
-public class Visitor {
+public class Visitor extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

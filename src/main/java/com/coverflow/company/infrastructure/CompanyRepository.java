@@ -34,13 +34,12 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Optional<Company> findByName(final String name);
 
-    @Query("SELECT c " +
+    @Query("SELECT distinct c " +
             "FROM Company c " +
-            "JOIN FETCH c.questions q " +
-            "WHERE c.name = :name " +
-            "AND q.status = '등록' " +
-            "ORDER BY q.createdAt DESC")
-    Optional<Company> findByNameWithQuestion(@Param("name") final String name);
+            "LEFT JOIN FETCH c.questions q " +
+            "WHERE c.id = :companyId " +
+            "AND c.status = '등록' ")
+    Optional<Company> findByCompanyIdWithQuestion(@Param("companyId") final Long companyId);
 
     Optional<List<Company>> findByStatus(final String status);
 }

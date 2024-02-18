@@ -2,6 +2,7 @@ package com.coverflow.member.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
+import com.coverflow.notification.domain.Notification;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import jakarta.persistence.*;
@@ -41,7 +42,7 @@ public class Member extends BaseTimeEntity {
     @Column
     private String status; // 상태 (등록/탈퇴)
     @Column
-    private LocalDateTime connected_at; // 마지막 접속 시간
+    private LocalDateTime connectedAt; // 마지막 접속 시간
     @Column
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
     @Column
@@ -63,6 +64,10 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Answer> answers = new ArrayList<>(); // 회원의 답변 리스트
 
+    @Builder.Default
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Notification> notifications = new ArrayList<>(); // 회원의 알림 리스트
+
     public void saveMemberInfo(final SaveMemberInfoRequest request) {
         this.tag = request.tag();
         this.age = request.age();
@@ -82,7 +87,7 @@ public class Member extends BaseTimeEntity {
     }
 
     public void updateConnectedAt() {
-        this.connected_at = LocalDateTime.now();
+        this.connectedAt = LocalDateTime.now();
     }
 
     public void updateAuthorization(final Role role) {

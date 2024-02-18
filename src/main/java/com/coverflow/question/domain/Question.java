@@ -19,7 +19,7 @@ public class Question extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 질문 글 고유 번호
+    private Long id; // 질문 고유 번호
     @Column
     private String title; // 제목
     @Column
@@ -28,6 +28,8 @@ public class Question extends BaseTimeEntity {
     private int viewCount; // 질문 조회 수
     @Column
     private int answerCount; // 답변 수
+    @Column
+    private int reward; // 채택 시 보상
     @Column
     private String status; // 상태 (등록/삭제)
 

@@ -19,5 +19,6 @@ public class QuestionDTO {
     private String content;
     private int viewCount;
     private int answerCount;
+    private int reward;
     private LocalDateTime createAt;
 }

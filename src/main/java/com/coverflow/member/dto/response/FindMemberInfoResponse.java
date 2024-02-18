@@ -2,6 +2,7 @@ package com.coverflow.member.dto.response;
 
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.Role;
+import com.coverflow.member.domain.SocialType;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +15,8 @@ public record FindMemberInfoResponse(
         int fishShapedBun,
         String status,
         LocalDateTime connected_at,
-        Role role
+        Role role,
+        SocialType socialType
 ) {
     public static FindMemberInfoResponse from(final Member member) {
         return new FindMemberInfoResponse(
@@ -25,8 +27,9 @@ public record FindMemberInfoResponse(
                 member.getGender(),
                 member.getFishShapedBun(),
                 member.getStatus(),
-                member.getConnected_at(),
-                member.getRole()
+                member.getConnectedAt(),
+                member.getRole(),
+                member.getSocialType()
         );
     }
 }

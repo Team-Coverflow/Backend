@@ -1,10 +1,16 @@
 package com.coverflow.question.application;
 
 import com.coverflow.member.domain.Member;
+import com.coverflow.member.exception.MemberException;
+import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.notification.domain.Notification;
+import com.coverflow.notification.domain.NotificationType;
+import com.coverflow.notification.infrastructure.NotificationRepository;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
+import com.coverflow.question.dto.request.UpdateSelectionRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
 import com.coverflow.question.exception.AnswerException;
 import com.coverflow.question.exception.QuestionException;
@@ -23,8 +29,10 @@ import java.util.UUID;
 @Service
 public class AnswerService {
 
+    private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
+    private final NotificationRepository notificationRepository;
 
     /**
      * [특정 질문에 대한 전체 답변 조회 메서드]
@@ -61,6 +69,7 @@ public class AnswerService {
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
         final Answer answer = Answer.builder()
                 .content(request.content())
+                .selection(false)
                 .status("등록")
                 .question(Question.builder()
                         .id(request.questionId())
@@ -69,9 +78,37 @@ public class AnswerService {
                         .id(UUID.fromString(memberId))
                         .build())
                 .build();
+        final Notification notification = Notification.builder()
+                .content(question.getId().toString())
+                .type(NotificationType.ANSWER)
+                .status("안읽음")
+                .member(question.getMember())
+                .build();
 
         answerRepository.save(answer);
+        notificationRepository.save(notification);
         question.updateAnswerCount(question.getAnswerCount() + 1);
+    }
+
+    /**
+     * [답변 채택 메서드]
+     */
+    @Transactional
+    public void chooseAnswer(final UpdateSelectionRequest request) {
+        final Answer answer = answerRepository.findById(request.answerId())
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
+        final Member member = memberRepository.findById(answer.getMember().getId())
+                .orElseThrow(() -> new MemberException.MemberNotFoundException(answer.getMember().getId()));
+        final Notification notification = Notification.builder()
+                .content(answer.getQuestion().getId().toString())
+                .type(NotificationType.SELECTION)
+                .status("안읽음")
+                .member(member)
+                .build();
+
+        answer.updateSelection(request.selection());
+        member.updateFishShapedBun(member.getFishShapedBun() + answer.getQuestion().getReward());
+        notificationRepository.save(notification);
     }
 
     /**

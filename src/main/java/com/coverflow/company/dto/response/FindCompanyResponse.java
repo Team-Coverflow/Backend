@@ -32,6 +32,7 @@ public record FindCompanyResponse(
                                 question.getContent(),
                                 question.getViewCount(),
                                 question.getAnswerCount(),
+                                question.getReward(),
                                 question.getCreatedAt()
                         ))
                         .collect(Collectors.toList())
