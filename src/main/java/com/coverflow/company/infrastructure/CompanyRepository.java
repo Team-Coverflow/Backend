@@ -1,6 +1,7 @@
 package com.coverflow.company.infrastructure;
 
 import com.coverflow.company.domain.Company;
+import com.coverflow.question.domain.Question;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -34,12 +35,18 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Optional<Company> findByName(final String name);
 
-    @Query("SELECT distinct c " +
+    @Query("SELECT DISTINCT c " +
             "FROM Company c " +
-            "LEFT JOIN FETCH c.questions q " +
             "WHERE c.id = :companyId " +
-            "AND c.status = '등록' ")
-    Optional<Company> findByCompanyIdWithQuestion(@Param("companyId") final Long companyId);
+            "AND c.status = '등록'")
+    Optional<Company> findRegisteredCompany(@Param("companyId") final Long companyId);
+
+    @Query("SELECT q " +
+            "FROM Question q " +
+            "WHERE q.company.id = :companyId " +
+            "AND q.status = '등록' " +
+            "ORDER BY q.createdAt DESC")
+    Optional<List<Question>> findRegisteredQuestions(@Param("companyId") final Long companyId);
 
     Optional<List<Company>> findByStatus(final String status);
 }
