@@ -34,7 +34,12 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 public class SecurityConfig {
 
     private final String[] ALLOWED_URLS = {
-            "/", "/index.html", "/api/company/auto-complete", "/api/company/search-companies", "/api/company/find-company/{companyId}"
+            "/",
+            "/index.html",
+            "/api/company/auto-complete",
+            "/api/company/search-companies",
+            "/api/company/save-company",
+            "/api/company/find-company/{companyId}"
     };
     private final LoginService loginService;
     private final JwtService jwtService;
