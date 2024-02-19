@@ -6,6 +6,8 @@ import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.*;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
+import com.coverflow.question.domain.Question;
+import com.coverflow.question.dto.QuestionDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -59,9 +62,27 @@ public class CompanyService {
      * 특정 회사와 질문 리스트를 조회하는 메서드
      */
     public FindCompanyResponse findCompanyById(final Long companyId) {
-        final Company company = companyRepository.findByCompanyIdWithQuestion(companyId)
+        final Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
-        return FindCompanyResponse.from(company);
+        final Optional<List<Question>> optionalQuestions = companyRepository.findRegisteredQuestions(companyId);
+        final List<QuestionDTO> questions = new ArrayList<>();
+
+        if (optionalQuestions.isPresent()) {
+            List<Question> questionList = optionalQuestions.get();
+            for (int i = 0; i < questionList.size(); i++) {
+                questions.add(i, new QuestionDTO(
+                        questionList.get(i).getMember().getNickname(),
+                        questionList.get(i).getMember().getTag(),
+                        questionList.get(i).getTitle(),
+                        questionList.get(i).getContent(),
+                        questionList.get(i).getViewCount(),
+                        questionList.get(i).getAnswerCount(),
+                        questionList.get(i).getReward(),
+                        questionList.get(i).getCreatedAt()));
+            }
+        }
+
+        return FindCompanyResponse.of(company, questions);
     }
 
     /**
