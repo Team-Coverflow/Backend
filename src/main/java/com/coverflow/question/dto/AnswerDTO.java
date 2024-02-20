@@ -13,9 +13,9 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class AnswerDTO {
 
-    private Long id;
-    private String nickname;
-    private String tag;
+    private Long answerId;
+    private String answerNickname;
+    private String answerTag;
     private String content;
     private LocalDateTime createAt;
 }
