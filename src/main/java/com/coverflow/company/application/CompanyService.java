@@ -71,6 +71,7 @@ public class CompanyService {
             List<Question> questionList = optionalQuestions.get();
             for (int i = 0; i < questionList.size(); i++) {
                 questions.add(i, new QuestionDTO(
+                        questionList.get(i).getId(),
                         questionList.get(i).getMember().getNickname(),
                         questionList.get(i).getMember().getTag(),
                         questionList.get(i).getTitle(),
