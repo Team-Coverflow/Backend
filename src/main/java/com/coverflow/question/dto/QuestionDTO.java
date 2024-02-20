@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class QuestionDTO {
 
+    private Long questionId;
     private String nickname;
     private String tag;
     private String title;
