@@ -17,7 +17,9 @@ public class Notification extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 알림 고유 번호
     @Column
-    private String content; // 내용 (질문 고유 번호, 답변 고유 번호 등)
+    private String content; // 내용
+    @Column
+    private String url; // 필요 시 리다이렉트 시킬 url
     @Column
     private String status; // 상태 (안읽음/읽음/삭제)
 
