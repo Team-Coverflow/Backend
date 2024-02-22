@@ -120,7 +120,9 @@ public class NotificationService {
         final List<FindNotificationResponse> findNotifications = new ArrayList<>();
 
         for (int i = 0; i < notifications.size(); i++) {
-            findNotifications.add(i, FindNotificationResponse.from(notifications.get(i)));
+            if (notifications.get(i).getCreatedAt().isAfter(LocalDateTime.now().minusDays(31))) {
+                findNotifications.add(i, FindNotificationResponse.from(notifications.get(i)));
+            }
         }
         return findNotifications;
     }
