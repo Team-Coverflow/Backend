@@ -11,15 +11,11 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionDTO {
+public class AnswerDTO {
 
-    private Long questionId;
-    private String nickname;
-    private String tag;
-    private String title;
+    private Long answerId;
+    private String answerNickname;
+    private String answerTag;
     private String content;
-    private int viewCount;
-    private int answerCount;
-    private int reward;
     private LocalDateTime createAt;
 }

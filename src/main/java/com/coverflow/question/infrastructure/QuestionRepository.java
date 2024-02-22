@@ -1,5 +1,6 @@
 package com.coverflow.question.infrastructure;
 
+import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,11 +21,16 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             "ORDER BY q.createdAt DESC")
     Optional<List<Question>> findAllQuestions();
 
-    @Query("SELECT q " +
+    @Query("SELECT DISTINCT q " +
             "FROM Question q " +
-            "JOIN FETCH q.answers a " +
             "WHERE q.id = :questionId " +
+            "AND q.status = '등록'")
+    Optional<Question> findRegisteredQuestion(@Param("questionId") final Long questionId);
+
+    @Query("SELECT a " +
+            "FROM Answer a " +
+            "WHERE a.question.id = :questionId " +
             "AND a.status = '등록' " +
             "ORDER BY a.createdAt DESC")
-    Optional<Question> findByIdWithAnswers(@Param("questionId") final Long questionId);
+    Optional<List<Answer>> findRegisteredAnswers(@Param("questionId") final Long questionId);
 }

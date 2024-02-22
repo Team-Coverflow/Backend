@@ -3,9 +3,9 @@ package com.coverflow.question.application;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.notification.domain.NotificationType;
-import com.coverflow.notification.infrastructure.NotificationRepository;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
@@ -32,7 +32,7 @@ public class AnswerService {
     private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
-    private final NotificationRepository notificationRepository;
+    private final NotificationService notificationService;
 
     /**
      * [특정 질문에 대한 전체 답변 조회 메서드]
@@ -79,14 +79,18 @@ public class AnswerService {
                         .build())
                 .build();
         final Notification notification = Notification.builder()
-                .content(question.getId().toString())
+                .content(question.getCompany().getName())
+                .url("/company-info/" +
+                        question.getCompany().getId().toString() +
+                        "/" +
+                        question.getId().toString())
                 .type(NotificationType.ANSWER)
                 .status("안읽음")
                 .member(question.getMember())
                 .build();
 
         answerRepository.save(answer);
-        notificationRepository.save(notification);
+        notificationService.sendNotification(notification);
         question.updateAnswerCount(question.getAnswerCount() + 1);
     }
 
@@ -100,7 +104,11 @@ public class AnswerService {
         final Member member = memberRepository.findById(answer.getMember().getId())
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(answer.getMember().getId()));
         final Notification notification = Notification.builder()
-                .content(answer.getQuestion().getId().toString())
+                .content(answer.getQuestion().getCompany().getName())
+                .url("/company-info/" +
+                        answer.getQuestion().getCompany().getId().toString() +
+                        "/" +
+                        answer.getQuestion().getId().toString())
                 .type(NotificationType.SELECTION)
                 .status("안읽음")
                 .member(member)
@@ -108,7 +116,7 @@ public class AnswerService {
 
         answer.updateSelection(request.selection());
         member.updateFishShapedBun(member.getFishShapedBun() + answer.getQuestion().getReward());
-        notificationRepository.save(notification);
+        notificationService.sendNotification(notification);
     }
 
     /**

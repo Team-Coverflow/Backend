@@ -8,6 +8,7 @@ import com.coverflow.member.dto.response.FindMemberInfoResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.notification.infrastructure.EmitterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +23,14 @@ import java.util.UUID;
 public class MemberService {
 
     private final MemberRepository memberRepository;
-    //    private final PasswordEncoder passwordEncoder;
+    private final EmitterRepository emitterRepository;
     private final NicknameUtil nicknameUtil;
-
-    /**
-     * 폼 로그인 구현 시 사용할 예정
-     */
-    //    public void signUp(final MemberSignUpDTO memberSignUpDTO) throws Exception {
+//    private final PasswordEncoder passwordEncoder;
+//
+//    /**
+//     * 폼 로그인 구현 시 사용할 예정
+//     */
+//    public void signUp(final MemberSignUpDTO memberSignUpDTO) throws Exception {
 //        if (memberRepository.findByEmail(memberSignUpDTO.getEmail()).isPresent()) {
 //            throw new Exception("이미 존재하는 이메일입니다.");
 //        }
@@ -97,6 +99,7 @@ public class MemberService {
         final String nickname = nicknameUtil.generateRandomNickname();
 
         member.updateNickname(nickname);
+        member.updateFishShapedBun(member.getFishShapedBun() - 50);
         return UpdateNicknameResponse.from(nickname);
     }
 
@@ -109,6 +112,8 @@ public class MemberService {
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.updateTokenStatus("로그아웃");
+        emitterRepository.deleteAllStartWithId(username);
+        emitterRepository.deleteAllEventCacheStartWithId(username);
     }
 
     /**
@@ -122,6 +127,8 @@ public class MemberService {
         member.updateTokenStatus("로그아웃");
         member.updateAuthorization(Role.GUEST);
         member.updateStatus("탈퇴");
+        emitterRepository.deleteAllStartWithId(username);
+        emitterRepository.deleteAllEventCacheStartWithId(username);
     }
 }
 

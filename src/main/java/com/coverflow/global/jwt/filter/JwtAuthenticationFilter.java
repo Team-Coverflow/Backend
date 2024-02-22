@@ -47,7 +47,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final HttpServletResponse response,
             final FilterChain filterChain
     ) throws ServletException, IOException {
-        System.out.println("요청 url: " + request.getRequestURI());
+        log.info("요청 URL: {}", request.getRequestURI());
         if (request.getRequestURI().equals(NO_CHECK_URL)) {
             filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
             return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
@@ -133,10 +133,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
                 .ifPresent(accessToken -> {
-                    System.out.println(accessToken);
                     jwtService.extractMemberId(accessToken)
                             .ifPresent(memberId -> {
-                                System.out.println(memberId);
                                 memberRepository.findByIdAndStatus(memberId, "등록")
                                         .ifPresent(this::saveAuthentication);
                             });
