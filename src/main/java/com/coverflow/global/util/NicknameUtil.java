@@ -51,13 +51,11 @@ public class NicknameUtil {
             Collections.shuffle(secondName);
 
             nickname = firstName.get(0) + " " + secondName.get(0);
-            System.out.println("Generated nickname = " + nickname);
 
             member = memberRepository.findByNickname(nickname);
 
         } while (member.isPresent()); // 해당 닉네임을 가진 회원이 존재하면 계속 반복
-
-        System.out.println("Final nickname = " + nickname);
+        
         return nickname; // 유일한 닉네임 반환
     }
 }
