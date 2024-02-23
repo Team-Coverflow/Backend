@@ -3,6 +3,7 @@ package com.coverflow.question.domain;
 import com.coverflow.company.domain.Company;
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
+import com.coverflow.report.domain.Report;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -44,6 +45,10 @@ public class Question extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private List<Answer> answers = new ArrayList<>(); // 질문에 대한 답변 리스트
+
+    @Builder.Default
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    private List<Report> reports = new ArrayList<>(); // 질문에 대한 신고 리스트
 
     public void updateQuestion(final Question question) {
         this.title = question.getTitle();

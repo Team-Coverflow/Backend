@@ -2,7 +2,7 @@ package com.coverflow.visitor.presentation;
 
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.visitor.application.VisitorService;
-import com.coverflow.visitor.dto.FindDailyVisitorResponse;
+import com.coverflow.visitor.dto.response.FindDailyVisitorResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

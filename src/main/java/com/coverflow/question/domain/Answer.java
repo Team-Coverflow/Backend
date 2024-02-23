@@ -2,8 +2,12 @@ package com.coverflow.question.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
+import com.coverflow.report.domain.Report;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,6 +34,10 @@ public class Answer extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member; // 답변 작성자 정보
+
+    @Builder.Default
+    @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
+    private List<Report> reports = new ArrayList<>(); // 답변에 대한 신고 리스트
 
     public void updateAnswer(final Answer answer) {
         this.content = answer.getContent();

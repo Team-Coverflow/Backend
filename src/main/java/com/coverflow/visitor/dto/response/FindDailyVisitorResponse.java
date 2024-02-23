@@ -1,4 +1,4 @@
-package com.coverflow.visitor.dto;
+package com.coverflow.visitor.dto.response;
 
 import com.coverflow.visitor.domain.Visitor;
 
