@@ -5,6 +5,7 @@ import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
+import com.coverflow.report.domain.Report;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -67,6 +68,10 @@ public class Member extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Notification> notifications = new ArrayList<>(); // 회원의 알림 리스트
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Report> reports = new ArrayList<>(); // 회원의 신고 리스트
 
     public void saveMemberInfo(final SaveMemberInfoRequest request) {
         this.tag = request.tag();
