@@ -5,6 +5,7 @@ import com.coverflow.member.exception.MemberException;
 import com.coverflow.notification.exception.NotificationException;
 import com.coverflow.question.exception.AnswerException;
 import com.coverflow.question.exception.QuestionException;
+import com.coverflow.report.exception.ReportException;
 import com.coverflow.visitor.exception.VisitorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -67,7 +68,8 @@ public class GlobalExceptionHandler {
             VisitorException.DayNotFoundException.class,
             QuestionException.QuestionNotFoundException.class,
             AnswerException.AnswerNotFoundException.class,
-            NotificationException.NotificationNotFoundException.class
+            NotificationException.NotificationNotFoundException.class,
+            ReportException.ReportNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(final RuntimeException exception) {
         final String message = exception.getMessage();
