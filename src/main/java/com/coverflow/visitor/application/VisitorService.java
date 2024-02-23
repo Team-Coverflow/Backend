@@ -1,7 +1,7 @@
 package com.coverflow.visitor.application;
 
 import com.coverflow.visitor.domain.Visitor;
-import com.coverflow.visitor.dto.FindDailyVisitorResponse;
+import com.coverflow.visitor.dto.response.FindDailyVisitorResponse;
 import com.coverflow.visitor.exception.VisitorException;
 import com.coverflow.visitor.infrastructure.VisitorRepository;
 import lombok.RequiredArgsConstructor;
