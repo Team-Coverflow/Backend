@@ -49,6 +49,20 @@ public class AnswerService {
     }
 
     /**
+     * [관리자 전용: 전체 답변 조회 메서드]
+     */
+    public List<FindAnswerResponse> findAnswers() {
+        final List<Answer> answers = answerRepository.findAnswers()
+                .orElseThrow(AnswerException.AnswerNotFoundException::new);
+        final List<FindAnswerResponse> findAnswers = new ArrayList<>();
+
+        for (int i = 0; i < answers.size(); i++) {
+            findAnswers.add(i, FindAnswerResponse.from(answers.get(i)));
+        }
+        return findAnswers;
+    }
+
+    /**
      * [관리자 전용: 특정 답변 조회 메서드]
      */
     public FindAnswerResponse findById(final Long answerId) {

@@ -22,4 +22,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     List<Answer> findByQuestionIdAndStatusIsNotDeleted(@Param("questionId") Long questionId);
 
     Optional<Answer> findByIdAndStatus(Long id, String status);
+
+    @Query("SELECT a " +
+            "FROM Answer a " +
+            "WHERE a.status = '등록'")
+    Optional<List<Answer>> findAnswers();
 }
