@@ -5,6 +5,7 @@ import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.dto.request.UpdateNotificationRequest;
 import com.coverflow.notification.dto.response.FindNotificationResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -53,7 +54,7 @@ public class NotificationController {
 
     @PostMapping("/update-notification")
     public ResponseEntity<ResponseHandler<Void>> updateNotification(
-            @RequestBody final List<UpdateNotificationRequest> requests
+            @RequestBody @Valid final List<UpdateNotificationRequest> requests
     ) {
         notificationService.updateNotification(requests);
         return ResponseEntity.ok()
