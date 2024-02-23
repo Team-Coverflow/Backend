@@ -60,6 +60,7 @@ public class ReportService {
     /**
      * [신고 등록 메서드]
      */
+    @Transactional
     public void saveReport(
             final SaveReportRequest request,
             final String memberId
