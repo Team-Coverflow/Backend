@@ -21,6 +21,8 @@ public class Report extends BaseTimeEntity {
     @Column
     private String content; // 내용
     @Column
+    private ReportType type; // 신고 종류
+    @Column
     private String status; // 상태
 
     @ManyToOne
