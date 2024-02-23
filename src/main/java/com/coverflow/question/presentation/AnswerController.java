@@ -53,6 +53,18 @@ public class AnswerController {
                 );
     }
 
+    @GetMapping("/admin/find-answers")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswers() {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<FindAnswerResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("전체 답변 조회에 성공했습니다.")
+                        .data(answerService.findAnswers())
+                        .build()
+                );
+    }
+
     @PostMapping("/save-answer")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveAnswer(
