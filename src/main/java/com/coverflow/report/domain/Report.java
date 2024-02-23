@@ -28,10 +28,10 @@ public class Report extends BaseTimeEntity {
     private Member member; // 작성자 정보
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "question_id")
     private Question question; // 질문 정보
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "answer_id")
     private Answer answer; // 답변 정보
 }
