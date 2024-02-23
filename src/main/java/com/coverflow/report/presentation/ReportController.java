@@ -37,15 +37,13 @@ public class ReportController {
                         .build());
     }
 
-    @GetMapping("/find-reports")
+    @GetMapping("/admin/find-reports")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReports(
-            @PathVariable @Valid final UUID memberId
-    ) {
+    public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReports() {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 회원의 신고 조회에 성공했습니다.")
+                        .message("전체 신고 조회에 성공했습니다.")
                         .data(reportService.findReports())
                         .build());
     }
@@ -61,6 +59,19 @@ public class ReportController {
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
                         .message("신고 등록에 성공했습니다.")
+                        .build());
+    }
+
+    @PostMapping("/admin/delete-report/{reportId}")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
+            @PathVariable @Valid final Long reportId
+    ) {
+        reportService.deleteReport(reportId);
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("신고 삭제에 성공했습니다.")
                         .build());
     }
 }

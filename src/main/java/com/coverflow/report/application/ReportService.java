@@ -44,7 +44,7 @@ public class ReportService {
     }
 
     /**
-     * [전체 신고 리스트 조회 메서드]
+     * [관리자 전용: 전체 신고 리스트 조회 메서드]
      */
     public List<FindReportResponse> findReports() {
         final List<Report> reports = reportRepository.findReports()
@@ -99,5 +99,16 @@ public class ReportService {
         }
 
         reportRepository.save(report);
+    }
+
+    /**
+     * [관리자 전용: 신고 삭제 메서드]
+     */
+    @Transactional
+    public void deleteReport(final Long reportId) {
+        final Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new ReportException.ReportNotFoundException(reportId));
+
+        report.updateStatus("삭제");
     }
 }

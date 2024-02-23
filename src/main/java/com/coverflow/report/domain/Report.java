@@ -36,4 +36,8 @@ public class Report extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "answer_id")
     private Answer answer; // 답변 정보
+
+    public void updateStatus(final String status) {
+        this.status = status;
+    }
 }
