@@ -95,8 +95,9 @@ public class CompanyService {
      * [관리자 전용: 전체 회사 조회 메서드]
      * 전체 회사를 조회하는 메서드
      */
-    public List<FindAllCompaniesResponse> findAllCompanies() {
-        final List<Company> companies = companyRepository.findAllCompanies()
+    public List<FindAllCompaniesResponse> findAllCompanies(final int pageNum) {
+        final Pageable pageable = PageRequest.of(pageNum, 10, Sort.unsorted());
+        final List<Company> companies = companyRepository.findByStatus(pageable, "등록")
                 .orElseThrow(CompanyException.CompanyNotFoundException::new);
         final List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
 
