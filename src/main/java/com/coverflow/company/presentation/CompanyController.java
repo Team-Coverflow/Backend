@@ -36,13 +36,14 @@ public class CompanyController {
 
     @GetMapping("/search-companies")
     public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
-            @RequestParam("name") @Valid final String name
+            @RequestParam("name") @Valid final String name,
+            @RequestParam("pageNum") @Valid final int pageNum
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 검색에 성공했습니다.")
-                        .data(companyService.searchCompanies(name))
+                        .data(companyService.searchCompanies(name, pageNum))
                         .build()
                 );
     }

@@ -46,8 +46,11 @@ public class CompanyService {
      * [회사 검색 메서드]
      * 특정 이름으로 시작하는 회사 n개를 조회하는 메서드
      */
-    public List<SearchCompanyResponse> searchCompanies(final String name) {
-        final Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
+    public List<SearchCompanyResponse> searchCompanies(
+            final String name,
+            final int pageNum
+    ) {
+        final Pageable pageable = PageRequest.of(pageNum, 5, Sort.by("name").ascending());
 //        final List<Company> companies = companyRepository.findAllCompaniesStartingWithNameAndStatus(name + "%", "등록")
         final List<Company> companies = companyRepository.findByNameStartingWithAndStatus(name, pageable, "등록")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
