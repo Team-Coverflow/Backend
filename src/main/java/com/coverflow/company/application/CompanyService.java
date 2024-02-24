@@ -111,8 +111,12 @@ public class CompanyService {
      * [관리자 전용: 특정 상태 회사 조회 메서드]
      * 특정 상태(검토/등록/삭제)의 회사를 조회하는 메서드
      */
-    public List<FindPendingResponse> findPending(final String status) {
-        final List<Company> companies = companyRepository.findByStatus(status)
+    public List<FindPendingResponse> findPending(
+            final int pageNum,
+            final String status
+    ) {
+        final Pageable pageable = PageRequest.of(pageNum, 10, Sort.unsorted());
+        final List<Company> companies = companyRepository.findByStatus(pageable, status)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
         final List<FindPendingResponse> findCompanies = new ArrayList<>();
 
