@@ -12,6 +12,10 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
+    Optional<List<Company>> findCompanies(
+            final Pageable pageable
+    );
+
     Optional<List<Company>> findByStatus(
             final Pageable pageable,
             final String status

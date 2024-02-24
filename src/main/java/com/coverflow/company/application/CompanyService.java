@@ -97,7 +97,7 @@ public class CompanyService {
      */
     public List<FindAllCompaniesResponse> findAllCompanies(final int pageNum) {
         final Pageable pageable = PageRequest.of(pageNum, 10, Sort.unsorted());
-        final List<Company> companies = companyRepository.findByStatus(pageable, "등록")
+        final List<Company> companies = companyRepository.findCompanies(pageable)
                 .orElseThrow(CompanyException.CompanyNotFoundException::new);
         final List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
 

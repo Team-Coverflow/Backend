@@ -63,12 +63,14 @@ public class CompanyController {
 
     @GetMapping("/admin/find-companies")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies() {
+    public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies(
+            @RequestParam("pageNum") @Valid final int pageNum
+    ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 회사 리스트 검색에 성공했습니다.")
-                        .data(companyService.findAllCompanies())
+                        .data(companyService.findAllCompanies(pageNum))
                         .build()
                 );
     }
@@ -76,13 +78,14 @@ public class CompanyController {
     @GetMapping("/admin/find-pending")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending(
+            @RequestParam("pageNum") @Valid final int pageNum,
             @RequestParam("status") @Valid final String status
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindPendingResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 상태의 회사 검색에 성공했습니다.")
-                        .data(companyService.findPending(status))
+                        .data(companyService.findPending(pageNum, status))
                         .build()
                 );
     }
