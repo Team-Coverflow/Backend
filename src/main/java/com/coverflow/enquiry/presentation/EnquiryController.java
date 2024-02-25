@@ -41,12 +41,14 @@ public class EnquiryController {
 
     @GetMapping("/admin/find-enquiries")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindEnquiryResponse>>> findEnquiries() {
+    public ResponseEntity<ResponseHandler<List<FindEnquiryResponse>>> findEnquiries(
+            @RequestParam("pageNum") @Valid final int pageNum
+    ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindEnquiryResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 문의 조회에 성공했습니다.")
-                        .data(enquiryService.findEnquiries())
+                        .data(enquiryService.findEnquiries(pageNum))
                         .build());
     }
 

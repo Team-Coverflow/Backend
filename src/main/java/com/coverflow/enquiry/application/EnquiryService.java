@@ -46,8 +46,9 @@ public class EnquiryService {
     /**
      * [관리자 전용: 전체 문의 조회 메서드]
      */
-    public List<FindEnquiryResponse> findEnquiries() {
-        final List<Enquiry> enquiries = enquiryRepository.findEnquiries()
+    public List<FindEnquiryResponse> findEnquiries(final int pageNum) {
+        final Pageable pageable = PageRequest.of(pageNum, 10, Sort.unsorted());
+        final List<Enquiry> enquiries = enquiryRepository.findEnquiries(pageable)
                 .orElseThrow(EnquiryException.EnquiryNotFoundException::new);
         final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
 
