@@ -7,6 +7,9 @@ import com.coverflow.enquiry.exception.EnquiryException;
 import com.coverflow.enquiry.infrastructure.EnquiryRepository;
 import com.coverflow.member.domain.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,8 +27,13 @@ public class EnquiryService {
     /**
      * [특정 회원의 문의 조회 메서드]
      */
-    public List<FindEnquiryResponse> findEnquiryByMemberId(UUID memberId) {
-        final List<Enquiry> enquiries = enquiryRepository.findEnquiriesByMemberId(memberId)
+    public List<FindEnquiryResponse> findEnquiryByMemberId(
+            final UUID memberId,
+            final int pageNum,
+            final String status
+    ) {
+        final Pageable pageable = PageRequest.of(pageNum, 10, Sort.by("createdAt").descending());
+        final List<Enquiry> enquiries = enquiryRepository.findEnquiriesByMemberId(pageable, memberId, status)
                 .orElseThrow(() -> new EnquiryException.EnquiryNotFoundException(memberId));
         final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
 

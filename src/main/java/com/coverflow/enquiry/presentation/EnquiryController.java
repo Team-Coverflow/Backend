@@ -24,16 +24,18 @@ public class EnquiryController {
 
     private final EnquiryService enquiryService;
 
-    @GetMapping("/find-enquiry/{memberId}")
+    @GetMapping("/find-enquiry")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindEnquiryResponse>>> findEnquiryByMemberId(
-            @PathVariable @Valid final UUID memberId
+            @RequestParam("memberId") @Valid final UUID memberId,
+            @RequestParam("pageNum") @Valid final int pageNum,
+            @RequestParam("status") @Valid final String status
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindEnquiryResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회원의 문의 조회에 성공했습니다.")
-                        .data(enquiryService.findEnquiryByMemberId(memberId))
+                        .data(enquiryService.findEnquiryByMemberId(memberId, pageNum, status))
                         .build());
     }
 
