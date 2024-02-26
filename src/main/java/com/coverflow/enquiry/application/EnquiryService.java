@@ -7,6 +7,7 @@ import com.coverflow.enquiry.exception.EnquiryException;
 import com.coverflow.enquiry.infrastructure.EnquiryRepository;
 import com.coverflow.member.domain.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -29,16 +30,16 @@ public class EnquiryService {
      */
     public List<FindEnquiryResponse> findEnquiryByMemberId(
             final UUID memberId,
-            final int pageNum,
-            final String status
+            final int pageNo,
+            final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNum, 10, Sort.by("createdAt").descending());
-        final List<Enquiry> enquiries = enquiryRepository.findEnquiriesByMemberId(pageable, memberId, status)
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Enquiry> enquiries = enquiryRepository.findEnquiriesByMemberId(pageable, memberId)
                 .orElseThrow(() -> new EnquiryException.EnquiryNotFoundException(memberId));
         final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
 
-        for (int i = 0; i < enquiries.size(); i++) {
-            findEnquiries.add(i, FindEnquiryResponse.from(enquiries.get(i)));
+        for (int i = 0; i < enquiries.getContent().size(); i++) {
+            findEnquiries.add(i, FindEnquiryResponse.from(enquiries.getContent().get(i)));
         }
         return findEnquiries;
     }

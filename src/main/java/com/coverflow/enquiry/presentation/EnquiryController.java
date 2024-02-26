@@ -28,14 +28,14 @@ public class EnquiryController {
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindEnquiryResponse>>> findEnquiryByMemberId(
             @RequestParam("memberId") @Valid final UUID memberId,
-            @RequestParam("pageNum") @Valid final int pageNum,
-            @RequestParam("status") @Valid final String status
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindEnquiryResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회원의 문의 조회에 성공했습니다.")
-                        .data(enquiryService.findEnquiryByMemberId(memberId, pageNum, status))
+                        .data(enquiryService.findEnquiryByMemberId(memberId, pageNo, criterion))
                         .build());
     }
 

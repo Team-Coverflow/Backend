@@ -1,6 +1,7 @@
 package com.coverflow.enquiry.infrastructure;
 
 import com.coverflow.enquiry.domain.Enquiry;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,10 +16,9 @@ public interface EnquiryRepository extends JpaRepository<Enquiry, Long> {
 //            "WHERE e.member.id = :memberId " +
 //            "AND e.status = '등록'")
 //    Optional<List<Enquiry>> findEnquiriesByMemberId(@Param("memberId") UUID memberId);
-    Optional<List<Enquiry>> findEnquiriesByMemberId(
+    Optional<Page<Enquiry>> findEnquiriesByMemberId(
             final Pageable pageable,
-            final UUID memberId,
-            final String status
+            final UUID memberId
     );
 
     //    @Query("SELECT e " +
