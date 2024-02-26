@@ -41,13 +41,13 @@ public class MemberController {
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindMemberInfoResponse>>> findAllMemberById(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criteria") @Valid final String criteria
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindMemberInfoResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("모든 회원 조회 성공했습니다.")
-                        .data(memberService.findAllMembers(pageNo, criteria))
+                        .data(memberService.findAllMembers(pageNo, criterion))
                         .build());
     }
 

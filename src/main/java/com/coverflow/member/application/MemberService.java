@@ -69,9 +69,9 @@ public class MemberService {
      */
     public List<FindMemberInfoResponse> findAllMembers(
             final int pageNo,
-            final String criteria
+            final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criteria).descending());
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Member> members = memberRepository.findAllMembers(pageable)
                 .orElseThrow(MemberException.AllMemberNotFoundException::new);
         final List<FindMemberInfoResponse> findMembers = new ArrayList<>();
