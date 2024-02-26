@@ -2,6 +2,8 @@ package com.coverflow.question.infrastructure;
 
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,10 +18,16 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             final String status
     );
 
+    Optional<Page<Question>> findAllQuestions(final Pageable pageable);
+
     @Query("SELECT q " +
             "FROM Question q " +
-            "ORDER BY q.createdAt DESC")
-    Optional<List<Question>> findAllQuestions();
+            "WHERE q.status = :status")
+    Optional<Page<Question>> findAllByStatus(
+            @Param("status") final String status,
+            final Pageable pageable
+    );
+
 
     @Query("SELECT DISTINCT q " +
             "FROM Question q " +

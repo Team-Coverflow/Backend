@@ -54,12 +54,15 @@ public class QuestionController {
 
     @GetMapping("/admin/find-questions")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<QuestionResponse>>> findAllQuestions() {
+    public ResponseEntity<ResponseHandler<List<QuestionResponse>>> findAllQuestions(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+    ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<QuestionResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 질문 조회에 성공했습니다.")
-                        .data(questionService.findAllQuestions())
+                        .data(questionService.findAllQuestions(pageNo, criterion))
                         .build()
                 );
     }

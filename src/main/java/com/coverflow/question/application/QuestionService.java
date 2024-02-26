@@ -15,6 +15,10 @@ import com.coverflow.question.dto.response.QuestionResponse;
 import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,13 +81,17 @@ public class QuestionService {
     /**
      * [관리자 전용: 전체 질문 조회 메서드]
      */
-    public List<QuestionResponse> findAllQuestions() {
-        final List<Question> questions = questionRepository.findAllQuestions()
+    public List<QuestionResponse> findAllQuestions(
+            final int pageNo,
+            final String criterion
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Question> questions = questionRepository.findAllQuestions(pageable)
                 .orElseThrow(QuestionException.QuestionNotFoundException::new);
         final List<QuestionResponse> findQuestions = new ArrayList<>();
 
-        for (int i = 0; i < questions.size(); i++) {
-            findQuestions.add(i, QuestionResponse.from(questions.get(i)));
+        for (int i = 0; i < questions.getContent().size(); i++) {
+            findQuestions.add(i, QuestionResponse.from(questions.getContent().get(i)));
         }
         return findQuestions;
     }
