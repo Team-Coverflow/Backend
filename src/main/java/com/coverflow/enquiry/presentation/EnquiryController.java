@@ -42,13 +42,14 @@ public class EnquiryController {
     @GetMapping("/admin/find-enquiries")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindEnquiryResponse>>> findEnquiries(
-            @RequestParam("pageNum") @Valid final int pageNum
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindEnquiryResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 문의 조회에 성공했습니다.")
-                        .data(enquiryService.findEnquiries(pageNum))
+                        .data(enquiryService.findEnquiries(pageNo, criterion))
                         .build());
     }
 

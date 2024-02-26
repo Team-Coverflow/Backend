@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,5 +24,5 @@ public interface EnquiryRepository extends JpaRepository<Enquiry, Long> {
 //            "FROM Enquiry e " +
 //            "WHERE e.status = '등록'")
 //    Optional<List<Enquiry>> findEnquiries();
-    Optional<List<Enquiry>> findEnquiries(final Pageable pageable);
+    Optional<Page<Enquiry>> findEnquiries(final Pageable pageable);
 }
