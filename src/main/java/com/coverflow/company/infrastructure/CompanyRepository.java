@@ -2,6 +2,7 @@ package com.coverflow.company.infrastructure;
 
 import com.coverflow.company.domain.Company;
 import com.coverflow.question.domain.Question;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,13 +13,11 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
-    Optional<List<Company>> findCompanies(
-            final Pageable pageable
-    );
+    Optional<Page<Company>> findCompanies(final Pageable pageable);
 
-    Optional<List<Company>> findByStatus(
+    Optional<Page<Company>> findByCriterion(
             final Pageable pageable,
-            final String status
+            final String Criterion
     );
 
     Optional<List<Company>> findByNameStartingWithAndStatus(

@@ -64,13 +64,14 @@ public class CompanyController {
     @GetMapping("/admin/find-companies")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies(
-            @RequestParam("pageNum") @Valid final int pageNum
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 회사 리스트 검색에 성공했습니다.")
-                        .data(companyService.findAllCompanies(pageNum))
+                        .data(companyService.findAllCompanies(pageNo, criterion))
                         .build()
                 );
     }
@@ -78,14 +79,14 @@ public class CompanyController {
     @GetMapping("/admin/find-pending")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending(
-            @RequestParam("pageNum") @Valid final int pageNum,
-            @RequestParam("status") @Valid final String status
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindPendingResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 상태의 회사 검색에 성공했습니다.")
-                        .data(companyService.findPending(pageNum, status))
+                        .data(companyService.findPending(pageNo, criterion))
                         .build()
                 );
     }
