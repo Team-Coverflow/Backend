@@ -40,8 +40,8 @@ public class MemberController {
     @GetMapping("/find-all-member")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindMemberInfoResponse>>> findAllMemberById(
-            @RequestParam("pageNum") @Valid final int pageNo,
-            @RequestParam("criteria") @Valid final String criteria
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criteria") @Valid final String criteria
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindMemberInfoResponse>>builder()
