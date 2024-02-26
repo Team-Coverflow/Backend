@@ -15,13 +15,12 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     Optional<Page<Company>> findCompanies(final Pageable pageable);
 
-    Optional<Page<Company>> findByCriterion(
+    Optional<Page<Company>> findByStatus(
             final Pageable pageable,
-            final String Criterion
+            final String Status
     );
 
-    Optional<List<Company>> findByNameStartingWithAndStatus(
-            final String name,
+    Optional<Page<Company>> findByNameStartingWithAndStatus(
             final Pageable pageable,
             final String status
     );

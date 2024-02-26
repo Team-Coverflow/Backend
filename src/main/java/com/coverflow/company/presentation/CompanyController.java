@@ -23,7 +23,7 @@ public class CompanyController {
 
     @GetMapping("/auto-complete")
     public ResponseEntity<ResponseHandler<List<FindAutoCompleteResponse>>> autoComplete(
-            @RequestParam("name") @Valid final String name
+            @RequestParam(defaultValue = "name", value = "name") @Valid final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAutoCompleteResponse>>builder()
@@ -36,14 +36,14 @@ public class CompanyController {
 
     @GetMapping("/search-companies")
     public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
-            @RequestParam("name") @Valid final String name,
-            @RequestParam("pageNum") @Valid final int pageNum
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "name", value = "name") @Valid final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 검색에 성공했습니다.")
-                        .data(companyService.searchCompanies(name, pageNum))
+                        .data(companyService.searchCompanies(pageNo, name))
                         .build()
                 );
     }
@@ -80,13 +80,13 @@ public class CompanyController {
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "status", value = "criterion") @Valid final String status
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindPendingResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 상태의 회사 검색에 성공했습니다.")
-                        .data(companyService.findPending(pageNo, criterion))
+                        .data(companyService.findPending(pageNo, status))
                         .build()
                 );
     }

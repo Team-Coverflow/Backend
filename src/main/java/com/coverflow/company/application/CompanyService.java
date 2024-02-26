@@ -32,13 +32,13 @@ public class CompanyService {
      * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
      */
     public List<FindAutoCompleteResponse> autoComplete(final String name) {
-        final Pageable pageable = PageRequest.of(0, 2, Sort.by("name").ascending());
-        final List<Company> companies = companyRepository.findByNameStartingWithAndStatus(name, pageable, "등록")
+        final Pageable pageable = PageRequest.of(0, 2, Sort.by(name).ascending());
+        final Page<Company> companies = companyRepository.findByNameStartingWithAndStatus(pageable, "등록")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<FindAutoCompleteResponse> findCompanies = new ArrayList<>();
 
-        for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, FindAutoCompleteResponse.from(companies.get(i)));
+        for (int i = 0; i < companies.getContent().size(); i++) {
+            findCompanies.add(i, FindAutoCompleteResponse.from(companies.getContent().get(i)));
         }
         return findCompanies;
     }
@@ -48,17 +48,16 @@ public class CompanyService {
      * 특정 이름으로 시작하는 회사 n개를 조회하는 메서드
      */
     public List<SearchCompanyResponse> searchCompanies(
-            final String name,
-            final int pageNum
+            final int pageNo,
+            final String name
     ) {
-        final Pageable pageable = PageRequest.of(pageNum, 5, Sort.by("name").ascending());
-//        final List<Company> companies = companyRepository.findAllCompaniesStartingWithNameAndStatus(name + "%", "등록")
-        final List<Company> companies = companyRepository.findByNameStartingWithAndStatus(name, pageable, "등록")
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(name).ascending());
+        final Page<Company> companies = companyRepository.findByNameStartingWithAndStatus(pageable, "등록")
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<SearchCompanyResponse> findCompanies = new ArrayList<>();
 
-        for (int i = 0; i < companies.size(); i++) {
-            findCompanies.add(i, SearchCompanyResponse.from(companies.get(i)));
+        for (int i = 0; i < companies.getContent().size(); i++) {
+            findCompanies.add(i, SearchCompanyResponse.from(companies.getContent().get(i)));
         }
         return findCompanies;
     }
@@ -117,11 +116,11 @@ public class CompanyService {
      */
     public List<FindPendingResponse> findPending(
             final int pageNo,
-            final String criterion
+            final String status
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Company> companies = companyRepository.findByCriterion(pageable, criterion)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(criterion));
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(status).descending());
+        final Page<Company> companies = companyRepository.findByStatus(pageable, status)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
         final List<FindPendingResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.getContent().size(); i++) {
