@@ -2,10 +2,10 @@ package com.coverflow.member.infrastructure;
 
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.SocialType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,8 +16,8 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
             final String status
     );
 
-    @Query(value = "SELECT m FROM Member m ORDER BY m.createdAt ASC")
-    Optional<List<Member>> findAllMembers();
+    //    @Query(value = "SELECT m FROM Member m ORDER BY m.createdAt ASC")
+    Optional<Page<Member>> findAllMembers(final Pageable pageable);
 
     Optional<Member> findByEmail(final String email);
 

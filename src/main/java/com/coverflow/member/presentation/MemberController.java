@@ -39,12 +39,15 @@ public class MemberController {
 
     @GetMapping("/find-all-member")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindMemberInfoResponse>>> findAllMemberById() {
+    public ResponseEntity<ResponseHandler<List<FindMemberInfoResponse>>> findAllMemberById(
+            @RequestParam("pageNum") @Valid final int pageNo,
+            @RequestParam("criteria") @Valid final String criteria
+    ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindMemberInfoResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("모든 회원 조회 성공했습니다.")
-                        .data(memberService.findAllMembers())
+                        .data(memberService.findAllMembers(pageNo, criteria))
                         .build());
     }
 

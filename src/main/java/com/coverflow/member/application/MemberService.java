@@ -10,6 +10,10 @@ import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.infrastructure.EmitterRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,13 +67,17 @@ public class MemberService {
     /**
      * [관리자 전용: 전체 회원 조회 메서드]
      */
-    public List<FindMemberInfoResponse> findAllMembers() {
-        final List<Member> members = memberRepository.findAllMembers()
+    public List<FindMemberInfoResponse> findAllMembers(
+            final int pageNo,
+            final String criteria
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criteria).descending());
+        final Page<Member> members = memberRepository.findAllMembers(pageable)
                 .orElseThrow(MemberException.AllMemberNotFoundException::new);
         final List<FindMemberInfoResponse> findMembers = new ArrayList<>();
 
-        for (int i = 0; i < members.size(); i++) {
-            findMembers.add(i, FindMemberInfoResponse.from(members.get(i)));
+        for (int i = 0; i < members.getContent().size(); i++) {
+            findMembers.add(i, FindMemberInfoResponse.from(members.getContent().get(i)));
         }
         return findMembers;
     }
