@@ -11,8 +11,6 @@ import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
-    Optional<Page<Question>> findAllQuestions(final Pageable pageable);
-
     @Query("SELECT q " +
             "FROM Question q " +
             "WHERE q.status = :status")
@@ -36,4 +34,8 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             "WHERE q.id = :questionId " +
             "AND q.status = '등록'")
     Optional<Question> findRegisteredQuestion(@Param("questionId") final Long questionId);
+
+    @Query("SELECT q " +
+            "FROM Question q ")
+    Optional<Page<Question>> findAllQuestions(final Pageable pageable);
 }

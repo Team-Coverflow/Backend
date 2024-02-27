@@ -11,16 +11,6 @@ import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
 
-    Optional<Page<Company>> findAllCompanies(final Pageable pageable);
-
-    @Query("SELECT c " +
-            "FROM Company c " +
-            "WHERE c.status = :status")
-    Optional<Page<Company>> findAllByStatus(
-            final String status,
-            final Pageable pageable
-    );
-
     @Query("SELECT c " +
             "FROM Company c " +
             "WHERE c.name LIKE :name " +
@@ -38,4 +28,16 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             "WHERE c.id = :companyId " +
             "AND c.status = '등록'")
     Optional<Company> findRegisteredCompany(@Param("companyId") final Long companyId);
+
+    @Query("SELECT c " +
+            "FROM Company c ")
+    Optional<Page<Company>> findAllCompanies(final Pageable pageable);
+
+    @Query("SELECT c " +
+            "FROM Company c " +
+            "WHERE c.status = :status")
+    Optional<Page<Company>> findAllByStatus(
+            final String status,
+            final Pageable pageable
+    );
 }

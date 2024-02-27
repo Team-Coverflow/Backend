@@ -5,19 +5,13 @@ import com.coverflow.member.domain.SocialType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 import java.util.UUID;
 
 public interface MemberRepository extends JpaRepository<Member, UUID> {
-
-    Optional<Member> findByIdAndStatus(
-            final UUID id,
-            final String status
-    );
-
-    //    @Query(value = "SELECT m FROM Member m ORDER BY m.createdAt ASC")
-    Optional<Page<Member>> findAllMembers(final Pageable pageable);
 
     Optional<Member> findByEmail(final String email);
 
@@ -37,4 +31,17 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
             final String status
     );
 
+    @Query(value = "SELECT m " +
+            "FROM Member m")
+    Optional<Page<Member>> findAllMembers(final Pageable pageable);
+
+    @Query(value = "SELECT m " +
+            "FROM Member m " +
+            "WHERE m.id = :id " +
+            "AND m.status= :status " +
+            "ORDER BY m.createdAt ASC")
+    Optional<Member> findByIdAndStatus(
+            @Param("id") final UUID id,
+            @Param("status") final String status
+    );
 }

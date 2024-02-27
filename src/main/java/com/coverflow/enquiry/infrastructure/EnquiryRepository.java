@@ -21,6 +21,8 @@ public interface EnquiryRepository extends JpaRepository<Enquiry, Long> {
             final Pageable pageable
     );
 
+    @Query("SELECT e " +
+            "FROM Enquiry e ")
     Optional<Page<Enquiry>> findEnquiries(final Pageable pageable);
 
     @Query("SELECT e " +

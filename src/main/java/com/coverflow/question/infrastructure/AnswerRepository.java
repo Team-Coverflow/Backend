@@ -16,11 +16,13 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
             "WHERE a.question.id = :questionId " +
             "AND a.status = '등록'")
     Optional<Page<Answer>> findAllAnswersByQuestionIdAndStatus(
-            @Param("companyId") final Long companyId,
+            @Param("questionId") final Long questionId,
             final Pageable pageable
     );
 
-    Optional<Answer> findByIdAndStatus(Long id, String status);
-
+    @Query("SELECT a " +
+            "FROM Answer a ")
     Optional<Page<Answer>> findAllAnswers(final Pageable pageable);
+
+    Optional<Answer> findByIdAndStatus(Long id, String status);
 }
