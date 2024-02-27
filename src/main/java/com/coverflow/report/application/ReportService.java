@@ -71,6 +71,26 @@ public class ReportService {
     }
 
     /**
+     * [관리자 전용: 특정 상태 신고 조회 메서드]
+     * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
+     */
+    public List<FindReportResponse> findReportsByStatus(
+            final int pageNo,
+            final String criterion,
+            final String status
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Report> reports = reportRepository.findAllByStatus(pageable, status)
+                .orElseThrow(() -> new ReportException.ReportNotFoundException(status));
+        final List<FindReportResponse> findReports = new ArrayList<>();
+
+        for (int i = 0; i < reports.getContent().size(); i++) {
+            findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
+        }
+        return findReports;
+    }
+
+    /**
      * [신고 등록 메서드]
      */
     @Transactional

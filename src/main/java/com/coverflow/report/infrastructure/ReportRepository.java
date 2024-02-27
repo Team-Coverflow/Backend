@@ -24,4 +24,12 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Query("SELECT r " +
             "FROM Report r ")
     Optional<Page<Report>> findAllReports(final Pageable pageable);
+
+    @Query("SELECT r " +
+            "FROM Report r " +
+            "WHERE r.status = :status")
+    Optional<Page<Report>> findAllByStatus(
+            final Pageable pageable,
+            @Param("status") final String status
+    );
 }
