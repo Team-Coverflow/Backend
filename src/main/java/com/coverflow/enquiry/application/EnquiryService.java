@@ -34,7 +34,7 @@ public class EnquiryService {
             final String criterion
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Enquiry> enquiries = enquiryRepository.findAllByMemberIdAndStatus(memberId, "등록", pageable)
+        final Page<Enquiry> enquiries = enquiryRepository.findAllByMemberIdAndStatus(memberId, pageable)
                 .orElseThrow(() -> new EnquiryException.EnquiryNotFoundException(memberId));
         final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
 
