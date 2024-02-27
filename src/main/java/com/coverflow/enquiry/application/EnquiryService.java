@@ -32,11 +32,10 @@ public class EnquiryService {
     public List<FindEnquiryResponse> findEnquiryByMemberId(
             final int pageNo,
             final String criterion,
-            final UUID memberId,
-            final String status
+            final UUID memberId
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Enquiry> enquiries = enquiryRepository.findAllByMemberIdAndStatus(pageable, memberId, status)
+        final Page<Enquiry> enquiries = enquiryRepository.findAllByMemberIdAndStatus(pageable, memberId)
                 .orElseThrow(() -> new EnquiryException.EnquiryNotFoundException(memberId));
         final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
 

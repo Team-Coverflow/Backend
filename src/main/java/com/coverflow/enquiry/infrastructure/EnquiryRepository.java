@@ -15,11 +15,10 @@ public interface EnquiryRepository extends JpaRepository<Enquiry, Long> {
     @Query("SELECT e " +
             "FROM Enquiry e " +
             "WHERE e.member.id = :memberId " +
-            "AND e.status = :status ")
+            "AND e.status != '삭제'")
     Optional<Page<Enquiry>> findAllByMemberIdAndStatus(
             final Pageable pageable,
-            @Param("memberId") final UUID memberId,
-            @Param("status") final String status
+            @Param("memberId") final UUID memberId
     );
 
     @Query("SELECT e " +
