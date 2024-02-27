@@ -8,6 +8,7 @@ import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.AnswerDTO;
+import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindQuestionResponse;
@@ -37,18 +38,34 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     /**
-     * [특정 회사의 전체 질문 조회 메서드]
+     * [특정 회사의 질문 조회 메서드]
      * 회사 id로 조회
      */
-    public List<QuestionResponse> findAllQuestionsByCompanyId(final Long companyId) {
-        final List<Question> questions = questionRepository.findAllQuestionsByCompanyIdAndStatus(companyId, "등록")
-                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(companyId));
-        final List<QuestionResponse> findQuestions = new ArrayList<>();
+    public List<QuestionDTO> findAllQuestionsByCompanyId(
+            final Long companyId,
+            final int pageNo,
+            final String criterion
+    ) {
+        final List<QuestionDTO> questions = new ArrayList<>();
+        final Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
+        final Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(companyId, pageable);
 
-        for (int i = 0; i < questions.size(); i++) {
-            findQuestions.add(i, QuestionResponse.from(questions.get(i)));
+        if (optionalQuestions.isPresent()) {
+            Page<Question> questionList = optionalQuestions.get();
+            for (int i = 0; i < questionList.getContent().size(); i++) {
+                questions.add(i, new QuestionDTO(
+                        questionList.getContent().get(i).getId(),
+                        questionList.getContent().get(i).getMember().getNickname(),
+                        questionList.getContent().get(i).getMember().getTag(),
+                        questionList.getContent().get(i).getTitle(),
+                        questionList.getContent().get(i).getContent(),
+                        questionList.getContent().get(i).getViewCount(),
+                        questionList.getContent().get(i).getAnswerCount(),
+                        questionList.getContent().get(i).getReward(),
+                        questionList.getContent().get(i).getCreatedAt()));
+            }
         }
-        return findQuestions;
+        return questions;
     }
 
     /**
@@ -73,7 +90,6 @@ public class QuestionService {
                         answerList.get(i).getCreatedAt()));
             }
         }
-
         question.updateViewCount(question.getViewCount() + 1);
         return FindQuestionResponse.of(question, answers);
     }

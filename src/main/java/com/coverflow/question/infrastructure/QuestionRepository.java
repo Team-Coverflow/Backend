@@ -28,6 +28,15 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             final Pageable pageable
     );
 
+    @Query("SELECT q " +
+            "FROM Question q " +
+            "WHERE q.company.id = :companyId " +
+            "AND q.status = '등록' " +
+            "ORDER BY q.createdAt DESC")
+    Optional<Page<Question>> findRegisteredQuestions(
+            @Param("companyId") final Long companyId,
+            final Pageable pageable
+    );
 
     @Query("SELECT DISTINCT q " +
             "FROM Question q " +

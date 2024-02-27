@@ -4,6 +4,7 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.question.application.QuestionService;
+import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindQuestionResponse;
@@ -26,14 +27,16 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping("/find-questions/{companyId}")
-    public ResponseEntity<ResponseHandler<List<QuestionResponse>>> findAllQuestionsByCompanyId(
-            @PathVariable @Valid final Long companyId
+    public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
+            @PathVariable @Valid final Long companyId,
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<QuestionResponse>>builder()
+                .body(ResponseHandler.<List<QuestionDTO>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 회사의 전체 질문 조회에 성공했습니다.")
-                        .data(questionService.findAllQuestionsByCompanyId(companyId))
+                        .message("특정 회사의 질문 조회에 성공했습니다.")
+                        .data(questionService.findAllQuestionsByCompanyId(companyId, pageNo, criterion))
                         .build()
                 );
     }

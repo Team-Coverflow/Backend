@@ -50,13 +50,15 @@ public class CompanyController {
 
     @GetMapping("/find-company/{companyId}")
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
-            @PathVariable @Valid final Long companyId
+            @PathVariable @Valid final Long companyId,
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회사와 질문 조회에 성공했습니다.")
-                        .data(companyService.findCompanyById(companyId))
+                        .data(companyService.findCompanyById(companyId, pageNo, criterion))
                         .build()
                 );
     }
