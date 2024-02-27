@@ -3,7 +3,10 @@ package com.coverflow.company.application;
 import com.coverflow.company.domain.Company;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
-import com.coverflow.company.dto.response.*;
+import com.coverflow.company.dto.response.FindAllCompaniesResponse;
+import com.coverflow.company.dto.response.FindAutoCompleteResponse;
+import com.coverflow.company.dto.response.FindCompanyResponse;
+import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.question.application.QuestionService;
@@ -99,7 +102,7 @@ public class CompanyService {
      * [관리자 전용: 특정 상태 회사 조회 메서드]
      * 특정 상태(검토/등록/삭제)의 회사를 조회하는 메서드
      */
-    public List<FindPendingResponse> findPending(
+    public List<FindAllCompaniesResponse> findPending(
             final int pageNo,
             final String criterion,
             final String status
@@ -107,10 +110,10 @@ public class CompanyService {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Company> companies = companyRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
-        final List<FindPendingResponse> findCompanies = new ArrayList<>();
+        final List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.getContent().size(); i++) {
-            findCompanies.add(i, FindPendingResponse.from(companies.getContent().get(i)));
+            findCompanies.add(i, FindAllCompaniesResponse.from(companies.getContent().get(i)));
         }
         return findCompanies;
     }

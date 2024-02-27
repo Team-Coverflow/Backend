@@ -3,7 +3,10 @@ package com.coverflow.company.presentation;
 import com.coverflow.company.application.CompanyService;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
-import com.coverflow.company.dto.response.*;
+import com.coverflow.company.dto.response.FindAllCompaniesResponse;
+import com.coverflow.company.dto.response.FindAutoCompleteResponse;
+import com.coverflow.company.dto.response.FindCompanyResponse;
+import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import jakarta.validation.Valid;
@@ -80,13 +83,13 @@ public class CompanyController {
 
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending(
+    public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findPending(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
             @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindPendingResponse>>builder()
+                .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 상태의 회사 검색에 성공했습니다.")
                         .data(companyService.findPending(pageNo, criterion, status))
