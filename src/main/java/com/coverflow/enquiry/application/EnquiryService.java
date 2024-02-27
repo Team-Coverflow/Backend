@@ -1,6 +1,5 @@
 package com.coverflow.enquiry.application;
 
-import com.coverflow.company.exception.CompanyException;
 import com.coverflow.enquiry.domain.Enquiry;
 import com.coverflow.enquiry.dto.request.SaveEnquiryRequest;
 import com.coverflow.enquiry.dto.response.FindEnquiryResponse;
@@ -74,7 +73,7 @@ public class EnquiryService {
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Enquiry> enquiries = enquiryRepository.findAllByStatus(pageable, status)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
+                .orElseThrow(() -> new EnquiryException.EnquiryNotFoundException(status));
         final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
 
         for (int i = 0; i < enquiries.getContent().size(); i++) {
