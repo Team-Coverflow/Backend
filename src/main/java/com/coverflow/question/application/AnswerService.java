@@ -48,9 +48,9 @@ public class AnswerService {
             final int pageNo,
             final String criterion
     ) {
-        final List<AnswerDTO> answers = new ArrayList<>();
         final Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
         final Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndStatus(questionId, pageable);
+        final List<AnswerDTO> answers = new ArrayList<>();
 
         if (optionalAnswers.isPresent()) {
             Page<Answer> answerList = optionalAnswers.get();

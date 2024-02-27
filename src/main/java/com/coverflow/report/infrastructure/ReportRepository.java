@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,7 +16,10 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             "FROM Report r " +
             "WHERE r.member.id = :memberId " +
             "AND r.status = '등록'")
-    Optional<List<Report>> findReportsByMemberId(@Param("memberId") final UUID memberId);
+    Optional<Page<Report>> findReportsByMemberId(
+            @Param("memberId") final UUID memberId,
+            final Pageable pageable
+    );
 
     @Query("SELECT r " +
             "FROM Report r ")

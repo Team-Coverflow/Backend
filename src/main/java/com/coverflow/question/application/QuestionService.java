@@ -45,9 +45,9 @@ public class QuestionService {
             final int pageNo,
             final String criterion
     ) {
-        final List<QuestionDTO> questions = new ArrayList<>();
         final Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
         final Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(companyId, pageable);
+        final List<QuestionDTO> questions = new ArrayList<>();
 
         if (optionalQuestions.isPresent()) {
             Page<Question> questionList = optionalQuestions.get();

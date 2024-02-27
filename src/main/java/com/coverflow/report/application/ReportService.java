@@ -36,13 +36,18 @@ public class ReportService {
     /**
      * [특정 회원의 신고 리스트 조회 메서드]
      */
-    public List<FindReportResponse> findReportsByMemberId(final UUID memberId) {
-        final List<Report> reports = reportRepository.findReportsByMemberId(memberId)
+    public List<FindReportResponse> findReportsByMemberId(
+            final UUID memberId,
+            final int pageNo,
+            final String criterion
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Report> reports = reportRepository.findReportsByMemberId(memberId, pageable)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(memberId));
         final List<FindReportResponse> findReports = new ArrayList<>();
 
-        for (int i = 0; i < reports.size(); i++) {
-            findReports.add(i, FindReportResponse.from(reports.get(i)));
+        for (int i = 0; i < reports.getContent().size(); i++) {
+            findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
         }
         return findReports;
     }

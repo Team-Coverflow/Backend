@@ -27,13 +27,15 @@ public class ReportController {
     @GetMapping("/find-report/{memberId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportByMemberId(
-            @PathVariable @Valid final UUID memberId
+            @PathVariable @Valid final UUID memberId,
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회원의 신고 조회에 성공했습니다.")
-                        .data(reportService.findReportsByMemberId(memberId))
+                        .data(reportService.findReportsByMemberId(memberId, pageNo, criterion))
                         .build());
     }
 
