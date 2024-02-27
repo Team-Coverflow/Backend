@@ -72,6 +72,22 @@ public class QuestionController {
                 );
     }
 
+    @GetMapping("/admin/find-by-status")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<List<QuestionResponse>>> findMembersByStatus(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<QuestionResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("특정 상태의 질문 검색에 성공했습니다.")
+                        .data(questionService.findQuestionsByStatus(pageNo, criterion, status))
+                        .build()
+                );
+    }
+
     @PostMapping("/save-question")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveQuestion(

@@ -13,14 +13,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("SELECT q " +
             "FROM Question q " +
-            "WHERE q.status = :status")
-    Optional<Page<Question>> findAllByStatus(
-            @Param("status") final String status,
-            final Pageable pageable
-    );
-
-    @Query("SELECT q " +
-            "FROM Question q " +
             "WHERE q.company.id = :companyId " +
             "AND q.status = '등록' " +
             "ORDER BY q.createdAt DESC")
@@ -38,4 +30,12 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("SELECT q " +
             "FROM Question q ")
     Optional<Page<Question>> findAllQuestions(final Pageable pageable);
+
+    @Query("SELECT q " +
+            "FROM Question q " +
+            "WHERE q.status = :status")
+    Optional<Page<Question>> findAllByStatus(
+            final Pageable pageable,
+            @Param("status") final String status
+    );
 }

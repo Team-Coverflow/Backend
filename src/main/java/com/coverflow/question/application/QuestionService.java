@@ -103,6 +103,26 @@ public class QuestionService {
     }
 
     /**
+     * [관리자 전용: 특정 상태 질문 조회 메서드]
+     * 특정 상태(등록/탈퇴)의 회사를 조회하는 메서드
+     */
+    public List<QuestionResponse> findQuestionsByStatus(
+            final int pageNo,
+            final String criterion,
+            final String status
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Question> questions = questionRepository.findAllByStatus(pageable, status)
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(status));
+        final List<QuestionResponse> findQuestions = new ArrayList<>();
+
+        for (int i = 0; i < questions.getContent().size(); i++) {
+            findQuestions.add(i, QuestionResponse.from(questions.getContent().get(i)));
+        }
+        return findQuestions;
+    }
+
+    /**
      * [질문 등록 메서드]
      */
     @Transactional
