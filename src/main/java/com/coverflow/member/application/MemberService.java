@@ -4,6 +4,7 @@ import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
+import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
 import com.coverflow.member.exception.MemberException;
@@ -67,17 +68,17 @@ public class MemberService {
     /**
      * [관리자 전용: 전체 회원 조회 메서드]
      */
-    public List<FindMemberInfoResponse> findAllMembers(
+    public List<FindAllMembersResponse> findAllMembers(
             final int pageNo,
             final String criterion
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Member> members = memberRepository.findAllMembers(pageable)
                 .orElseThrow(MemberException.AllMemberNotFoundException::new);
-        final List<FindMemberInfoResponse> findMembers = new ArrayList<>();
+        final List<FindAllMembersResponse> findMembers = new ArrayList<>();
 
         for (int i = 0; i < members.getContent().size(); i++) {
-            findMembers.add(i, FindMemberInfoResponse.from(members.getContent().get(i)));
+            findMembers.add(i, FindAllMembersResponse.from(members.getContent().get(i)));
         }
         return findMembers;
     }
@@ -86,7 +87,7 @@ public class MemberService {
      * [관리자 전용: 특정 상태 회원 조회 메서드]
      * 특정 상태(등록/탈퇴)의 회사를 조회하는 메서드
      */
-    public List<FindMemberInfoResponse> findMembersByStatus(
+    public List<FindAllMembersResponse> findMembersByStatus(
             final int pageNo,
             final String criterion,
             final String status
@@ -94,10 +95,10 @@ public class MemberService {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Member> members = memberRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(status));
-        final List<FindMemberInfoResponse> findMembers = new ArrayList<>();
+        final List<FindAllMembersResponse> findMembers = new ArrayList<>();
 
         for (int i = 0; i < members.getContent().size(); i++) {
-            findMembers.add(i, FindMemberInfoResponse.from(members.getContent().get(i)));
+            findMembers.add(i, FindAllMembersResponse.from(members.getContent().get(i)));
         }
         return findMembers;
     }
