@@ -92,14 +92,14 @@ public class MemberService {
             final String status
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Member> enquiries = memberRepository.findAllByStatus(pageable, status)
+        final Page<Member> members = memberRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(status));
-        final List<FindMemberInfoResponse> findEnquiries = new ArrayList<>();
+        final List<FindMemberInfoResponse> findMembers = new ArrayList<>();
 
-        for (int i = 0; i < enquiries.getContent().size(); i++) {
-            findEnquiries.add(i, FindMemberInfoResponse.from(enquiries.getContent().get(i)));
+        for (int i = 0; i < members.getContent().size(); i++) {
+            findMembers.add(i, FindMemberInfoResponse.from(members.getContent().get(i)));
         }
-        return findEnquiries;
+        return findMembers;
     }
 
     /**
