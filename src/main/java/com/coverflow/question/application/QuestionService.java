@@ -9,8 +9,8 @@ import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
+import com.coverflow.question.dto.response.FindAllQuestionsResponse;
 import com.coverflow.question.dto.response.FindQuestionResponse;
-import com.coverflow.question.dto.response.QuestionResponse;
 import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.QuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -87,17 +87,17 @@ public class QuestionService {
     /**
      * [관리자 전용: 전체 질문 조회 메서드]
      */
-    public List<QuestionResponse> findAllQuestions(
+    public List<FindAllQuestionsResponse> findAllQuestions(
             final int pageNo,
             final String criterion
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Question> questions = questionRepository.findAllQuestions(pageable)
                 .orElseThrow(QuestionException.QuestionNotFoundException::new);
-        final List<QuestionResponse> findQuestions = new ArrayList<>();
+        final List<FindAllQuestionsResponse> findQuestions = new ArrayList<>();
 
         for (int i = 0; i < questions.getContent().size(); i++) {
-            findQuestions.add(i, QuestionResponse.from(questions.getContent().get(i)));
+            findQuestions.add(i, FindAllQuestionsResponse.from(questions.getContent().get(i)));
         }
         return findQuestions;
     }
@@ -106,7 +106,7 @@ public class QuestionService {
      * [관리자 전용: 특정 상태 질문 조회 메서드]
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
-    public List<QuestionResponse> findQuestionsByStatus(
+    public List<FindAllQuestionsResponse> findQuestionsByStatus(
             final int pageNo,
             final String criterion,
             final String status
@@ -114,10 +114,10 @@ public class QuestionService {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Question> questions = questionRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(status));
-        final List<QuestionResponse> findQuestions = new ArrayList<>();
+        final List<FindAllQuestionsResponse> findQuestions = new ArrayList<>();
 
         for (int i = 0; i < questions.getContent().size(); i++) {
-            findQuestions.add(i, QuestionResponse.from(questions.getContent().get(i)));
+            findQuestions.add(i, FindAllQuestionsResponse.from(questions.getContent().get(i)));
         }
         return findQuestions;
     }

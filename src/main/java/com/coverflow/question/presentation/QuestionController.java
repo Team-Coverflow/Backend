@@ -7,8 +7,8 @@ import com.coverflow.question.application.QuestionService;
 import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
+import com.coverflow.question.dto.response.FindAllQuestionsResponse;
 import com.coverflow.question.dto.response.FindQuestionResponse;
-import com.coverflow.question.dto.response.QuestionResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -59,12 +59,12 @@ public class QuestionController {
 
     @GetMapping("/admin/find-questions")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<QuestionResponse>>> findAllQuestions(
+    public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findAllQuestions(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<QuestionResponse>>builder()
+                .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 질문 조회에 성공했습니다.")
                         .data(questionService.findAllQuestions(pageNo, criterion))
@@ -74,13 +74,13 @@ public class QuestionController {
 
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<QuestionResponse>>> findQuestionsByStatus(
+    public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findQuestionsByStatus(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
             @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<QuestionResponse>>builder()
+                .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 상태의 질문 검색에 성공했습니다.")
                         .data(questionService.findQuestionsByStatus(pageNo, criterion, status))
