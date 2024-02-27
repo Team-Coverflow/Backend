@@ -28,15 +28,15 @@ public class QuestionController {
 
     @GetMapping("/find-questions/{companyId}")
     public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
-            @PathVariable @Valid final Long companyId,
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @PathVariable @Valid final Long companyId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<QuestionDTO>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회사의 질문 조회에 성공했습니다.")
-                        .data(questionService.findAllQuestionsByCompanyId(companyId, pageNo, criterion))
+                        .data(questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId))
                         .build()
                 );
     }
@@ -44,15 +44,15 @@ public class QuestionController {
     @GetMapping("/find-question/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
-            @PathVariable @Valid final Long questionId,
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @PathVariable @Valid final Long questionId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 질문과 답변 조회에 성공했습니다.")
-                        .data(questionService.findQuestionById(questionId, pageNo, criterion))
+                        .data(questionService.findQuestionById(pageNo, criterion, questionId))
                         .build()
                 );
     }

@@ -41,12 +41,12 @@ public class QuestionService {
      * 회사 id로 조회
      */
     public List<QuestionDTO> findAllQuestionsByCompanyId(
-            final Long companyId,
             final int pageNo,
-            final String criterion
+            final String criterion,
+            final Long companyId
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
-        final Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(companyId, pageable);
+        final Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(pageable, companyId);
         final List<QuestionDTO> questions = new ArrayList<>();
 
         if (optionalQuestions.isPresent()) {
@@ -73,15 +73,15 @@ public class QuestionService {
      */
     @Transactional
     public FindQuestionResponse findQuestionById(
-            final Long questionId,
             final int pageNo,
-            final String criterion
+            final String criterion,
+            final Long questionId
     ) {
         final Question question = questionRepository.findRegisteredQuestion(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
         question.updateViewCount(question.getViewCount() + 1);
-        return FindQuestionResponse.of(question, answerService.findAllAnswersByQuestionId(questionId, pageNo, criterion));
+        return FindQuestionResponse.of(question, answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId));
     }
 
     /**
