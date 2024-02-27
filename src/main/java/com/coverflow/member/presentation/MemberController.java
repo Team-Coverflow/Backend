@@ -37,7 +37,7 @@ public class MemberController {
                         .build());
     }
 
-    @GetMapping("/find-members")
+    @GetMapping("/admin/find-members")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindMemberInfoResponse>>> findAllMemberById(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,

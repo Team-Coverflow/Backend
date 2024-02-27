@@ -39,12 +39,15 @@ public class ReportController {
 
     @GetMapping("/admin/find-reports")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReports() {
+    public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReports(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+    ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 신고 조회에 성공했습니다.")
-                        .data(reportService.findReports())
+                        .data(reportService.findReports(pageNo, criterion))
                         .build());
     }
 
