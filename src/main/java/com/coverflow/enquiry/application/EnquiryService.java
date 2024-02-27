@@ -2,6 +2,7 @@ package com.coverflow.enquiry.application;
 
 import com.coverflow.enquiry.domain.Enquiry;
 import com.coverflow.enquiry.dto.request.SaveEnquiryRequest;
+import com.coverflow.enquiry.dto.response.FindAllEnquiriesResponse;
 import com.coverflow.enquiry.dto.response.FindEnquiryResponse;
 import com.coverflow.enquiry.exception.EnquiryException;
 import com.coverflow.enquiry.infrastructure.EnquiryRepository;
@@ -47,17 +48,17 @@ public class EnquiryService {
     /**
      * [관리자 전용: 전체 문의 조회 메서드]
      */
-    public List<FindEnquiryResponse> findEnquiries(
+    public List<FindAllEnquiriesResponse> findEnquiries(
             final int pageNo,
             final String criterion
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Enquiry> enquiries = enquiryRepository.findEnquiries(pageable)
                 .orElseThrow(EnquiryException.EnquiryNotFoundException::new);
-        final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
+        final List<FindAllEnquiriesResponse> findEnquiries = new ArrayList<>();
 
         for (int i = 0; i < enquiries.getContent().size(); i++) {
-            findEnquiries.add(i, FindEnquiryResponse.from(enquiries.getContent().get(i)));
+            findEnquiries.add(i, FindAllEnquiriesResponse.from(enquiries.getContent().get(i)));
         }
         return findEnquiries;
     }
@@ -66,7 +67,7 @@ public class EnquiryService {
      * [관리자 전용: 특정 상태 문의 조회 메서드]
      * 특정 상태(답변대기/답변완료/삭제)의 회사를 조회하는 메서드
      */
-    public List<FindEnquiryResponse> findEnquiriesByStatus(
+    public List<FindAllEnquiriesResponse> findEnquiriesByStatus(
             final int pageNo,
             final String criterion,
             final String status
@@ -74,10 +75,10 @@ public class EnquiryService {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Enquiry> enquiries = enquiryRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new EnquiryException.EnquiryNotFoundException(status));
-        final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
+        final List<FindAllEnquiriesResponse> findEnquiries = new ArrayList<>();
 
         for (int i = 0; i < enquiries.getContent().size(); i++) {
-            findEnquiries.add(i, FindEnquiryResponse.from(enquiries.getContent().get(i)));
+            findEnquiries.add(i, FindAllEnquiriesResponse.from(enquiries.getContent().get(i)));
         }
         return findEnquiries;
     }
