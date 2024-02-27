@@ -63,7 +63,7 @@ public class InquiryController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 문의 검색에 성공했습니다.")
+                        .message("특정 상태의 문의 조회에 성공했습니다.")
                         .data(inquiryService.findInquiriesByStatus(pageNo, criterion, status))
                         .build()
                 );
