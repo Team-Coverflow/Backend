@@ -15,9 +15,10 @@ public interface EnquiryRepository extends JpaRepository<Enquiry, Long> {
     @Query("SELECT e " +
             "FROM Enquiry e " +
             "WHERE e.member.id = :memberId " +
-            "AND e.status = '등록'")
+            "AND e.status = :status ")
     Optional<Page<Enquiry>> findAllByMemberIdAndStatus(
             @Param("memberId") final UUID memberId,
+            @Param("status") final String status,
             final Pageable pageable
     );
 
@@ -29,7 +30,7 @@ public interface EnquiryRepository extends JpaRepository<Enquiry, Long> {
             "FROM Enquiry e " +
             "WHERE e.status = :status")
     Optional<Page<Enquiry>> findAllByStatus(
-            @Param("status") final String status,
-            final Pageable pageable
+            final Pageable pageable,
+            @Param("status") final String status
     );
 }

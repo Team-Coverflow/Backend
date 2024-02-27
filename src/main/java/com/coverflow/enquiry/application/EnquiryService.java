@@ -1,5 +1,6 @@
 package com.coverflow.enquiry.application;
 
+import com.coverflow.company.exception.CompanyException;
 import com.coverflow.enquiry.domain.Enquiry;
 import com.coverflow.enquiry.dto.request.SaveEnquiryRequest;
 import com.coverflow.enquiry.dto.response.FindEnquiryResponse;
@@ -30,11 +31,12 @@ public class EnquiryService {
      */
     public List<FindEnquiryResponse> findEnquiryByMemberId(
             final UUID memberId,
+            final String status,
             final int pageNo,
             final String criterion
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Enquiry> enquiries = enquiryRepository.findAllByMemberIdAndStatus(memberId, pageable)
+        final Page<Enquiry> enquiries = enquiryRepository.findAllByMemberIdAndStatus(memberId, status, pageable)
                 .orElseThrow(() -> new EnquiryException.EnquiryNotFoundException(memberId));
         final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
 
@@ -54,6 +56,26 @@ public class EnquiryService {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Enquiry> enquiries = enquiryRepository.findEnquiries(pageable)
                 .orElseThrow(EnquiryException.EnquiryNotFoundException::new);
+        final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
+
+        for (int i = 0; i < enquiries.getContent().size(); i++) {
+            findEnquiries.add(i, FindEnquiryResponse.from(enquiries.getContent().get(i)));
+        }
+        return findEnquiries;
+    }
+
+    /**
+     * [관리자 전용: 특정 상태 문의 조회 메서드]
+     * 특정 상태(답변대기/답변완료/삭제)의 회사를 조회하는 메서드
+     */
+    public List<FindEnquiryResponse> findEnquiriesByStatus(
+            final int pageNo,
+            final String criterion,
+            final String status
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Enquiry> enquiries = enquiryRepository.findAllByStatus(pageable, status)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
         final List<FindEnquiryResponse> findEnquiries = new ArrayList<>();
 
         for (int i = 0; i < enquiries.getContent().size(); i++) {

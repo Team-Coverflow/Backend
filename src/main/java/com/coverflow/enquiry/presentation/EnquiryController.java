@@ -28,6 +28,7 @@ public class EnquiryController {
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindEnquiryResponse>>> findEnquiryByMemberId(
             @RequestParam("memberId") @Valid final UUID memberId,
+            @RequestParam(defaultValue = "답변대기", value = "status") @Valid final String status,
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
@@ -35,7 +36,7 @@ public class EnquiryController {
                 .body(ResponseHandler.<List<FindEnquiryResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회원의 문의 조회에 성공했습니다.")
-                        .data(enquiryService.findEnquiryByMemberId(memberId, pageNo, criterion))
+                        .data(enquiryService.findEnquiryByMemberId(memberId, status, pageNo, criterion))
                         .build());
     }
 
@@ -51,6 +52,22 @@ public class EnquiryController {
                         .message("전체 문의 조회에 성공했습니다.")
                         .data(enquiryService.findEnquiries(pageNo, criterion))
                         .build());
+    }
+
+    @GetMapping("/admin/find-by-status")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<List<FindEnquiryResponse>>> findEnquiriesByStatus(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<FindEnquiryResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("특정 상태의 문의 검색에 성공했습니다.")
+                        .data(enquiryService.findEnquiriesByStatus(pageNo, criterion, status))
+                        .build()
+                );
     }
 
     @PostMapping("/save-enquiry")
