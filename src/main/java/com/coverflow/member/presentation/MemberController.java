@@ -51,6 +51,22 @@ public class MemberController {
                         .build());
     }
 
+    @GetMapping("/admin/find-by-status")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<List<FindMemberInfoResponse>>> findMembersByStatus(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<FindMemberInfoResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("특정 상태의 회원 검색에 성공했습니다.")
+                        .data(memberService.findMembersByStatus(pageNo, criterion, status))
+                        .build()
+                );
+    }
+
     @PostMapping("/save-member-info")
     public ResponseEntity<ResponseHandler<Void>> saveMemberInfo(
             @AuthenticationPrincipal final UserDetails userDetails,

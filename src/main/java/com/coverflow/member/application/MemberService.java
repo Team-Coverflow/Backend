@@ -83,6 +83,26 @@ public class MemberService {
     }
 
     /**
+     * [관리자 전용: 특정 상태 회원 조회 메서드]
+     * 특정 상태(등록/탈퇴)의 회사를 조회하는 메서드
+     */
+    public List<FindMemberInfoResponse> findMembersByStatus(
+            final int pageNo,
+            final String criterion,
+            final String status
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Member> enquiries = memberRepository.findAllByStatus(pageable, status)
+                .orElseThrow(() -> new MemberException.MemberNotFoundException(status));
+        final List<FindMemberInfoResponse> findEnquiries = new ArrayList<>();
+
+        for (int i = 0; i < enquiries.getContent().size(); i++) {
+            findEnquiries.add(i, FindMemberInfoResponse.from(enquiries.getContent().get(i)));
+        }
+        return findEnquiries;
+    }
+
+    /**
      * [회원 추가 정보 등록 메서드]
      */
     @Transactional

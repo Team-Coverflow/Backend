@@ -13,6 +13,16 @@ import java.util.UUID;
 
 public interface MemberRepository extends JpaRepository<Member, UUID> {
 
+    @Query(value = "SELECT m " +
+            "FROM Member m " +
+            "WHERE m.id = :id " +
+            "AND m.status= :status " +
+            "ORDER BY m.createdAt ASC")
+    Optional<Member> findByIdAndStatus(
+            @Param("id") final UUID id,
+            @Param("status") final String status
+    );
+
     Optional<Member> findByEmail(final String email);
 
     Optional<Member> findByNickname(final String nickname);
@@ -37,11 +47,9 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
 
     @Query(value = "SELECT m " +
             "FROM Member m " +
-            "WHERE m.id = :id " +
-            "AND m.status= :status " +
-            "ORDER BY m.createdAt ASC")
-    Optional<Member> findByIdAndStatus(
-            @Param("id") final UUID id,
+            "WHERE m.status = :status")
+    Optional<Page<Member>> findAllByStatus(
+            final Pageable pageable,
             @Param("status") final String status
     );
 }
