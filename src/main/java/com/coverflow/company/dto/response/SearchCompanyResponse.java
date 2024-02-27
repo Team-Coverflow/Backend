@@ -3,13 +3,13 @@ package com.coverflow.company.dto.response;
 import com.coverflow.company.domain.Company;
 
 public record SearchCompanyResponse(
-        Long id,
-        String name,
-        String type,
-        String address,
-        String establishment,
+        Long companyId,
+        String companyName,
+        String companyType,
+        String companyAddress,
+        String companyEstablishment,
         int questionCount,
-        String status
+        String companyStatus
 ) {
 
     public static SearchCompanyResponse from(final Company company) {

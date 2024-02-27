@@ -14,11 +14,11 @@ import java.time.LocalDateTime;
 public class QuestionDTO {
 
     private Long questionId;
-    private String nickname;
-    private String tag;
-    private String title;
-    private String content;
-    private int viewCount;
+    private String questionerNickname;
+    private String questionerTag;
+    private String questionTitle;
+    private String questionContent;
+    private int questionViewCount;
     private int answerCount;
     private int reward;
     private LocalDateTime createAt;
