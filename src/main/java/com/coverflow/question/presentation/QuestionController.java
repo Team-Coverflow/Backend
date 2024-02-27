@@ -44,13 +44,15 @@ public class QuestionController {
     @GetMapping("/find-question/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
-            @PathVariable @Valid final Long questionId
+            @PathVariable @Valid final Long questionId,
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 질문과 답변 조회에 성공했습니다.")
-                        .data(questionService.findQuestionById(questionId))
+                        .data(questionService.findQuestionById(questionId, pageNo, criterion))
                         .build()
                 );
     }

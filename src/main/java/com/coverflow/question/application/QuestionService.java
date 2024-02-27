@@ -5,9 +5,7 @@ import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.CurrencyService;
 import com.coverflow.member.domain.Member;
-import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
-import com.coverflow.question.dto.AnswerDTO;
 import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
@@ -34,6 +32,7 @@ import java.util.UUID;
 public class QuestionService {
 
     private final CurrencyService currencyService;
+    private final AnswerService answerService;
     private final CompanyRepository companyRepository;
     private final QuestionRepository questionRepository;
 
@@ -73,25 +72,16 @@ public class QuestionService {
      * 특정 질문 id로 질문 및 답변 조회
      */
     @Transactional
-    public FindQuestionResponse findQuestionById(final Long questionId) {
+    public FindQuestionResponse findQuestionById(
+            final Long questionId,
+            final int pageNo,
+            final String criterion
+    ) {
         final Question question = questionRepository.findRegisteredQuestion(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
-        final Optional<List<Answer>> optionalAnswers = questionRepository.findRegisteredAnswers(questionId);
-        final List<AnswerDTO> answers = new ArrayList<>();
 
-        if (optionalAnswers.isPresent()) {
-            List<Answer> answerList = optionalAnswers.get();
-            for (int i = 0; i < answerList.size(); i++) {
-                answers.add(i, new AnswerDTO(
-                        answerList.get(i).getId(),
-                        answerList.get(i).getMember().getNickname(),
-                        answerList.get(i).getMember().getTag(),
-                        answerList.get(i).getContent(),
-                        answerList.get(i).getCreatedAt()));
-            }
-        }
         question.updateViewCount(question.getViewCount() + 1);
-        return FindQuestionResponse.of(question, answers);
+        return FindQuestionResponse.of(question, answerService.findAllAnswersByQuestionId(questionId, pageNo, criterion));
     }
 
     /**

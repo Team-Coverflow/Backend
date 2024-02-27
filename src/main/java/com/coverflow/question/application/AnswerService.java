@@ -8,6 +8,7 @@ import com.coverflow.notification.domain.Notification;
 import com.coverflow.notification.domain.NotificationType;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
+import com.coverflow.question.dto.AnswerDTO;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.request.UpdateSelectionRequest;
@@ -17,11 +18,16 @@ import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.AnswerRepository;
 import com.coverflow.question.infrastructure.QuestionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Transactional(readOnly = true)
@@ -35,29 +41,45 @@ public class AnswerService {
     private final NotificationService notificationService;
 
     /**
-     * [특정 질문에 대한 전체 답변 조회 메서드]
+     * [특정 질문에 대한 답변 조회 메서드]
      */
-    public List<FindAnswerResponse> findAnswer(final Long questionId) {
-        final List<Answer> answers = answerRepository.findAllAnswersByQuestionIdAndStatus(questionId, "등록")
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(questionId));
-        final List<FindAnswerResponse> findAnswers = new ArrayList<>();
+    public List<AnswerDTO> findAllAnswersByQuestionId(
+            final Long questionId,
+            final int pageNo,
+            final String criterion
+    ) {
+        final List<AnswerDTO> answers = new ArrayList<>();
+        final Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
+        final Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndStatus(questionId, pageable);
 
-        for (int i = 0; i < answers.size(); i++) {
-            findAnswers.add(i, FindAnswerResponse.from(answers.get(i)));
+        if (optionalAnswers.isPresent()) {
+            Page<Answer> answerList = optionalAnswers.get();
+            for (int i = 0; i < answerList.getContent().size(); i++) {
+                answers.add(i, new AnswerDTO(
+                        answerList.getContent().get(i).getId(),
+                        answerList.getContent().get(i).getMember().getNickname(),
+                        answerList.getContent().get(i).getMember().getTag(),
+                        answerList.getContent().get(i).getContent(),
+                        answerList.getContent().get(i).getCreatedAt()));
+            }
         }
-        return findAnswers;
+        return answers;
     }
 
     /**
      * [관리자 전용: 전체 답변 조회 메서드]
      */
-    public List<FindAnswerResponse> findAnswers() {
-        final List<Answer> answers = answerRepository.findAnswers()
+    public List<FindAnswerResponse> findAllAnswers(
+            final int pageNo,
+            final String criterion
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Answer> answers = answerRepository.findAllAnswers(pageable)
                 .orElseThrow(AnswerException.AnswerNotFoundException::new);
         final List<FindAnswerResponse> findAnswers = new ArrayList<>();
 
-        for (int i = 0; i < answers.size(); i++) {
-            findAnswers.add(i, FindAnswerResponse.from(answers.get(i)));
+        for (int i = 0; i < answers.getContent().size(); i++) {
+            findAnswers.add(i, FindAnswerResponse.from(answers.getContent().get(i)));
         }
         return findAnswers;
     }
