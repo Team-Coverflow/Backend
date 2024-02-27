@@ -50,15 +50,15 @@ public class CompanyController {
 
     @GetMapping("/find-company/{companyId}")
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
-            @PathVariable @Valid final Long companyId,
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @PathVariable @Valid final Long companyId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회사와 질문 조회에 성공했습니다.")
-                        .data(companyService.findCompanyById(companyId, pageNo, criterion))
+                        .data(companyService.findCompanyById(pageNo, criterion, companyId))
                         .build()
                 );
     }
@@ -78,7 +78,7 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/admin/find-pending")
+    @GetMapping("/admin/find-by-status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,

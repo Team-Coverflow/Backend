@@ -32,7 +32,7 @@ public class CompanyService {
      */
     public List<FindAutoCompleteResponse> autoComplete(final String name) {
         final Pageable pageable = PageRequest.of(0, 10, Sort.by(name).ascending());
-        final Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(name, pageable)
+        final Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<FindAutoCompleteResponse> findCompanies = new ArrayList<>();
 
@@ -51,7 +51,7 @@ public class CompanyService {
             final String name
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(name).ascending());
-        final Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(name, pageable)
+        final Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<SearchCompanyResponse> findCompanies = new ArrayList<>();
 
@@ -66,9 +66,9 @@ public class CompanyService {
      * 특정 회사와 질문 리스트를 조회하는 메서드
      */
     public FindCompanyResponse findCompanyById(
-            final Long companyId,
             final int pageNo,
-            final String criterion
+            final String criterion,
+            final Long companyId
     ) {
         final Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
@@ -105,7 +105,7 @@ public class CompanyService {
             final String status
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Company> companies = companyRepository.findAllByStatus(status, pageable)
+        final Page<Company> companies = companyRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
         final List<FindPendingResponse> findCompanies = new ArrayList<>();
 
