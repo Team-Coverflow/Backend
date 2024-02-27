@@ -1,9 +1,9 @@
-package com.coverflow.enquiry.presentation;
+package com.coverflow.Inquiry.presentation;
 
-import com.coverflow.enquiry.application.EnquiryService;
-import com.coverflow.enquiry.dto.request.SaveEnquiryRequest;
-import com.coverflow.enquiry.dto.response.FindAllEnquiriesResponse;
-import com.coverflow.enquiry.dto.response.FindEnquiryResponse;
+import com.coverflow.Inquiry.application.InquiryService;
+import com.coverflow.Inquiry.dto.request.SaveInquiryRequest;
+import com.coverflow.Inquiry.dto.response.FindAllInquiriesResponse;
+import com.coverflow.Inquiry.dto.response.FindInquiryResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
@@ -19,64 +19,64 @@ import java.util.List;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/enquiry")
+@RequestMapping("/api/inquiry")
 @RestController
-public class EnquiryController {
+public class InquiryController {
 
-    private final EnquiryService enquiryService;
+    private final InquiryService inquiryService;
 
-    @GetMapping("/find-enquiry")
+    @GetMapping("/find-inquiry")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<List<FindEnquiryResponse>>> findEnquiryByMemberId(
+    public ResponseEntity<ResponseHandler<List<FindInquiryResponse>>> findInquiryByMemberId(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
             @RequestParam("memberId") @Valid final UUID memberId
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindEnquiryResponse>>builder()
+                .body(ResponseHandler.<List<FindInquiryResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회원의 문의 조회에 성공했습니다.")
-                        .data(enquiryService.findEnquiryByMemberId(pageNo, criterion, memberId))
+                        .data(inquiryService.findInquiryByMemberId(pageNo, criterion, memberId))
                         .build());
     }
 
-    @GetMapping("/admin/find-enquiries")
+    @GetMapping("/admin/find-inquiries")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllEnquiriesResponse>>> findEnquiries(
+    public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiries(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllEnquiriesResponse>>builder()
+                .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 문의 조회에 성공했습니다.")
-                        .data(enquiryService.findEnquiries(pageNo, criterion))
+                        .data(inquiryService.findInquiries(pageNo, criterion))
                         .build());
     }
 
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllEnquiriesResponse>>> findEnquiriesByStatus(
+    public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiriesByStatus(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
             @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllEnquiriesResponse>>builder()
+                .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 상태의 문의 검색에 성공했습니다.")
-                        .data(enquiryService.findEnquiriesByStatus(pageNo, criterion, status))
+                        .data(inquiryService.findInquiriesByStatus(pageNo, criterion, status))
                         .build()
                 );
     }
 
-    @PostMapping("/save-enquiry")
+    @PostMapping("/save-inquiry")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> saveEnquiry(
-            @RequestBody @Valid final SaveEnquiryRequest saveEnquiryRequest,
+    public ResponseEntity<ResponseHandler<Void>> saveInquiry(
+            @RequestBody @Valid final SaveInquiryRequest saveInquiryRequest,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        enquiryService.saveEnquiry(saveEnquiryRequest, userDetails.getUsername());
+        inquiryService.saveInquiry(saveInquiryRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
@@ -84,12 +84,12 @@ public class EnquiryController {
                         .build());
     }
 
-    @PostMapping("/admin/delete-enquiry/{enquiryId}")
+    @PostMapping("/admin/delete-inquiry/{inquiryId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
-            @PathVariable @Valid final Long enquiryId
+    public ResponseEntity<ResponseHandler<Void>> deleteInquiry(
+            @PathVariable @Valid final Long inquiryId
     ) {
-        enquiryService.deleteEnquiry(enquiryId);
+        inquiryService.deleteInquiry(inquiryId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
