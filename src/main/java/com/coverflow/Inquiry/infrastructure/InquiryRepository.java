@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
@@ -18,7 +17,7 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
             "AND e.status != '삭제'")
     Optional<Page<Inquiry>> findAllByMemberIdAndStatus(
             final Pageable pageable,
-            @Param("memberId") final UUID memberId
+            @Param("memberId") final String memberId
     );
 
     @Query("SELECT e " +

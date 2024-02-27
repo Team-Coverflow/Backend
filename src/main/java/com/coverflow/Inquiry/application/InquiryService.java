@@ -32,7 +32,7 @@ public class InquiryService {
     public List<FindInquiryResponse> findInquiryByMemberId(
             final int pageNo,
             final String criterion,
-            final UUID memberId
+            final String memberId
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(pageable, memberId)
