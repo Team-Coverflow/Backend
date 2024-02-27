@@ -58,7 +58,7 @@ public class InquiryController {
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiriesByStatus(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+            @RequestParam(defaultValue = "답변대기", value = "status") @Valid final String status
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
