@@ -101,9 +101,10 @@ public class CompanyService {
      */
     public List<FindPendingResponse> findPending(
             final int pageNo,
+            final String criterion,
             final String status
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(status).descending());
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
         final Page<Company> companies = companyRepository.findAllByStatus(status, pageable)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
         final List<FindPendingResponse> findCompanies = new ArrayList<>();

@@ -82,13 +82,14 @@ public class CompanyController {
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "status", value = "criterion") @Valid final String status
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindPendingResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 상태의 회사 검색에 성공했습니다.")
-                        .data(companyService.findPending(pageNo, status))
+                        .data(companyService.findPending(pageNo, criterion, status))
                         .build()
                 );
     }
