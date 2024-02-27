@@ -12,6 +12,10 @@ public class AnswerException extends RuntimeException {
             super(String.format("답변이 존재하지 않습니다. - request info { id : %d }", questionId));
         }
 
+        public AnswerNotFoundException(final String string) {
+            super(String.format("답변이 존재하지 않습니다. - request info { string : %s }", string));
+        }
+
         public AnswerNotFoundException() {
             super("답변이 존재하지 않습니다.");
         }
