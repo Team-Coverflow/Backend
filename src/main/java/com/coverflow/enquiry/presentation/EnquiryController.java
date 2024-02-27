@@ -2,6 +2,7 @@ package com.coverflow.enquiry.presentation;
 
 import com.coverflow.enquiry.application.EnquiryService;
 import com.coverflow.enquiry.dto.request.SaveEnquiryRequest;
+import com.coverflow.enquiry.dto.response.FindAllEnquiriesResponse;
 import com.coverflow.enquiry.dto.response.FindEnquiryResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
@@ -24,28 +25,49 @@ public class EnquiryController {
 
     private final EnquiryService enquiryService;
 
-    @GetMapping("/find-enquiry/{memberId}")
+    @GetMapping("/find-enquiry")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindEnquiryResponse>>> findEnquiryByMemberId(
-            @PathVariable @Valid final UUID memberId
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam("memberId") @Valid final UUID memberId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindEnquiryResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회원의 문의 조회에 성공했습니다.")
-                        .data(enquiryService.findEnquiryByMemberId(memberId))
+                        .data(enquiryService.findEnquiryByMemberId(pageNo, criterion, memberId))
                         .build());
     }
 
     @GetMapping("/admin/find-enquiries")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindEnquiryResponse>>> findEnquiries() {
+    public ResponseEntity<ResponseHandler<List<FindAllEnquiriesResponse>>> findEnquiries(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+    ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindEnquiryResponse>>builder()
+                .body(ResponseHandler.<List<FindAllEnquiriesResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 문의 조회에 성공했습니다.")
-                        .data(enquiryService.findEnquiries())
+                        .data(enquiryService.findEnquiries(pageNo, criterion))
                         .build());
+    }
+
+    @GetMapping("/admin/find-by-status")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<List<FindAllEnquiriesResponse>>> findEnquiriesByStatus(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<FindAllEnquiriesResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("특정 상태의 문의 검색에 성공했습니다.")
+                        .data(enquiryService.findEnquiriesByStatus(pageNo, criterion, status))
+                        .build()
+                );
     }
 
     @PostMapping("/save-enquiry")

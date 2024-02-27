@@ -19,7 +19,7 @@ public class Enquiry extends BaseTimeEntity {
     @Column
     private String content; // 내용
     @Column
-    private String status; // 상태
+    private String status; // 상태 (답변대기/답변완료/삭제)
 
     @ManyToOne
     @JoinColumn(name = "member_id")

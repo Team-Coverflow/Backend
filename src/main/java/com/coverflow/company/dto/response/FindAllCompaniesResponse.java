@@ -6,7 +6,8 @@ public record FindAllCompaniesResponse(
         Long id,
         String name,
         String type,
-        String address,
+        String city,
+        String district,
         String establishment,
         int questionCount,
         String status
@@ -17,7 +18,8 @@ public record FindAllCompaniesResponse(
                 company.getId(),
                 company.getName(),
                 company.getType(),
-                company.getCity() + " " + company.getDistrict(),
+                company.getCity(),
+                company.getDistrict(),
                 company.getEstablishment(),
                 company.getQuestionCount(),
                 company.getStatus()

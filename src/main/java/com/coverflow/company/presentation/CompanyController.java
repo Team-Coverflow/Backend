@@ -3,7 +3,10 @@ package com.coverflow.company.presentation;
 import com.coverflow.company.application.CompanyService;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
-import com.coverflow.company.dto.response.*;
+import com.coverflow.company.dto.response.FindAllCompaniesResponse;
+import com.coverflow.company.dto.response.FindAutoCompleteResponse;
+import com.coverflow.company.dto.response.FindCompanyResponse;
+import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import jakarta.validation.Valid;
@@ -23,7 +26,7 @@ public class CompanyController {
 
     @GetMapping("/auto-complete")
     public ResponseEntity<ResponseHandler<List<FindAutoCompleteResponse>>> autoComplete(
-            @RequestParam("name") @Valid final String name
+            @RequestParam(defaultValue = "name", value = "name") @Valid final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAutoCompleteResponse>>builder()
@@ -36,52 +39,60 @@ public class CompanyController {
 
     @GetMapping("/search-companies")
     public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
-            @RequestParam("name") @Valid final String name
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "name", value = "name") @Valid final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("회사 검색에 성공했습니다.")
-                        .data(companyService.searchCompanies(name))
+                        .data(companyService.searchCompanies(pageNo, name))
                         .build()
                 );
     }
 
     @GetMapping("/find-company/{companyId}")
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
             @PathVariable @Valid final Long companyId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 회사와 질문 조회에 성공했습니다.")
-                        .data(companyService.findCompanyById(companyId))
+                        .data(companyService.findCompanyById(pageNo, criterion, companyId))
                         .build()
                 );
     }
 
     @GetMapping("/admin/find-companies")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies() {
+    public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+    ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("전체 회사 리스트 검색에 성공했습니다.")
-                        .data(companyService.findAllCompanies())
+                        .data(companyService.findAllCompanies(pageNo, criterion))
                         .build()
                 );
     }
 
-    @GetMapping("/admin/find-pending")
+    @GetMapping("/admin/find-by-status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindPendingResponse>>> findPending(
-            @RequestParam("status") @Valid final String status
+    public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findPending(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindPendingResponse>>builder()
+                .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 상태의 회사 검색에 성공했습니다.")
-                        .data(companyService.findPending(status))
+                        .data(companyService.findPending(pageNo, criterion, status))
                         .build()
                 );
     }

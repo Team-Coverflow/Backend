@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 public record FindAnswerResponse(
         Long answerId,
         String answerContent,
+        boolean selection,
         String answerNickname,
         String answerTag,
         LocalDateTime createAt
@@ -16,6 +17,7 @@ public record FindAnswerResponse(
         return new FindAnswerResponse(
                 answer.getId(),
                 answer.getContent(),
+                answer.isSelection(),
                 answer.getMember().getNickname(),
                 answer.getMember().getTag(),
                 answer.getCreatedAt()

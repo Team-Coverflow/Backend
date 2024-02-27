@@ -11,6 +11,10 @@ import com.coverflow.report.dto.response.FindReportResponse;
 import com.coverflow.report.exception.ReportException;
 import com.coverflow.report.infrastructure.ReportRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,13 +36,18 @@ public class ReportService {
     /**
      * [특정 회원의 신고 리스트 조회 메서드]
      */
-    public List<FindReportResponse> findReportsByMemberId(final UUID memberId) {
-        final List<Report> reports = reportRepository.findReportsByMemberId(memberId)
+    public List<FindReportResponse> findReportsByMemberId(
+            final UUID memberId,
+            final int pageNo,
+            final String criterion
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Report> reports = reportRepository.findReportsByMemberId(memberId, pageable)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(memberId));
         final List<FindReportResponse> findReports = new ArrayList<>();
 
-        for (int i = 0; i < reports.size(); i++) {
-            findReports.add(i, FindReportResponse.from(reports.get(i)));
+        for (int i = 0; i < reports.getContent().size(); i++) {
+            findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
         }
         return findReports;
     }
@@ -46,13 +55,37 @@ public class ReportService {
     /**
      * [관리자 전용: 전체 신고 리스트 조회 메서드]
      */
-    public List<FindReportResponse> findReports() {
-        final List<Report> reports = reportRepository.findReports()
+    public List<FindReportResponse> findReports(
+            final int pageNo,
+            final String criterion
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Report> reports = reportRepository.findAllReports(pageable)
                 .orElseThrow(ReportException.ReportNotFoundException::new);
         final List<FindReportResponse> findReports = new ArrayList<>();
 
-        for (int i = 0; i < reports.size(); i++) {
-            findReports.add(i, FindReportResponse.from(reports.get(i)));
+        for (int i = 0; i < reports.getContent().size(); i++) {
+            findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
+        }
+        return findReports;
+    }
+
+    /**
+     * [관리자 전용: 특정 상태 신고 조회 메서드]
+     * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
+     */
+    public List<FindReportResponse> findReportsByStatus(
+            final int pageNo,
+            final String criterion,
+            final String status
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Report> reports = reportRepository.findAllByStatus(pageable, status)
+                .orElseThrow(() -> new ReportException.ReportNotFoundException(status));
+        final List<FindReportResponse> findReports = new ArrayList<>();
+
+        for (int i = 0; i < reports.getContent().size(); i++) {
+            findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
         }
         return findReports;
     }

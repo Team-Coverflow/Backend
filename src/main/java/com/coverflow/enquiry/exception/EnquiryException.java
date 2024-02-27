@@ -11,11 +11,15 @@ public class EnquiryException extends RuntimeException {
     public static class EnquiryNotFoundException extends EnquiryException {
 
         public EnquiryNotFoundException(final UUID memberId) {
-            super(String.format("문의가 존재하지 않습니다. - request info { id : %s }", memberId));
+            super(String.format("문의가 존재하지 않습니다. - request info { memberId : %s }", memberId));
         }
 
         public EnquiryNotFoundException(final Long enquiryId) {
-            super(String.format("문의가 존재하지 않습니다. - request info { id : %d }", enquiryId));
+            super(String.format("문의가 존재하지 않습니다. - request info { enquiryId : %d }", enquiryId));
+        }
+
+        public EnquiryNotFoundException(final String string) {
+            super(String.format("문의가 존재하지 않습니다. - request info { string : %s }", string));
         }
 
         public EnquiryNotFoundException() {
