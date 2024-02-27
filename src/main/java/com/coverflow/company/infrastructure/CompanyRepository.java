@@ -16,7 +16,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("SELECT c " +
             "FROM Company c " +
             "WHERE c.status = :status")
-    Optional<Page<Company>> findByStatus(
+    Optional<Page<Company>> findAllByStatus(
             final String status,
             final Pageable pageable
     );
