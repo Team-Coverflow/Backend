@@ -19,7 +19,7 @@ public class EnquiryException extends RuntimeException {
         }
 
         public EnquiryNotFoundException(final String string) {
-            super(String.format("문의가 존재하지 않습니다. - request info { String : %s }", string));
+            super(String.format("문의가 존재하지 않습니다. - request info { string : %s }", string));
         }
 
         public EnquiryNotFoundException() {
