@@ -73,7 +73,7 @@ public class CompanyService {
         final Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
-        return FindCompanyResponse.of(company, questionService.findAllQuestionsByCompanyId(companyId, pageNo, criterion));
+        return FindCompanyResponse.of(company, questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId));
     }
 
     /**

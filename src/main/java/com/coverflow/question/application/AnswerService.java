@@ -44,12 +44,12 @@ public class AnswerService {
      * [특정 질문에 대한 답변 조회 메서드]
      */
     public List<AnswerDTO> findAllAnswersByQuestionId(
-            final Long questionId,
             final int pageNo,
-            final String criterion
+            final String criterion,
+            final Long questionId
     ) {
         final Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
-        final Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndStatus(questionId, pageable);
+        final Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndStatus(pageable, questionId);
         final List<AnswerDTO> answers = new ArrayList<>();
 
         if (optionalAnswers.isPresent()) {
@@ -85,12 +85,23 @@ public class AnswerService {
     }
 
     /**
-     * [관리자 전용: 특정 답변 조회 메서드]
+     * [관리자 전용: 특정 상태 답변 조회 메서드]
+     * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
-    public FindAnswerResponse findById(final Long answerId) {
-        final Answer answer = answerRepository.findByIdAndStatus(answerId, "등록")
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
-        return FindAnswerResponse.from(answer);
+    public List<FindAnswerResponse> findAnswersByStatus(
+            final int pageNo,
+            final String criterion,
+            final String status
+    ) {
+        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        final Page<Answer> answers = answerRepository.findAllByStatus(pageable, status)
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(status));
+        final List<FindAnswerResponse> findAnswers = new ArrayList<>();
+
+        for (int i = 0; i < answers.getContent().size(); i++) {
+            findAnswers.add(i, FindAnswerResponse.from(answers.getContent().get(i)));
+        }
+        return findAnswers;
     }
 
     /**

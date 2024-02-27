@@ -74,7 +74,7 @@ public class QuestionController {
 
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<QuestionResponse>>> findMembersByStatus(
+    public ResponseEntity<ResponseHandler<List<QuestionResponse>>> findQuestionsByStatus(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
             @RequestParam(defaultValue = "등록", value = "status") @Valid final String status

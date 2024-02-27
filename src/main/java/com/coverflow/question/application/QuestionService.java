@@ -104,7 +104,7 @@ public class QuestionService {
 
     /**
      * [관리자 전용: 특정 상태 질문 조회 메서드]
-     * 특정 상태(등록/탈퇴)의 회사를 조회하는 메서드
+     * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
     public List<QuestionResponse> findQuestionsByStatus(
             final int pageNo,

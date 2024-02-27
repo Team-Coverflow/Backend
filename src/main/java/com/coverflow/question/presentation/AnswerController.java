@@ -29,29 +29,15 @@ public class AnswerController {
     @GetMapping("/find-answers/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<AnswerDTO>>> findAnswer(
-            @PathVariable @Valid final Long questionId,
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @PathVariable @Valid final Long questionId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<AnswerDTO>>builder()
                         .statusCode(HttpStatus.OK)
                         .message("특정 질문에 대한 전체 답변 조회에 성공했습니다.")
-                        .data(answerService.findAllAnswersByQuestionId(questionId, pageNo, criterion))
-                        .build()
-                );
-    }
-
-    @GetMapping("/admin/find-answer/{answerId}")
-    @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAnswerResponse>> findAnswerById(
-            @PathVariable @Valid final Long answerId
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<FindAnswerResponse>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("특정 답변 조회에 성공했습니다.")
-                        .data(answerService.findById(answerId))
+                        .data(answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId))
                         .build()
                 );
     }
@@ -67,6 +53,22 @@ public class AnswerController {
                         .statusCode(HttpStatus.OK)
                         .message("전체 답변 조회에 성공했습니다.")
                         .data(answerService.findAllAnswers(pageNo, criterion))
+                        .build()
+                );
+    }
+
+    @GetMapping("/admin/find-by-status")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswersByStatus(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<FindAnswerResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("특정 상태의 답변 검색에 성공했습니다.")
+                        .data(answerService.findAnswersByStatus(pageNo, criterion, status))
                         .build()
                 );
     }

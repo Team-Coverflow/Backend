@@ -11,18 +11,29 @@ import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
+    Optional<Answer> findByIdAndStatus(
+            final Long id,
+            final String status
+    );
+
     @Query("SELECT a " +
             "FROM Answer a " +
             "WHERE a.question.id = :questionId " +
             "AND a.status = '등록'")
     Optional<Page<Answer>> findAllAnswersByQuestionIdAndStatus(
-            @Param("questionId") final Long questionId,
-            final Pageable pageable
+            final Pageable pageable,
+            @Param("questionId") final Long questionId
     );
 
     @Query("SELECT a " +
             "FROM Answer a ")
     Optional<Page<Answer>> findAllAnswers(final Pageable pageable);
 
-    Optional<Answer> findByIdAndStatus(Long id, String status);
+    @Query("SELECT a " +
+            "FROM Answer a " +
+            "WHERE a.status = :status")
+    Optional<Page<Answer>> findAllByStatus(
+            final Pageable pageable,
+            @Param("status") final String status
+    );
 }
