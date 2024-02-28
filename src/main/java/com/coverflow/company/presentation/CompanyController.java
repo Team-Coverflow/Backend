@@ -26,7 +26,7 @@ public class CompanyController {
 
     @GetMapping("/auto-complete")
     public ResponseEntity<ResponseHandler<List<FindAutoCompleteResponse>>> autoComplete(
-            @RequestParam(defaultValue = "name", value = "name") @Valid final String name
+            @RequestParam(defaultValue = "name") @Valid final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAutoCompleteResponse>>builder()
@@ -39,8 +39,8 @@ public class CompanyController {
 
     @GetMapping("/search-companies")
     public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "name", value = "name") @Valid final String name
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "name") @Valid final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
@@ -54,8 +54,8 @@ public class CompanyController {
     @GetMapping("/find-company/{companyId}")
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
             @PathVariable @Valid final Long companyId,
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
@@ -69,8 +69,8 @@ public class CompanyController {
     @GetMapping("/admin/find-companies")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
@@ -84,9 +84,9 @@ public class CompanyController {
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findPending(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록") @Valid final String status
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
@@ -111,7 +111,7 @@ public class CompanyController {
 
     @PostMapping("/admin/update-company")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> updateNickname(
+    public ResponseEntity<ResponseHandler<Void>> updateCompany(
             @RequestBody @Valid final UpdateCompanyRequest updateCompanyRequest
     ) {
         companyService.updateCompany(updateCompanyRequest);
