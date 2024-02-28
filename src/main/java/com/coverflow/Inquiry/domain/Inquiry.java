@@ -1,4 +1,4 @@
-package com.coverflow.enquiry.domain;
+package com.coverflow.Inquiry.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
@@ -11,7 +11,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "tbl_enquiry")
-public class Enquiry extends BaseTimeEntity {
+public class Inquiry extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -47,7 +47,7 @@ public class MemberController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("모든 회원 조회 성공했습니다.")
+                        .message("전체 회원 조회 성공했습니다.")
                         .data(memberService.findAllMembers(pageNo, criterion))
                         .build());
     }
@@ -62,7 +62,7 @@ public class MemberController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 회원 검색에 성공했습니다.")
+                        .message("특정 상태의 회원 조회에 성공했습니다.")
                         .data(memberService.findMembersByStatus(pageNo, criterion, status))
                         .build()
                 );

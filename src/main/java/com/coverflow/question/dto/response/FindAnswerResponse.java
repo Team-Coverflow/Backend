@@ -8,8 +8,9 @@ public record FindAnswerResponse(
         Long answerId,
         String answerContent,
         boolean selection,
-        String answerNickname,
-        String answerTag,
+        String answererNickname,
+        String answererTag,
+        String answerStatus,
         LocalDateTime createAt
 ) {
 
@@ -20,6 +21,7 @@ public record FindAnswerResponse(
                 answer.isSelection(),
                 answer.getMember().getNickname(),
                 answer.getMember().getTag(),
+                answer.getStatus(),
                 answer.getCreatedAt()
         );
     }

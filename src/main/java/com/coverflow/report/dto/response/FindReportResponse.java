@@ -2,13 +2,11 @@ package com.coverflow.report.dto.response;
 
 import com.coverflow.report.domain.Report;
 
-import java.util.UUID;
-
 public record FindReportResponse(
         Long reportId,
-        String content,
-        String status,
-        UUID memberId,
+        String reportContent,
+        String reportStatus,
+        String reporterNickname,
         Long questionId,
         Long answerId
 ) {
@@ -18,7 +16,7 @@ public record FindReportResponse(
                 report.getId(),
                 report.getContent(),
                 report.getStatus(),
-                report.getMember().getId(),
+                report.getMember().getNickname(),
                 report.getQuestion().getId(),
                 report.getAnswer().getId()
         );

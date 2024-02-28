@@ -26,6 +26,9 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
+    /**
+     * 일단 보류
+     */
     @GetMapping("/find-questions/{companyId}")
     public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
             @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,

@@ -7,11 +7,13 @@ import java.time.LocalDateTime;
 public record FindAllQuestionsResponse(
         Long questionId,
         String companyName,
-        String questionNickname,
+        String questionerNickname,
+        String questionerTag,
         String questionTitle,
         int viewCount,
         int answerCount,
         int reward,
+        String questionStatus,
         LocalDateTime createAt
 ) {
 
@@ -20,10 +22,12 @@ public record FindAllQuestionsResponse(
                 question.getId(),
                 question.getCompany().getName(),
                 question.getMember().getNickname(),
+                question.getMember().getTag(),
                 question.getTitle(),
                 question.getViewCount(),
                 question.getAnswerCount(),
                 question.getReward(),
+                question.getStatus(),
                 question.getCreatedAt()
         );
     }

@@ -26,6 +26,9 @@ public class AnswerController {
 
     private final AnswerService answerService;
 
+    /**
+     * 일단 보류
+     */
     @GetMapping("/find-answers/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<AnswerDTO>>> findAnswer(
@@ -56,7 +59,7 @@ public class AnswerController {
                         .build()
                 );
     }
-
+    
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswersByStatus(
