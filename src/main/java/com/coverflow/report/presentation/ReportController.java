@@ -33,7 +33,6 @@ public class ReportController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 회원의 신고 조회에 성공했습니다.")
                         .data(reportService.findReportsByMemberId(userDetails.getUsername(), pageNo, criterion))
                         .build());
     }
@@ -47,7 +46,6 @@ public class ReportController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("전체 신고 조회에 성공했습니다.")
                         .data(reportService.findReports(pageNo, criterion))
                         .build());
     }
@@ -62,7 +60,6 @@ public class ReportController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 신고 조회에 성공했습니다.")
                         .data(reportService.findReportsByStatus(pageNo, criterion, status))
                         .build()
                 );
