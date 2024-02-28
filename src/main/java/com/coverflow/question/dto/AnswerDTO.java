@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 public class AnswerDTO {
 
     private Long answerId;
-    private String answerNickname;
-    private String answerTag;
-    private String content;
+    private String answererNickname;
+    private String answererTag;
+    private String answerContent;
     private LocalDateTime createAt;
 }

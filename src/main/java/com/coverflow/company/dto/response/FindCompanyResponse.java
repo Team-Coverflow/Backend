@@ -8,9 +8,9 @@ import java.util.List;
 public record FindCompanyResponse(
         Long companyId,
         String companyName,
-        String type,
-        String address,
-        String establishment,
+        String companyType,
+        String companyAddress,
+        String companyEstablishment,
         int questionCount,
         List<QuestionDTO> questions
 ) {

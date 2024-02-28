@@ -1,6 +1,6 @@
-package com.coverflow.enquiry.infrastructure;
+package com.coverflow.Inquiry.infrastructure;
 
-import com.coverflow.enquiry.domain.Enquiry;
+import com.coverflow.Inquiry.domain.Inquiry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,27 +8,26 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
-import java.util.UUID;
 
-public interface EnquiryRepository extends JpaRepository<Enquiry, Long> {
+public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
     @Query("SELECT e " +
-            "FROM Enquiry e " +
+            "FROM Inquiry e " +
             "WHERE e.member.id = :memberId " +
             "AND e.status != '삭제'")
-    Optional<Page<Enquiry>> findAllByMemberIdAndStatus(
+    Optional<Page<Inquiry>> findAllByMemberIdAndStatus(
             final Pageable pageable,
-            @Param("memberId") final UUID memberId
+            @Param("memberId") final String memberId
     );
 
     @Query("SELECT e " +
-            "FROM Enquiry e ")
-    Optional<Page<Enquiry>> findEnquiries(final Pageable pageable);
+            "FROM Inquiry e ")
+    Optional<Page<Inquiry>> findInquiries(final Pageable pageable);
 
     @Query("SELECT e " +
-            "FROM Enquiry e " +
+            "FROM Inquiry e " +
             "WHERE e.status = :status")
-    Optional<Page<Enquiry>> findAllByStatus(
+    Optional<Page<Inquiry>> findAllByStatus(
             final Pageable pageable,
             @Param("status") final String status
     );

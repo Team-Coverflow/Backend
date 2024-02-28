@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
-import java.util.UUID;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
@@ -17,7 +16,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             "WHERE r.member.id = :memberId " +
             "AND r.status = '등록'")
     Optional<Page<Report>> findReportsByMemberId(
-            @Param("memberId") final UUID memberId,
+            @Param("memberId") final String memberId,
             final Pageable pageable
     );
 

@@ -34,7 +34,7 @@ public class CompanyService {
      * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
      */
     public List<FindAutoCompleteResponse> autoComplete(final String name) {
-        final Pageable pageable = PageRequest.of(0, 10, Sort.by("name").ascending());
+        final Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
         final Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         final List<FindAutoCompleteResponse> findCompanies = new ArrayList<>();

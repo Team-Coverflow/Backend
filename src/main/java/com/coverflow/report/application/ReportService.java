@@ -37,7 +37,7 @@ public class ReportService {
      * [특정 회원의 신고 리스트 조회 메서드]
      */
     public List<FindReportResponse> findReportsByMemberId(
-            final UUID memberId,
+            final String memberId,
             final int pageNo,
             final String criterion
     ) {

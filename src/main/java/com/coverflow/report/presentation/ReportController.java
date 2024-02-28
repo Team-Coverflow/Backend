@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/report")
@@ -24,31 +23,29 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping("/find-report/{memberId}")
+    @GetMapping("/find-report")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportByMemberId(
-            @PathVariable @Valid final UUID memberId,
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
+            @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 회원의 신고 조회에 성공했습니다.")
-                        .data(reportService.findReportsByMemberId(memberId, pageNo, criterion))
+                        .data(reportService.findReportsByMemberId(userDetails.getUsername(), pageNo, criterion))
                         .build());
     }
 
     @GetMapping("/admin/find-reports")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReports(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("전체 신고 조회에 성공했습니다.")
                         .data(reportService.findReports(pageNo, criterion))
                         .build());
     }
@@ -56,14 +53,13 @@ public class ReportController {
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportsByStatus(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록") @Valid final String status
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 신고 검색에 성공했습니다.")
                         .data(reportService.findReportsByStatus(pageNo, criterion, status))
                         .build()
                 );
