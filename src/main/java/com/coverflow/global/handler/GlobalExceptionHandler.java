@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
-        final String defaultErrorMessage = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        String defaultErrorMessage = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         log.warn(defaultErrorMessage);
 
         return ResponseEntity
@@ -72,7 +72,7 @@ public class GlobalExceptionHandler {
             ReportException.ReportNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(final RuntimeException exception) {
-        final String message = exception.getMessage();
+        String message = exception.getMessage();
         log.warn(message);
 
         return ResponseEntity
@@ -86,7 +86,7 @@ public class GlobalExceptionHandler {
             AnswerException.AnswerExistException.class
     })
     public ResponseEntity<ErrorResponse> handleExistException(final RuntimeException exception) {
-        final String message = exception.getMessage();
+        String message = exception.getMessage();
         log.warn(message);
 
         return ResponseEntity
@@ -99,7 +99,7 @@ public class GlobalExceptionHandler {
             MemberException.NotEnoughCurrencyException.class
     })
     public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
-        final String message = exception.getMessage();
+        String message = exception.getMessage();
         log.warn(message);
 
         return ResponseEntity
@@ -109,15 +109,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(final RuntimeException exception) {
-        final String message = exception.getMessage();
+        String message = exception.getMessage();
         final StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < ERROR_KEY_LENGTH; i++) {
             sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
 
-        final String errorKeyInfo = String.format(ERROR_KEY_FORMAT, sb);
-        final String exceptionTypeInfo = String.format(EXCEPTION_CLASS_TYPE_MESSAGE_FORMANT, exception.getClass());
+        String errorKeyInfo = String.format(ERROR_KEY_FORMAT, sb);
+        String exceptionTypeInfo = String.format(EXCEPTION_CLASS_TYPE_MESSAGE_FORMANT, exception.getClass());
         log.error(message + errorKeyInfo + exceptionTypeInfo);
 
         return ResponseEntity

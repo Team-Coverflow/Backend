@@ -60,7 +60,7 @@ public class MemberService {
      */
     @Transactional(readOnly = true)
     public FindMemberInfoResponse findMemberById(final String username) {
-        final Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
+        Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
         return FindMemberInfoResponse.from(member);
     }
@@ -73,10 +73,10 @@ public class MemberService {
             final int pageNo,
             final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Member> members = memberRepository.findAllMembers(pageable)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Member> members = memberRepository.findAllMembers(pageable)
                 .orElseThrow(MemberException.AllMemberNotFoundException::new);
-        final List<FindAllMembersResponse> findMembers = new ArrayList<>();
+        List<FindAllMembersResponse> findMembers = new ArrayList<>();
 
         for (int i = 0; i < members.getContent().size(); i++) {
             findMembers.add(i, FindAllMembersResponse.from(members.getContent().get(i)));
@@ -94,10 +94,10 @@ public class MemberService {
             final String criterion,
             final String status
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Member> members = memberRepository.findAllByStatus(pageable, status)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Member> members = memberRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(status));
-        final List<FindAllMembersResponse> findMembers = new ArrayList<>();
+        List<FindAllMembersResponse> findMembers = new ArrayList<>();
 
         for (int i = 0; i < members.getContent().size(); i++) {
             findMembers.add(i, FindAllMembersResponse.from(members.getContent().get(i)));
@@ -113,7 +113,7 @@ public class MemberService {
             final String username,
             final SaveMemberInfoRequest request
     ) {
-        final Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
+        Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.saveMemberInfo(request);
@@ -125,9 +125,9 @@ public class MemberService {
      */
     @Transactional
     public UpdateNicknameResponse updateNickname(final String username) {
-        final Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
+        Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
-        final String nickname = nicknameUtil.generateRandomNickname();
+        String nickname = nicknameUtil.generateRandomNickname();
 
         member.updateNickname(nickname);
         member.updateFishShapedBun(member.getFishShapedBun() - 50);
@@ -139,7 +139,7 @@ public class MemberService {
      */
     @Transactional
     public void logout(final String username) {
-        final Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
+        Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.updateTokenStatus("로그아웃");
@@ -152,7 +152,7 @@ public class MemberService {
      */
     @Transactional
     public void leaveMember(final String username) {
-        final Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
+        Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.updateTokenStatus("로그아웃");

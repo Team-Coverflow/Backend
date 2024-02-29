@@ -43,15 +43,15 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             final Authentication authentication
     ) throws IOException {
         log.info("OAuth2 Login 성공!");
-        final CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
+        CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
         // 로그인 성공하면
         // 리프레쉬 토큰 유무에 관계없이(첫 사용자, 기존 사용자 모두)
         // 액세스 + 리프레쉬 토큰 발급
         // 즉, 리프레쉬 토큰은 1회용(보안 강화)
-        final String accessToken = jwtService.createAccessToken(String.valueOf(oAuth2User.getMemberId()), oAuth2User.getRole());
-        final String refreshToken = jwtService.createRefreshToken();
-        final String targetUrl = createURI(accessToken, refreshToken).toString();
+        String accessToken = jwtService.createAccessToken(String.valueOf(oAuth2User.getMemberId()), oAuth2User.getRole());
+        String refreshToken = jwtService.createRefreshToken();
+        String targetUrl = createURI(accessToken, refreshToken).toString();
 
         // 리프레쉬 토큰 DB에 저장
         jwtService.updateRefreshToken(oAuth2User.getMemberId(), refreshToken);
@@ -70,7 +70,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private void updateConnectedAt(final UUID memberId) {
-        final Member member = memberRepository.findByIdAndStatus(memberId, "등록")
+        Member member = memberRepository.findByIdAndStatus(memberId, "등록")
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
         member.updateConnectedAt();
@@ -81,7 +81,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             final String accessToken,
             final String refreshToken
     ) {
-        final MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 
         queryParams.add("access_token", accessToken);
         queryParams.add("refresh_token", refreshToken);

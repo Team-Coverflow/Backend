@@ -108,7 +108,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String reIssueRefreshToken(
             final Member member
     ) {
-
         String reIssuedRefreshToken = jwtService.createRefreshToken();
         member.updateRefreshToken(reIssuedRefreshToken);
         memberRepository.saveAndFlush(member);

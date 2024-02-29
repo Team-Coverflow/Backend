@@ -40,7 +40,7 @@ public class LogAspect {
 
     // 특정 조인포인트에서 수행될 부가기능을 정리
     @Before("controller() || service()")
-    public void beforeLogic(JoinPoint joinPoint) {
+    public void beforeLogic(final JoinPoint joinPoint) {
         Method method = getMethod(joinPoint);
         log.info("====== method = {} ======", method.getName());
 
@@ -55,7 +55,7 @@ public class LogAspect {
     }
 
     @AfterReturning("controller() || service()")
-    public void afterLogic(JoinPoint joinPoint) {
+    public void afterLogic(final JoinPoint joinPoint) {
         Method method = getMethod(joinPoint);
         log.info("====== method = {} ======", method.getName());
 
@@ -70,13 +70,16 @@ public class LogAspect {
     }
 
     @AfterThrowing(pointcut = "controller()", throwing = "e")
-    public void afterThrowingLogging(JoinPoint joinPoint, Exception e) {
+    public void afterThrowingLogging(
+            final JoinPoint joinPoint,
+            final Exception e
+    ) {
         log.error("### Occured error in request {}", joinPoint.getSignature().toShortString());
         log.error("{}", e.getMessage());
     }
 
     // JoinPoint로 메서드 정보 가져오기
-    private Method getMethod(JoinPoint joinPoint) {
+    private Method getMethod(final JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         return signature.getMethod();
     }

@@ -41,10 +41,10 @@ public class ReportService {
             final int pageNo,
             final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Report> reports = reportRepository.findReportsByMemberId(memberId, pageable)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Report> reports = reportRepository.findReportsByMemberId(memberId, pageable)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(memberId));
-        final List<FindReportResponse> findReports = new ArrayList<>();
+        List<FindReportResponse> findReports = new ArrayList<>();
 
         for (int i = 0; i < reports.getContent().size(); i++) {
             findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
@@ -60,10 +60,10 @@ public class ReportService {
             final int pageNo,
             final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Report> reports = reportRepository.findAllReports(pageable)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Report> reports = reportRepository.findAllReports(pageable)
                 .orElseThrow(ReportException.ReportNotFoundException::new);
-        final List<FindReportResponse> findReports = new ArrayList<>();
+        List<FindReportResponse> findReports = new ArrayList<>();
 
         for (int i = 0; i < reports.getContent().size(); i++) {
             findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
@@ -81,10 +81,10 @@ public class ReportService {
             final String criterion,
             final String status
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Report> reports = reportRepository.findAllByStatus(pageable, status)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Report> reports = reportRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(status));
-        final List<FindReportResponse> findReports = new ArrayList<>();
+        List<FindReportResponse> findReports = new ArrayList<>();
 
         for (int i = 0; i < reports.getContent().size(); i++) {
             findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
@@ -141,7 +141,7 @@ public class ReportService {
      */
     @Transactional
     public void deleteReport(final Long reportId) {
-        final Report report = reportRepository.findById(reportId)
+        Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(reportId));
 
         report.updateStatus("삭제");

@@ -26,9 +26,9 @@ public class CurrencyService {
      */
     @Transactional
     public void dailyCheck(final UUID username) {
-        final Member member = memberRepository.findById(username)
+        Member member = memberRepository.findById(username)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
-        final Notification notification = Notification.builder()
+        Notification notification = Notification.builder()
                 .type(NotificationType.DAILY)
                 .status("안읽음")
                 .member(member)
@@ -53,7 +53,7 @@ public class CurrencyService {
             final String memberId,
             final int currency
     ) {
-        final Member member = memberRepository.findById(UUID.fromString(memberId))
+        Member member = memberRepository.findById(UUID.fromString(memberId))
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(memberId));
 
         if (member.getFishShapedBun() >= 10 + currency) {
@@ -72,7 +72,7 @@ public class CurrencyService {
             final String username,
             final int currency
     ) {
-        final Member member = memberRepository.findById(UUID.fromString(username))
+        Member member = memberRepository.findById(UUID.fromString(username))
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.updateFishShapedBun(member.getFishShapedBun() + currency);
@@ -87,7 +87,7 @@ public class CurrencyService {
             final String username,
             final int currency
     ) {
-        final Member member = memberRepository.findById(UUID.fromString(username))
+        Member member = memberRepository.findById(UUID.fromString(username))
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         member.updateFishShapedBun(member.getFishShapedBun() - currency);

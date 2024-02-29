@@ -34,10 +34,10 @@ public class CompanyService {
      */
     @Transactional(readOnly = true)
     public List<FindAutoCompleteResponse> autoComplete(final String name) {
-        final Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
-        final Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
+        Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
+        Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        final List<FindAutoCompleteResponse> findCompanies = new ArrayList<>();
+        List<FindAutoCompleteResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.getContent().size(); i++) {
             findCompanies.add(i, FindAutoCompleteResponse.from(companies.getContent().get(i)));
@@ -54,10 +54,10 @@ public class CompanyService {
             final int pageNo,
             final String name
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by("name").ascending());
-        final Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by("name").ascending());
+        Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        final List<SearchCompanyResponse> findCompanies = new ArrayList<>();
+        List<SearchCompanyResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.getContent().size(); i++) {
             findCompanies.add(i, SearchCompanyResponse.from(companies.getContent().get(i)));
@@ -75,7 +75,7 @@ public class CompanyService {
             final String criterion,
             final Long companyId
     ) {
-        final Company company = companyRepository.findRegisteredCompany(companyId)
+        Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
         return FindCompanyResponse.of(company, questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId));
@@ -90,10 +90,10 @@ public class CompanyService {
             final int pageNo,
             final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Company> companies = companyRepository.findAllCompanies(pageable)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Company> companies = companyRepository.findAllCompanies(pageable)
                 .orElseThrow(CompanyException.CompanyNotFoundException::new);
-        final List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
+        List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.getContent().size(); i++) {
             findCompanies.add(i, FindAllCompaniesResponse.from(companies.getContent().get(i)));
@@ -111,10 +111,10 @@ public class CompanyService {
             final String criterion,
             final String status
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Company> companies = companyRepository.findAllByStatus(pageable, status)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Company> companies = companyRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
-        final List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
+        List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
 
         for (int i = 0; i < companies.getContent().size(); i++) {
             findCompanies.add(i, FindAllCompaniesResponse.from(companies.getContent().get(i)));
@@ -131,7 +131,7 @@ public class CompanyService {
             throw new CompanyException.CompanyExistException(request.name());
         }
 
-        final Company company = Company.builder()
+        Company company = Company.builder()
                 .name(request.name())
                 .type(request.type())
                 .city(request.city())
@@ -149,7 +149,7 @@ public class CompanyService {
      */
     @Transactional
     public void updateCompany(final UpdateCompanyRequest request) {
-        final Company company = companyRepository.findByName(request.name())
+        Company company = companyRepository.findByName(request.name())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
 
         company.updateCompany(Company.builder()
@@ -167,7 +167,7 @@ public class CompanyService {
      */
     @Transactional
     public void deleteCompany(final Long companyId) {
-        final Company company = companyRepository.findById(companyId)
+        Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
         company.updateStatus("삭제");
@@ -178,7 +178,7 @@ public class CompanyService {
      */
     @Transactional
     public void deleteCompanyReal(final Long companyId) {
-        final Company company = companyRepository.findById(companyId)
+        Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
         companyRepository.delete(company);

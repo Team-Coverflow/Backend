@@ -34,10 +34,10 @@ public class InquiryService {
             final String criterion,
             final String memberId
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(pageable, memberId)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(pageable, memberId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(memberId));
-        final List<FindInquiryResponse> findInquiries = new ArrayList<>();
+        List<FindInquiryResponse> findInquiries = new ArrayList<>();
 
         for (int i = 0; i < inquiries.getContent().size(); i++) {
             findInquiries.add(i, FindInquiryResponse.from(inquiries.getContent().get(i)));
@@ -53,10 +53,10 @@ public class InquiryService {
             final int pageNo,
             final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Inquiry> inquiries = inquiryRepository.findInquiries(pageable)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Inquiry> inquiries = inquiryRepository.findInquiries(pageable)
                 .orElseThrow(InquiryException.InquiryNotFoundException::new);
-        final List<FindAllInquiriesResponse> findInquiries = new ArrayList<>();
+        List<FindAllInquiriesResponse> findInquiries = new ArrayList<>();
 
         for (int i = 0; i < inquiries.getContent().size(); i++) {
             findInquiries.add(i, FindAllInquiriesResponse.from(inquiries.getContent().get(i)));
@@ -74,10 +74,10 @@ public class InquiryService {
             final String criterion,
             final String status
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(pageable, status)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(status));
-        final List<FindAllInquiriesResponse> findInquiries = new ArrayList<>();
+        List<FindAllInquiriesResponse> findInquiries = new ArrayList<>();
 
         for (int i = 0; i < inquiries.getContent().size(); i++) {
             findInquiries.add(i, FindAllInquiriesResponse.from(inquiries.getContent().get(i)));
@@ -109,7 +109,7 @@ public class InquiryService {
      */
     @Transactional
     public void deleteInquiry(final Long inquiryId) {
-        final Inquiry inquiry = inquiryRepository.findById(inquiryId)
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
 
         inquiry.updateStatus("삭제");

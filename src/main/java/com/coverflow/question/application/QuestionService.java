@@ -45,9 +45,9 @@ public class QuestionService {
             final String criterion,
             final Long companyId
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
-        final Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(pageable, companyId);
-        final List<QuestionDTO> questions = new ArrayList<>();
+        Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
+        Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(pageable, companyId);
+        List<QuestionDTO> questions = new ArrayList<>();
 
         if (optionalQuestions.isPresent()) {
             Page<Question> questionList = optionalQuestions.get();
@@ -77,7 +77,7 @@ public class QuestionService {
             final String criterion,
             final Long questionId
     ) {
-        final Question question = questionRepository.findRegisteredQuestion(questionId)
+        Question question = questionRepository.findRegisteredQuestion(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
         question.updateViewCount(question.getViewCount() + 1);
@@ -92,10 +92,10 @@ public class QuestionService {
             final int pageNo,
             final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Question> questions = questionRepository.findAllQuestions(pageable)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Question> questions = questionRepository.findAllQuestions(pageable)
                 .orElseThrow(QuestionException.QuestionNotFoundException::new);
-        final List<FindAllQuestionsResponse> findQuestions = new ArrayList<>();
+        List<FindAllQuestionsResponse> findQuestions = new ArrayList<>();
 
         for (int i = 0; i < questions.getContent().size(); i++) {
             findQuestions.add(i, FindAllQuestionsResponse.from(questions.getContent().get(i)));
@@ -113,10 +113,10 @@ public class QuestionService {
             final String criterion,
             final String status
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Question> questions = questionRepository.findAllByStatus(pageable, status)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Question> questions = questionRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(status));
-        final List<FindAllQuestionsResponse> findQuestions = new ArrayList<>();
+        List<FindAllQuestionsResponse> findQuestions = new ArrayList<>();
 
         for (int i = 0; i < questions.getContent().size(); i++) {
             findQuestions.add(i, FindAllQuestionsResponse.from(questions.getContent().get(i)));
@@ -132,9 +132,9 @@ public class QuestionService {
             final SaveQuestionRequest request,
             final String memberId
     ) {
-        final Company company = companyRepository.findById(request.companyId())
+        Company company = companyRepository.findById(request.companyId())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.companyId()));
-        final Question question = Question.builder()
+        Question question = Question.builder()
                 .title(request.title())
                 .content(request.content())
                 .viewCount(1)
@@ -159,7 +159,7 @@ public class QuestionService {
      */
     @Transactional
     public void updateQuestion(final UpdateQuestionRequest request) {
-        final Question question = questionRepository.findById(request.questionId())
+        Question question = questionRepository.findById(request.questionId())
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
 
         question.updateQuestion(Question.builder()
@@ -173,7 +173,7 @@ public class QuestionService {
      */
     @Transactional
     public void deleteQuestion(final Long questionId) {
-        final Question question = questionRepository.findById(questionId)
+        Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
         question.updateStatus("삭제");

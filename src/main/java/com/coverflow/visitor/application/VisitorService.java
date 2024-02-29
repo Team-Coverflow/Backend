@@ -23,7 +23,7 @@ public class VisitorService {
      */
     @Transactional(readOnly = true)
     public FindDailyVisitorResponse findDailyCount() {
-        final Visitor visitor = visitorRepository.findByToday(NOW)
+        Visitor visitor = visitorRepository.findByToday(NOW)
                 .orElseThrow(() -> new VisitorException.DayNotFoundException(NOW));
         return FindDailyVisitorResponse.from(visitor);
     }
@@ -36,8 +36,8 @@ public class VisitorService {
     @Transactional
     public void updateDailyVisitor() {
         log.info(NOW);
-        final Visitor visitor = visitorRepository.findByToday(NOW).orElse(null);
-        final Visitor newVisitor = Visitor.builder()
+        Visitor visitor = visitorRepository.findByToday(NOW).orElse(null);
+        Visitor newVisitor = Visitor.builder()
                 .today(NOW)
                 .count(1)
                 .build();

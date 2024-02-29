@@ -183,7 +183,7 @@ public class JwtService {
             final UUID memberId,
             final String refreshToken
     ) {
-        final Member member = memberRepository.findByIdAndStatus(memberId, "등록")
+        Member member = memberRepository.findByIdAndStatus(memberId, "등록")
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
         member.updateRefreshToken(refreshToken);

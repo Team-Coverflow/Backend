@@ -48,9 +48,9 @@ public class AnswerService {
             final String criterion,
             final Long questionId
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
-        final Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndStatus(pageable, questionId);
-        final List<AnswerDTO> answers = new ArrayList<>();
+        Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
+        Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndStatus(pageable, questionId);
+        List<AnswerDTO> answers = new ArrayList<>();
 
         if (optionalAnswers.isPresent()) {
             Page<Answer> answerList = optionalAnswers.get();
@@ -74,10 +74,10 @@ public class AnswerService {
             final int pageNo,
             final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Answer> answers = answerRepository.findAllAnswers(pageable)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Answer> answers = answerRepository.findAllAnswers(pageable)
                 .orElseThrow(AnswerException.AnswerNotFoundException::new);
-        final List<FindAnswerResponse> findAnswers = new ArrayList<>();
+        List<FindAnswerResponse> findAnswers = new ArrayList<>();
 
         for (int i = 0; i < answers.getContent().size(); i++) {
             findAnswers.add(i, FindAnswerResponse.from(answers.getContent().get(i)));
@@ -95,10 +95,10 @@ public class AnswerService {
             final String criterion,
             final String status
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Answer> answers = answerRepository.findAllByStatus(pageable, status)
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Page<Answer> answers = answerRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(status));
-        final List<FindAnswerResponse> findAnswers = new ArrayList<>();
+        List<FindAnswerResponse> findAnswers = new ArrayList<>();
 
         for (int i = 0; i < answers.getContent().size(); i++) {
             findAnswers.add(i, FindAnswerResponse.from(answers.getContent().get(i)));
@@ -114,9 +114,9 @@ public class AnswerService {
             final SaveAnswerRequest request,
             final String memberId
     ) {
-        final Question question = questionRepository.findById(request.questionId())
+        Question question = questionRepository.findById(request.questionId())
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
-        final Answer answer = Answer.builder()
+        Answer answer = Answer.builder()
                 .content(request.content())
                 .selection(false)
                 .status("등록")
@@ -127,7 +127,7 @@ public class AnswerService {
                         .id(UUID.fromString(memberId))
                         .build())
                 .build();
-        final Notification notification = Notification.builder()
+        Notification notification = Notification.builder()
                 .content(question.getCompany().getName())
                 .url("/company-info/" +
                         question.getCompany().getId().toString() +
@@ -148,11 +148,11 @@ public class AnswerService {
      */
     @Transactional
     public void chooseAnswer(final UpdateSelectionRequest request) {
-        final Answer answer = answerRepository.findById(request.answerId())
+        Answer answer = answerRepository.findById(request.answerId())
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
-        final Member member = memberRepository.findById(answer.getMember().getId())
+        Member member = memberRepository.findById(answer.getMember().getId())
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(answer.getMember().getId()));
-        final Notification notification = Notification.builder()
+        Notification notification = Notification.builder()
                 .content(answer.getQuestion().getCompany().getName())
                 .url("/company-info/" +
                         answer.getQuestion().getCompany().getId().toString() +
@@ -173,7 +173,7 @@ public class AnswerService {
      */
     @Transactional
     public void updateAnswer(final UpdateAnswerRequest request) {
-        final Answer answer = answerRepository.findById(request.answerId())
+        Answer answer = answerRepository.findById(request.answerId())
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
 
         answer.updateAnswer(Answer.builder()
@@ -186,7 +186,7 @@ public class AnswerService {
      */
     @Transactional
     public void deleteAnswer(final Long answerId) {
-        final Answer answer = answerRepository.findById(answerId)
+        Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
 
         answer.updateStatus("삭제");
