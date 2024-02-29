@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class CompanyService {
@@ -33,6 +32,7 @@ public class CompanyService {
      * [자동 완성 메서드]
      * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindAutoCompleteResponse> autoComplete(final String name) {
         final Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
         final Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
@@ -49,6 +49,7 @@ public class CompanyService {
      * [회사 검색 메서드]
      * 특정 이름으로 시작하는 회사 n개를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<SearchCompanyResponse> searchCompanies(
             final int pageNo,
             final String name
@@ -68,6 +69,7 @@ public class CompanyService {
      * [특정 회사와 질문 조회 메서드]
      * 특정 회사와 질문 리스트를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public FindCompanyResponse findCompanyById(
             final int pageNo,
             final String criterion,
@@ -83,6 +85,7 @@ public class CompanyService {
      * [관리자 전용: 전체 회사 조회 메서드]
      * 전체 회사를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindAllCompaniesResponse> findAllCompanies(
             final int pageNo,
             final String criterion
@@ -102,6 +105,7 @@ public class CompanyService {
      * [관리자 전용: 특정 상태 회사 조회 메서드]
      * 특정 상태(검토/등록/삭제)의 회사를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindAllCompaniesResponse> findPending(
             final int pageNo,
             final String criterion,
@@ -172,6 +176,7 @@ public class CompanyService {
     /**
      * [관리자 전용: 회사 물리 삭제 메서드]
      */
+    @Transactional
     public void deleteCompanyReal(final Long companyId) {
         final Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));

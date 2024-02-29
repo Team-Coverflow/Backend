@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class MemberService {
@@ -59,6 +58,7 @@ public class MemberService {
     /**
      * [특정 회원 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public FindMemberInfoResponse findMemberById(final String username) {
         final Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
@@ -68,6 +68,7 @@ public class MemberService {
     /**
      * [관리자 전용: 전체 회원 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public List<FindAllMembersResponse> findAllMembers(
             final int pageNo,
             final String criterion
@@ -87,6 +88,7 @@ public class MemberService {
      * [관리자 전용: 특정 상태 회원 조회 메서드]
      * 특정 상태(등록/탈퇴)의 회사를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindAllMembersResponse> findMembersByStatus(
             final int pageNo,
             final String criterion,

@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class InquiryService {
@@ -29,6 +28,7 @@ public class InquiryService {
     /**
      * [특정 회원의 문의 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public List<FindInquiryResponse> findInquiryByMemberId(
             final int pageNo,
             final String criterion,
@@ -48,6 +48,7 @@ public class InquiryService {
     /**
      * [관리자 전용: 전체 문의 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public List<FindAllInquiriesResponse> findInquiries(
             final int pageNo,
             final String criterion
@@ -67,6 +68,7 @@ public class InquiryService {
      * [관리자 전용: 특정 상태 문의 조회 메서드]
      * 특정 상태(답변대기/답변완료/삭제)의 회사를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindAllInquiriesResponse> findInquiriesByStatus(
             final int pageNo,
             final String criterion,
@@ -86,6 +88,7 @@ public class InquiryService {
     /**
      * [관리자 전용: 문의 등록 메서드]
      */
+    @Transactional
     public void saveInquiry(
             final SaveInquiryRequest request,
             final String memberId
@@ -104,6 +107,7 @@ public class InquiryService {
     /**
      * [관리자 전용: 문의 삭제 메서드]
      */
+    @Transactional
     public void deleteInquiry(final Long inquiryId) {
         final Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));

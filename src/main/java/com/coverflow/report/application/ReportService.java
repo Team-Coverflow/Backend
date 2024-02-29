@@ -25,7 +25,6 @@ import java.util.UUID;
 import static com.coverflow.report.domain.ReportType.ANSWER;
 import static com.coverflow.report.domain.ReportType.QUESTION;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class ReportService {
@@ -36,6 +35,7 @@ public class ReportService {
     /**
      * [특정 회원의 신고 리스트 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public List<FindReportResponse> findReportsByMemberId(
             final String memberId,
             final int pageNo,
@@ -55,6 +55,7 @@ public class ReportService {
     /**
      * [관리자 전용: 전체 신고 리스트 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public List<FindReportResponse> findReports(
             final int pageNo,
             final String criterion
@@ -74,6 +75,7 @@ public class ReportService {
      * [관리자 전용: 특정 상태 신고 조회 메서드]
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindReportResponse> findReportsByStatus(
             final int pageNo,
             final String criterion,

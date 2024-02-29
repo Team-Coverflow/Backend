@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class QuestionService {
@@ -40,6 +39,7 @@ public class QuestionService {
      * [특정 회사의 질문 조회 메서드]
      * 회사 id로 조회
      */
+    @Transactional(readOnly = true)
     public List<QuestionDTO> findAllQuestionsByCompanyId(
             final int pageNo,
             final String criterion,
@@ -87,6 +87,7 @@ public class QuestionService {
     /**
      * [관리자 전용: 전체 질문 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public List<FindAllQuestionsResponse> findAllQuestions(
             final int pageNo,
             final String criterion
@@ -106,6 +107,7 @@ public class QuestionService {
      * [관리자 전용: 특정 상태 질문 조회 메서드]
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindAllQuestionsResponse> findQuestionsByStatus(
             final int pageNo,
             final String criterion,

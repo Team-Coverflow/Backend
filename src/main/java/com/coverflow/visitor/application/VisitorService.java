@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 @Log4j2
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class VisitorService {
@@ -22,6 +21,7 @@ public class VisitorService {
     /**
      * [관리자 전용: 일일 방문자 수 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public FindDailyVisitorResponse findDailyCount() {
         final Visitor visitor = visitorRepository.findByToday(NOW)
                 .orElseThrow(() -> new VisitorException.DayNotFoundException(NOW));

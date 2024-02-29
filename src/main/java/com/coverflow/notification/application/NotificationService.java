@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class NotificationService {
@@ -114,6 +113,7 @@ public class NotificationService {
     /**
      * [알림 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public List<FindNotificationResponse> findNotification(String memberId) {
         final List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId))
                 .orElseThrow(() -> new NotificationException.NotificationNotFoundException(memberId));

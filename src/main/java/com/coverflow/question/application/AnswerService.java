@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class AnswerService {
@@ -43,6 +42,7 @@ public class AnswerService {
     /**
      * [특정 질문에 대한 답변 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public List<AnswerDTO> findAllAnswersByQuestionId(
             final int pageNo,
             final String criterion,
@@ -69,6 +69,7 @@ public class AnswerService {
     /**
      * [관리자 전용: 전체 답변 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public List<FindAnswerResponse> findAllAnswers(
             final int pageNo,
             final String criterion
@@ -88,6 +89,7 @@ public class AnswerService {
      * [관리자 전용: 특정 상태 답변 조회 메서드]
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindAnswerResponse> findAnswersByStatus(
             final int pageNo,
             final String criterion,

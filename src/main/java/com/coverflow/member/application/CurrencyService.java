@@ -13,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class CurrencyService {
@@ -49,6 +48,7 @@ public class CurrencyService {
      * [질문 작성 시 화폐 감소 메서드]
      * 질문 작성 시 화폐 10 감소
      */
+    @Transactional
     public void writeQuestion(
             final String memberId,
             final int currency
