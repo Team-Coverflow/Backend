@@ -1,5 +1,6 @@
 package com.coverflow.global.handler;
 
+import com.coverflow.Inquiry.exception.InquiryException;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.notification.exception.NotificationException;
@@ -69,7 +70,8 @@ public class GlobalExceptionHandler {
             QuestionException.QuestionNotFoundException.class,
             AnswerException.AnswerNotFoundException.class,
             NotificationException.NotificationNotFoundException.class,
-            ReportException.ReportNotFoundException.class
+            ReportException.ReportNotFoundException.class,
+            InquiryException.InquiryNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(final RuntimeException exception) {
         String message = exception.getMessage();
