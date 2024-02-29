@@ -31,7 +31,6 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAutoCompleteResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("자동 완성 검색에 성공했습니다.")
                         .data(companyService.autoComplete(name))
                         .build()
                 );
@@ -45,7 +44,6 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회사 검색에 성공했습니다.")
                         .data(companyService.searchCompanies(pageNo, name))
                         .build()
                 );
@@ -60,7 +58,6 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 회사와 질문 조회에 성공했습니다.")
                         .data(companyService.findCompanyById(pageNo, criterion, companyId))
                         .build()
                 );
@@ -75,7 +72,6 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("전체 회사 리스트 검색에 성공했습니다.")
                         .data(companyService.findAllCompanies(pageNo, criterion))
                         .build()
                 );
@@ -91,7 +87,6 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 회사 검색에 성공했습니다.")
                         .data(companyService.findPending(pageNo, criterion, status))
                         .build()
                 );
@@ -105,7 +100,6 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회사 등록에 성공했습니다.")
                         .build());
     }
 
@@ -118,7 +112,6 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회사 수정에 성공했습니다.")
                         .build());
     }
 
@@ -131,7 +124,6 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회사 삭제에 성공했습니다.")
                         .build());
     }
 
@@ -144,7 +136,6 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회사 물리 삭제에 성공했습니다.")
                         .build());
     }
 }

@@ -39,7 +39,6 @@ public class AnswerController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<AnswerDTO>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 질문에 대한 전체 답변 조회에 성공했습니다.")
                         .data(answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId))
                         .build()
                 );
@@ -54,12 +53,11 @@ public class AnswerController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAnswerResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("전체 답변 조회에 성공했습니다.")
                         .data(answerService.findAllAnswers(pageNo, criterion))
                         .build()
                 );
     }
-    
+
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswersByStatus(
@@ -70,7 +68,6 @@ public class AnswerController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAnswerResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 답변 검색에 성공했습니다.")
                         .data(answerService.findAnswersByStatus(pageNo, criterion, status))
                         .build()
                 );
@@ -86,7 +83,6 @@ public class AnswerController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("답변 등록에 성공했습니다.")
                         .build());
     }
 
@@ -99,7 +95,6 @@ public class AnswerController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("답변 채택에 성공했습니다.")
                         .build());
     }
 
@@ -112,7 +107,6 @@ public class AnswerController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("답변 수정에 성공했습니다.")
                         .build());
     }
 
@@ -125,7 +119,6 @@ public class AnswerController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("답변 삭제에 성공했습니다.")
                         .build());
     }
 }

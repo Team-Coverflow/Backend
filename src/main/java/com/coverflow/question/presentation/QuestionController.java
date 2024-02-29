@@ -38,7 +38,6 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<QuestionDTO>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 회사의 질문 조회에 성공했습니다.")
                         .data(questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId))
                         .build()
                 );
@@ -54,7 +53,6 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 질문과 답변 조회에 성공했습니다.")
                         .data(questionService.findQuestionById(pageNo, criterion, questionId))
                         .build()
                 );
@@ -69,7 +67,6 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("전체 질문 조회에 성공했습니다.")
                         .data(questionService.findAllQuestions(pageNo, criterion))
                         .build()
                 );
@@ -85,7 +82,6 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 질문 검색에 성공했습니다.")
                         .data(questionService.findQuestionsByStatus(pageNo, criterion, status))
                         .build()
                 );
@@ -101,7 +97,6 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("질문 등록에 성공했습니다.")
                         .build());
     }
 
@@ -114,7 +109,6 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("질문 수정에 성공했습니다.")
                         .build());
     }
 
@@ -127,7 +121,6 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("질문 삭제에 성공했습니다.")
                         .build());
     }
 }

@@ -75,7 +75,6 @@ public class ReportController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("신고 등록에 성공했습니다.")
                         .build());
     }
 
@@ -88,7 +87,6 @@ public class ReportController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("신고 삭제에 성공했습니다.")
                         .build());
     }
 }

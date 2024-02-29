@@ -34,7 +34,6 @@ public class InquiryController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindInquiryResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 회원의 문의 조회에 성공했습니다.")
                         .data(inquiryService.findInquiryByMemberId(pageNo, criterion, userDetails.getUsername()))
                         .build());
     }
@@ -48,7 +47,6 @@ public class InquiryController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("전체 문의 조회에 성공했습니다.")
                         .data(inquiryService.findInquiries(pageNo, criterion))
                         .build());
     }
@@ -63,7 +61,6 @@ public class InquiryController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 문의 조회에 성공했습니다.")
                         .data(inquiryService.findInquiriesByStatus(pageNo, criterion, status))
                         .build()
                 );
@@ -79,7 +76,6 @@ public class InquiryController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("문의 등록에 성공했습니다.")
                         .build());
     }
 
@@ -95,7 +91,6 @@ public class InquiryController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("문의 삭제에 성공했습니다.")
                         .build());
     }
 }
