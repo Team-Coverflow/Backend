@@ -40,8 +40,8 @@ public class MemberController {
     @GetMapping("/admin/find-members")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findAllMemberById(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
@@ -53,9 +53,9 @@ public class MemberController {
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findMembersByStatus(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록") @Valid final String status
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllMembersResponse>>builder()

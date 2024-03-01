@@ -27,8 +27,8 @@ public class InquiryController {
     @GetMapping("/find-inquiry")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindInquiryResponse>>> findInquiryByMemberId(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
@@ -41,8 +41,8 @@ public class InquiryController {
     @GetMapping("/admin/find-inquiries")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiries(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
@@ -54,9 +54,9 @@ public class InquiryController {
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiriesByStatus(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @RequestParam(defaultValue = "답변대기", value = "status") @Valid final String status
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
+            @RequestParam(defaultValue = "답변대기") @Valid final String status
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()

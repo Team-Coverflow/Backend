@@ -31,8 +31,8 @@ public class QuestionController {
      */
     @GetMapping("/find-questions/{companyId}")
     public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
             @PathVariable @Valid final Long companyId
     ) {
         return ResponseEntity.ok()
@@ -46,8 +46,8 @@ public class QuestionController {
     @GetMapping("/find-question/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
             @PathVariable @Valid final Long questionId
     ) {
         return ResponseEntity.ok()
@@ -61,8 +61,8 @@ public class QuestionController {
     @GetMapping("/admin/find-questions")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findAllQuestions(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
@@ -75,9 +75,9 @@ public class QuestionController {
     @GetMapping("/admin/find-by-status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findQuestionsByStatus(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+            @RequestParam(defaultValue = "0") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록") @Valid final String status
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
