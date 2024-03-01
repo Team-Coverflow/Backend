@@ -50,7 +50,7 @@ public class NotificationController {
                 );
     }
 
-    @PostMapping("/update-notification")
+    @PutMapping("/update-notification")
     public ResponseEntity<ResponseHandler<Void>> updateNotification(
             @RequestBody @Valid final List<UpdateNotificationRequest> requests
     ) {

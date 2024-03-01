@@ -77,7 +77,7 @@ public class MemberController {
                         .build());
     }
 
-    @PostMapping("/update-nickname")
+    @PutMapping("/update-nickname")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
             @AuthenticationPrincipal final UserDetails userDetails
@@ -90,7 +90,7 @@ public class MemberController {
                         .build());
     }
 
-    @PostMapping("/logout")
+    @PutMapping("/logout")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> logout(
             @AuthenticationPrincipal final UserDetails userDetails
@@ -102,7 +102,7 @@ public class MemberController {
                         .build());
     }
 
-    @PostMapping("/leave")
+    @PutMapping("/leave")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteMember(
             @AuthenticationPrincipal final UserDetails userDetails

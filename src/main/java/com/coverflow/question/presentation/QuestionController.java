@@ -100,7 +100,7 @@ public class QuestionController {
                         .build());
     }
 
-    @PostMapping("/admin/update-question")
+    @PutMapping("/admin/update-question")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateQuestion(
             @RequestBody @Valid final UpdateQuestionRequest updateQuestionRequest
@@ -112,7 +112,7 @@ public class QuestionController {
                         .build());
     }
 
-    @PostMapping("/admin/delete-question/{questionId}")
+    @PutMapping("/admin/delete-question/{questionId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
             @PathVariable @Valid final Long questionId

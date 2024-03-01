@@ -86,7 +86,7 @@ public class AnswerController {
                         .build());
     }
 
-    @PostMapping("/update-selection")
+    @PutMapping("/update-selection")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> chooseAnswer(
             @RequestBody @Valid final UpdateSelectionRequest updateSelectionRequest
@@ -98,7 +98,7 @@ public class AnswerController {
                         .build());
     }
 
-    @PostMapping("/admin/update-answer")
+    @PutMapping("/admin/update-answer")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateAnswer(
             @RequestBody @Valid final UpdateAnswerRequest updateAnswerRequest
@@ -110,7 +110,7 @@ public class AnswerController {
                         .build());
     }
 
-    @PostMapping("/admin/delete-answer/{answerId}")
+    @PutMapping("/admin/delete-answer/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
             @PathVariable @Valid final Long answerId

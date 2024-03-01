@@ -103,7 +103,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PostMapping("/admin/update-company")
+    @PutMapping("/admin/update-company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateCompany(
             @RequestBody @Valid final UpdateCompanyRequest updateCompanyRequest
@@ -115,7 +115,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PostMapping("/admin/delete-company/{companyId}")
+    @PutMapping("/admin/delete-company/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
             @PathVariable @Valid final Long companyId
@@ -127,7 +127,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PostMapping("/admin/delete-real/{companyId}")
+    @DeleteMapping("/admin/delete-real/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompanyReal(
             @PathVariable @Valid final Long companyId
