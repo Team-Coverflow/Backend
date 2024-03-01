@@ -21,6 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
+import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
+
 @RequiredArgsConstructor
 @Service
 public class CompanyService {
@@ -34,7 +37,7 @@ public class CompanyService {
      */
     @Transactional(readOnly = true)
     public List<FindAutoCompleteResponse> autoComplete(final String name) {
-        Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
+        Pageable pageable = PageRequest.of(0, NORMAL_PAGE_SIZE, Sort.by("name").ascending());
         Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         List<FindAutoCompleteResponse> findCompanies = new ArrayList<>();
@@ -47,14 +50,14 @@ public class CompanyService {
 
     /**
      * [회사 검색 메서드]
-     * 특정 이름으로 시작하는 회사 n개를 조회하는 메서드
+     * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
      */
     @Transactional(readOnly = true)
     public List<SearchCompanyResponse> searchCompanies(
             final int pageNo,
             final String name
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by("name").ascending());
+        Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by("name").ascending());
         Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
         List<SearchCompanyResponse> findCompanies = new ArrayList<>();
@@ -90,7 +93,7 @@ public class CompanyService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Company> companies = companyRepository.findAllCompanies(pageable)
                 .orElseThrow(CompanyException.CompanyNotFoundException::new);
         List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
@@ -111,7 +114,7 @@ public class CompanyService {
             final String criterion,
             final String status
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Company> companies = companyRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
         List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();

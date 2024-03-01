@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
+
 @RequiredArgsConstructor
 @Service
 public class MemberService {
@@ -73,7 +75,7 @@ public class MemberService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Member> members = memberRepository.findAllMembers(pageable)
                 .orElseThrow(MemberException.AllMemberNotFoundException::new);
         List<FindAllMembersResponse> findMembers = new ArrayList<>();
@@ -94,7 +96,7 @@ public class MemberService {
             final String criterion,
             final String status
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Member> members = memberRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(status));
         List<FindAllMembersResponse> findMembers = new ArrayList<>();

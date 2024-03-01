@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.report.domain.ReportType.ANSWER;
 import static com.coverflow.report.domain.ReportType.QUESTION;
 
@@ -41,7 +42,7 @@ public class ReportService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Report> reports = reportRepository.findReportsByMemberId(memberId, pageable)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(memberId));
         List<FindReportResponse> findReports = new ArrayList<>();
@@ -60,7 +61,7 @@ public class ReportService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Report> reports = reportRepository.findAllReports(pageable)
                 .orElseThrow(ReportException.ReportNotFoundException::new);
         List<FindReportResponse> findReports = new ArrayList<>();
@@ -81,7 +82,7 @@ public class ReportService {
             final String criterion,
             final String status
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Report> reports = reportRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(status));
         List<FindReportResponse> findReports = new ArrayList<>();

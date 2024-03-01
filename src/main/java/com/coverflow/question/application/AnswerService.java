@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
+import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
+
 @RequiredArgsConstructor
 @Service
 public class AnswerService {
@@ -48,7 +51,7 @@ public class AnswerService {
             final String criterion,
             final Long questionId
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by(criterion).descending());
         Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndStatus(pageable, questionId);
         List<AnswerDTO> answers = new ArrayList<>();
 
@@ -74,7 +77,7 @@ public class AnswerService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Answer> answers = answerRepository.findAllAnswers(pageable)
                 .orElseThrow(AnswerException.AnswerNotFoundException::new);
         List<FindAnswerResponse> findAnswers = new ArrayList<>();
@@ -95,7 +98,7 @@ public class AnswerService {
             final String criterion,
             final String status
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Answer> answers = answerRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(status));
         List<FindAnswerResponse> findAnswers = new ArrayList<>();

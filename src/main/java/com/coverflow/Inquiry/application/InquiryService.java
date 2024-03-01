@@ -19,6 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
+import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
+
 @RequiredArgsConstructor
 @Service
 public class InquiryService {
@@ -34,7 +37,7 @@ public class InquiryService {
             final String criterion,
             final String memberId
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(pageable, memberId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(memberId));
         List<FindInquiryResponse> findInquiries = new ArrayList<>();
@@ -53,7 +56,7 @@ public class InquiryService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Inquiry> inquiries = inquiryRepository.findInquiries(pageable)
                 .orElseThrow(InquiryException.InquiryNotFoundException::new);
         List<FindAllInquiriesResponse> findInquiries = new ArrayList<>();
@@ -74,7 +77,7 @@ public class InquiryService {
             final String criterion,
             final String status
     ) {
-        Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
+        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(status));
         List<FindAllInquiriesResponse> findInquiries = new ArrayList<>();
