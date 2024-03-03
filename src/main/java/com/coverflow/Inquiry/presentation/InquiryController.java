@@ -2,6 +2,7 @@ package com.coverflow.Inquiry.presentation;
 
 import com.coverflow.Inquiry.application.InquiryService;
 import com.coverflow.Inquiry.dto.request.SaveInquiryRequest;
+import com.coverflow.Inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.Inquiry.dto.response.FindAllInquiriesResponse;
 import com.coverflow.Inquiry.dto.response.FindInquiryResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
@@ -73,6 +74,18 @@ public class InquiryController {
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         inquiryService.saveInquiry(saveInquiryRequest, userDetails.getUsername());
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .build());
+    }
+
+    @PutMapping("/inquiry")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<Void>> updateInquiry(
+            @RequestBody @Valid final UpdateInquiryRequest updateInquiryRequest
+    ) {
+        inquiryService.updateInquiry(updateInquiryRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.OK)

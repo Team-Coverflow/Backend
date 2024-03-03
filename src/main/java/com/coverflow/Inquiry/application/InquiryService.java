@@ -2,6 +2,7 @@ package com.coverflow.Inquiry.application;
 
 import com.coverflow.Inquiry.domain.Inquiry;
 import com.coverflow.Inquiry.dto.request.SaveInquiryRequest;
+import com.coverflow.Inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.Inquiry.dto.response.FindAllInquiriesResponse;
 import com.coverflow.Inquiry.dto.response.FindInquiryResponse;
 import com.coverflow.Inquiry.exception.InquiryException;
@@ -89,7 +90,7 @@ public class InquiryService {
     }
 
     /**
-     * [관리자 전용: 문의 등록 메서드]
+     * [문의 등록 메서드]
      */
     @Transactional
     public void saveInquiry(
@@ -97,14 +98,29 @@ public class InquiryService {
             final String memberId
     ) {
         Inquiry inquiry = Inquiry.builder()
+                .title(request.title())
                 .content(request.content())
-                .status("등록")
+                .status("답변대기")
                 .member(Member.builder()
                         .id(UUID.fromString(memberId))
                         .build())
                 .build();
 
         inquiryRepository.save(inquiry);
+    }
+
+    /**
+     * [관리자 전용: 문의 수정 메서드]
+     */
+    @Transactional
+    public void updateInquiry(
+            final UpdateInquiryRequest request
+    ) {
+        Inquiry inquiry = inquiryRepository.findById(request.inquiryId())
+                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(request.inquiryId()));
+
+        inquiry.updateAnswer(request.inquiryAnswer());
+        inquiry.updateStatus("답변완료");
     }
 
     /**

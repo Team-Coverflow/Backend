@@ -4,7 +4,9 @@ import com.coverflow.Inquiry.domain.Inquiry;
 
 public record FindInquiryResponse(
         Long inquiryId,
+        String inquiryTitle,
         String inquiryContent,
+        String inquiryAnswer,
         String inquiryStatus,
         String inquirerNickname
 ) {
@@ -12,7 +14,9 @@ public record FindInquiryResponse(
     public static FindInquiryResponse from(final Inquiry inquiry) {
         return new FindInquiryResponse(
                 inquiry.getId(),
+                inquiry.getTitle(),
                 inquiry.getContent(),
+                inquiry.getAnswer(),
                 inquiry.getStatus(),
                 inquiry.getMember().getNickname()
         );
