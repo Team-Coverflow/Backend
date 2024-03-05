@@ -36,7 +36,7 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/search-companies")
+    @GetMapping("/companies")
     public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "name") @Valid final String name
@@ -49,7 +49,7 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/find-company/{companyId}")
+    @GetMapping("/company/{companyId}")
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
             @PathVariable @Valid final Long companyId,
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -63,7 +63,7 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/admin/find-companies")
+    @GetMapping("/admin/companies")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -77,7 +77,7 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/admin/find-by-status")
+    @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findPending(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -92,7 +92,7 @@ public class CompanyController {
                 );
     }
 
-    @PostMapping("/save-company")
+    @PostMapping("/company")
     public ResponseEntity<ResponseHandler<Void>> saveCompany(
             @RequestBody @Valid final SaveCompanyRequest saveCompanyRequest
     ) {
@@ -103,7 +103,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PutMapping("/admin/update-company")
+    @PutMapping("/admin/company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateCompany(
             @RequestBody @Valid final UpdateCompanyRequest updateCompanyRequest
@@ -115,7 +115,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PutMapping("/admin/delete-company/{companyId}")
+    @PutMapping("/admin/company/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
             @PathVariable @Valid final Long companyId
@@ -127,7 +127,7 @@ public class CompanyController {
                         .build());
     }
 
-    @DeleteMapping("/admin/delete-real/{companyId}")
+    @DeleteMapping("/admin/real/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompanyReal(
             @PathVariable @Valid final Long companyId

@@ -25,7 +25,7 @@ public class InquiryController {
 
     private final InquiryService inquiryService;
 
-    @GetMapping("/find-inquiry")
+    @GetMapping("/inquiry")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindInquiryResponse>>> findInquiryByMemberId(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -39,7 +39,7 @@ public class InquiryController {
                         .build());
     }
 
-    @GetMapping("/admin/find-inquiries")
+    @GetMapping("/admin/inquiries")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiries(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -52,7 +52,7 @@ public class InquiryController {
                         .build());
     }
 
-    @GetMapping("/admin/find-by-status")
+    @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiriesByStatus(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -67,7 +67,7 @@ public class InquiryController {
                 );
     }
 
-    @PostMapping("/save-inquiry")
+    @PostMapping("/inquiry")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveInquiry(
             @RequestBody @Valid final SaveInquiryRequest saveInquiryRequest,
@@ -95,7 +95,7 @@ public class InquiryController {
     /**
      * TODO 사용자가 삭제할 지 or 관리자가 삭제할 지 고민 필요
      */
-    @PutMapping("/admin/delete-inquiry/{inquiryId}")
+    @PutMapping("/admin/inquiry/{inquiryId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteInquiry(
             @PathVariable @Valid final Long inquiryId

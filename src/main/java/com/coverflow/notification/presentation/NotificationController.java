@@ -38,7 +38,7 @@ public class NotificationController {
                 );
     }
 
-    @GetMapping("/find-notification")
+    @GetMapping("/notification")
     public ResponseEntity<ResponseHandler<List<FindNotificationResponse>>> findNotification(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
@@ -50,7 +50,7 @@ public class NotificationController {
                 );
     }
 
-    @PutMapping("/update-notification")
+    @PutMapping("/notification")
     public ResponseEntity<ResponseHandler<Void>> updateNotification(
             @RequestBody @Valid final List<UpdateNotificationRequest> requests
     ) {

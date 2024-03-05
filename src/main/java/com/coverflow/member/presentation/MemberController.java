@@ -25,7 +25,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/find-member")
+    @GetMapping("/member")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindMemberInfoResponse>> findMemberById(
             @AuthenticationPrincipal final UserDetails userDetails
@@ -37,7 +37,7 @@ public class MemberController {
                         .build());
     }
 
-    @GetMapping("/admin/find-members")
+    @GetMapping("/admin/members")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findAllMemberById(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -50,7 +50,7 @@ public class MemberController {
                         .build());
     }
 
-    @GetMapping("/admin/find-by-status")
+    @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findMembersByStatus(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -65,7 +65,7 @@ public class MemberController {
                 );
     }
 
-    @PostMapping("/save-member-info")
+    @PostMapping("/member")
     public ResponseEntity<ResponseHandler<Void>> saveMemberInfo(
             @AuthenticationPrincipal final UserDetails userDetails,
             @RequestBody @Valid final SaveMemberInfoRequest request
@@ -77,7 +77,7 @@ public class MemberController {
                         .build());
     }
 
-    @PutMapping("/update-nickname")
+    @PutMapping("/nickname")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
             @AuthenticationPrincipal final UserDetails userDetails

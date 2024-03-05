@@ -23,7 +23,7 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping("/find-report")
+    @GetMapping("/report")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportByMemberId(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -37,7 +37,7 @@ public class ReportController {
                         .build());
     }
 
-    @GetMapping("/admin/find-reports")
+    @GetMapping("/admin/reports")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReports(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -50,7 +50,7 @@ public class ReportController {
                         .build());
     }
 
-    @GetMapping("/admin/find-by-status")
+    @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportsByStatus(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -65,7 +65,7 @@ public class ReportController {
                 );
     }
 
-    @PostMapping("/save-report")
+    @PostMapping("/report")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveReport(
             @RequestBody @Valid final SaveReportRequest saveReportRequest,
@@ -78,7 +78,7 @@ public class ReportController {
                         .build());
     }
 
-    @PutMapping("/admin/delete-report/{reportId}")
+    @PutMapping("/admin/report/{reportId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
             @PathVariable @Valid final Long reportId

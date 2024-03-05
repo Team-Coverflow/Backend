@@ -29,7 +29,7 @@ public class AnswerController {
     /**
      * 일단 보류
      */
-    @GetMapping("/find-answers/{questionId}")
+    @GetMapping("/answers/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<AnswerDTO>>> findAnswer(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -44,7 +44,7 @@ public class AnswerController {
                 );
     }
 
-    @GetMapping("/admin/find-answers")
+    @GetMapping("/admin/answers")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAllAnswers(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -58,7 +58,7 @@ public class AnswerController {
                 );
     }
 
-    @GetMapping("/admin/find-by-status")
+    @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswersByStatus(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -73,7 +73,7 @@ public class AnswerController {
                 );
     }
 
-    @PostMapping("/save-answer")
+    @PostMapping("/answer")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveAnswer(
             @RequestBody @Valid final SaveAnswerRequest saveAnswerRequest,
@@ -86,7 +86,7 @@ public class AnswerController {
                         .build());
     }
 
-    @PutMapping("/update-selection")
+    @PutMapping("/selection")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> chooseAnswer(
             @RequestBody @Valid final UpdateSelectionRequest updateSelectionRequest
@@ -98,7 +98,7 @@ public class AnswerController {
                         .build());
     }
 
-    @PutMapping("/admin/update-answer")
+    @PutMapping("/admin/answer")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateAnswer(
             @RequestBody @Valid final UpdateAnswerRequest updateAnswerRequest
@@ -110,7 +110,7 @@ public class AnswerController {
                         .build());
     }
 
-    @PutMapping("/admin/delete-answer/{answerId}")
+    @PutMapping("/admin/answer/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
             @PathVariable @Valid final Long answerId
