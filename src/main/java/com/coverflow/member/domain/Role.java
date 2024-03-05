@@ -9,6 +9,7 @@ public enum Role {
 
     GUEST("GUEST"),
     MEMBER("MEMBER"),
+    PREMIUM("PREMIUM"),
     ADMIN("ADMIN");
 
     private final String key;
