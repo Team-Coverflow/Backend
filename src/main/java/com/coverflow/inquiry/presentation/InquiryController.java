@@ -4,6 +4,7 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.inquiry.application.InquiryService;
+import com.coverflow.inquiry.domain.InquiryStatus;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
 import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
@@ -57,12 +58,12 @@ public class InquiryController {
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiriesByStatus(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam(defaultValue = "답변대기") @Valid final String status
+            @RequestParam(defaultValue = "WAIT") @Valid final InquiryStatus inquiryStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(inquiryService.findInquiriesByStatus(pageNo, criterion, status))
+                        .data(inquiryService.findInquiriesByStatus(pageNo, criterion, inquiryStatus))
                         .build()
                 );
     }

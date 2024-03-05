@@ -1,13 +1,14 @@
 package com.coverflow.inquiry.dto.response;
 
 import com.coverflow.inquiry.domain.Inquiry;
+import com.coverflow.inquiry.domain.InquiryStatus;
 
 public record FindAllInquiriesResponse(
         long inquiryId,
         String inquiryTitle,
         String inquiryContent,
         String inquiryAnswer,
-        String inquiryStatus,
+        InquiryStatus inquiryStatus,
         String inquirerNickname
 ) {
 
@@ -17,7 +18,7 @@ public record FindAllInquiriesResponse(
                 inquiry.getTitle(),
                 inquiry.getContent(),
                 inquiry.getAnswer(),
-                inquiry.getStatus(),
+                inquiry.getInquiryStatus(),
                 inquiry.getMember().getNickname()
         );
     }

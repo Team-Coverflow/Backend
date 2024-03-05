@@ -22,8 +22,9 @@ public class Inquiry extends BaseTimeEntity {
     private String content; // 문의 내용
     @Column
     private String answer; // 관리자 답변
-    @Column
-    private String status; // 상태 (답변대기/답변완료/삭제)
+
+    @Enumerated(EnumType.STRING)
+    private InquiryStatus inquiryStatus; // 상태 (답변대기/답변완료/삭제)
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -33,7 +34,7 @@ public class Inquiry extends BaseTimeEntity {
         this.answer = answer;
     }
 
-    public void updateStatus(final String status) {
-        this.status = status;
+    public void updateStatus(final InquiryStatus inquiryStatus) {
+        this.inquiryStatus = inquiryStatus;
     }
 }

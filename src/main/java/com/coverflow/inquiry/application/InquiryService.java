@@ -1,6 +1,7 @@
 package com.coverflow.inquiry.application;
 
 import com.coverflow.inquiry.domain.Inquiry;
+import com.coverflow.inquiry.domain.InquiryStatus;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
 import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
@@ -71,11 +72,11 @@ public class InquiryService {
     public List<FindAllInquiriesResponse> findInquiriesByStatus(
             final int pageNo,
             final String criterion,
-            final String status
+            final InquiryStatus inquiryStatus
     ) {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(pageable, status)
-                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(status));
+        Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(pageable, inquiryStatus)
+                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryStatus));
 
         return inquiries.getContent().stream()
                 .map(FindAllInquiriesResponse::from)
@@ -93,7 +94,7 @@ public class InquiryService {
         Inquiry inquiry = Inquiry.builder()
                 .title(request.title())
                 .content(request.content())
-                .status("답변대기")
+                .inquiryStatus(InquiryStatus.WAIT)
                 .member(Member.builder()
                         .id(UUID.fromString(memberId))
                         .build())
@@ -113,7 +114,7 @@ public class InquiryService {
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(request.inquiryId()));
 
         inquiry.updateAnswer(request.inquiryAnswer());
-        inquiry.updateStatus("답변완료");
+        inquiry.updateStatus(InquiryStatus.COMPLETE);
     }
 
     /**
@@ -124,6 +125,6 @@ public class InquiryService {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
 
-        inquiry.updateStatus("삭제");
+        inquiry.updateStatus(InquiryStatus.DELETION);
     }
 }

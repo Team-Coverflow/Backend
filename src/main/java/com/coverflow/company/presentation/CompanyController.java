@@ -116,7 +116,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PutMapping("/admin/company/{companyId}")
+    @DeleteMapping("/admin/company/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
             @PathVariable @Valid final long companyId

@@ -165,7 +165,7 @@ public class CompanyService {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
-        company.updateStatus(CompanyStatus.DELETE);
+        company.updateStatus(CompanyStatus.DELETION);
     }
 
     /**

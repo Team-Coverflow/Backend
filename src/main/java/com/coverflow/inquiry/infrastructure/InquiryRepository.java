@@ -1,6 +1,7 @@
 package com.coverflow.inquiry.infrastructure;
 
 import com.coverflow.inquiry.domain.Inquiry;
+import com.coverflow.inquiry.domain.InquiryStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,7 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
     @Query("SELECT e " +
             "FROM Inquiry e " +
             "WHERE e.member.id = :memberId " +
-            "AND e.status != '삭제'")
+            "AND e.inquiryStatus != 'DELETION'")
     Optional<Page<Inquiry>> findAllByMemberIdAndStatus(
             final Pageable pageable,
             @Param("memberId") final String memberId
@@ -26,9 +27,9 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
     @Query("SELECT e " +
             "FROM Inquiry e " +
-            "WHERE e.status = :status")
+            "WHERE e.inquiryStatus = :inquiryStatus")
     Optional<Page<Inquiry>> findAllByStatus(
             final Pageable pageable,
-            @Param("status") final String status
+            @Param("inquiryStatus") final InquiryStatus inquiryStatus
     );
 }

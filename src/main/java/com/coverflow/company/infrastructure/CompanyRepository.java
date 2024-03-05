@@ -39,6 +39,6 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             "WHERE c.companyStatus = :companyStatus")
     Optional<Page<Company>> findAllByStatus(
             final Pageable pageable,
-            final CompanyStatus companyStatus
+            @Param("companyStatus") final CompanyStatus companyStatus
     );
 }
