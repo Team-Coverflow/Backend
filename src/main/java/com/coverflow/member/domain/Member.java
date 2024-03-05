@@ -41,21 +41,23 @@ public class Member extends BaseTimeEntity {
     @Column
     private int fishShapedBun; // 붕어빵
     @Column
-    private String status; // 상태 (등록/탈퇴)
-    @Column
     private LocalDateTime connectedAt; // 마지막 접속 시간
     @Column
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
     @Column
     private String refreshToken; // 리프레쉬 토큰
-    @Column
-    private String tokenStatus; // 리프레쉬 토큰 상태 (로그인/로그아웃)
+
+    @Enumerated(EnumType.STRING)
+    private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
     @Enumerated(EnumType.STRING)
     private Role role; // 권한
 
     @Enumerated(EnumType.STRING)
-    private SocialType socialType; // KAKAO, NAVER, GOOGLE
+    private MemberStatus memberStatus; // 회원 상태 (등록/탈퇴)
+
+    @Enumerated(EnumType.STRING)
+    private RefreshTokenStatus refreshTokenStatus; // 리프레쉬 토큰 상태 (로그인/로그아웃)
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
@@ -103,12 +105,12 @@ public class Member extends BaseTimeEntity {
         this.fishShapedBun = fishShapedBun;
     }
 
-    public void updateStatus(final String updateStatus) {
-        this.status = updateStatus;
+    public void updateStatus(final MemberStatus memberStatus) {
+        this.memberStatus = memberStatus;
     }
 
-    public void updateTokenStatus(final String updateTokenStatus) {
-        this.tokenStatus = updateTokenStatus;
+    public void updateTokenStatus(final RefreshTokenStatus refreshTokenStatus) {
+        this.refreshTokenStatus = refreshTokenStatus;
     }
 
     public void passwordEncode(final PasswordEncoder passwordEncoder) {

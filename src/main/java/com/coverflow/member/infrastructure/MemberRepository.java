@@ -1,6 +1,7 @@
 package com.coverflow.member.infrastructure;
 
 import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.SocialType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,11 +17,11 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
     @Query(value = "SELECT m " +
             "FROM Member m " +
             "WHERE m.id = :id " +
-            "AND m.status= :status " +
+            "AND m.memberStatus= :memberStatus " +
             "ORDER BY m.createdAt ASC")
-    Optional<Member> findByIdAndStatus(
+    Optional<Member> findByIdAndMemberStatus(
             @Param("id") final UUID id,
-            @Param("status") final String status
+            @Param("memberStatus") final MemberStatus memberStatus
     );
 
     Optional<Member> findByEmail(final String email);
@@ -35,10 +36,10 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
      * 유저 객체는 DB에 있지만, 추가 정보가 빠진 상태이다.
      * 따라서 추가 정보를 입력받아 진행할 때 소셜 타입, 식별자로 해당 회원을 찾기 위한 메소드
      */
-    Optional<Member> findBySocialTypeAndSocialIdAndStatus(
+    Optional<Member> findBySocialTypeAndSocialIdAndMemberStatus(
             final SocialType socialType,
             final String socialId,
-            final String status
+            final MemberStatus memberStatus
     );
 
     @Query(value = "SELECT m " +
@@ -47,9 +48,9 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
 
     @Query(value = "SELECT m " +
             "FROM Member m " +
-            "WHERE m.status = :status")
-    Optional<Page<Member>> findAllByStatus(
+            "WHERE m.memberStatus = :memberStatus")
+    Optional<Page<Member>> findAllByMemberStatus(
             final Pageable pageable,
-            @Param("status") final String status
+            @Param("memberStatus") final MemberStatus memberStatus
     );
 }

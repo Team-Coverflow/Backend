@@ -4,6 +4,7 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.member.application.MemberService;
+import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
@@ -55,12 +56,12 @@ public class MemberController {
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findMembersByStatus(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록") @Valid final String status
+            @RequestParam(defaultValue = "REGISTRATION") @Valid final MemberStatus memberStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(memberService.findMembersByStatus(pageNo, criterion, status))
+                        .data(memberService.findMembersByStatus(pageNo, criterion, memberStatus))
                         .build()
                 );
     }

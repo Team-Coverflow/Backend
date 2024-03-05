@@ -4,9 +4,7 @@ import com.coverflow.global.oauth2.userinfo.GoogleOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.KakaoOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.NaverOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.OAuth2UserInfo;
-import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.Role;
-import com.coverflow.member.domain.SocialType;
+import com.coverflow.member.domain.*;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -114,8 +112,8 @@ public class OAuthAttributes {
                 .age(age)
                 .gender(gender)
                 .fishShapedBun(300)
-                .status("등록")
-                .tokenStatus("로그인")
+                .memberStatus(MemberStatus.REGISTRATION)
+                .refreshTokenStatus(RefreshTokenStatus.LOGIN)
                 .role(Role.GUEST)
                 .socialType(socialType)
                 .socialId(oauth2UserInfo.getId())

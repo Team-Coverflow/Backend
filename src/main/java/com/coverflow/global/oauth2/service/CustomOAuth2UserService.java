@@ -4,6 +4,7 @@ import com.coverflow.global.oauth2.CustomOAuth2User;
 import com.coverflow.global.oauth2.OAuthAttributes;
 import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.SocialType;
 import com.coverflow.member.infrastructure.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -94,14 +95,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             final OAuthAttributes attributes,
             final SocialType socialType
     ) {
-        Member findMember = memberRepository.findBySocialTypeAndSocialIdAndStatus(
+        Member findMember = memberRepository.findBySocialTypeAndSocialIdAndMemberStatus(
                         socialType,
                         attributes.getOauth2UserInfo().getId(),
-                        "등록"
+                        MemberStatus.REGISTRATION
                 )
                 .orElse(null);
 
-        if (findMember == null || findMember.getStatus().equals("탈퇴")) {
+        if (findMember == null || (MemberStatus.LEAVE).equals(findMember.getMemberStatus())) {
             return saveMember(attributes, socialType);
         }
         return findMember;

@@ -2,6 +2,8 @@ package com.coverflow.member.application;
 
 import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.MemberStatus;
+import com.coverflow.member.domain.RefreshTokenStatus;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
@@ -30,6 +32,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final EmitterRepository emitterRepository;
     private final NicknameUtil nicknameUtil;
+
 //    private final PasswordEncoder passwordEncoder;
 //
 //    /**
@@ -61,7 +64,7 @@ public class MemberService {
      */
     @Transactional(readOnly = true)
     public FindMemberInfoResponse findMemberById(final String username) {
-        Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
         return FindMemberInfoResponse.from(member);
     }
@@ -91,11 +94,11 @@ public class MemberService {
     public List<FindAllMembersResponse> findMembersByStatus(
             final int pageNo,
             final String criterion,
-            final String status
+            final MemberStatus memberStatus
     ) {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Member> members = memberRepository.findAllByStatus(pageable, status)
-                .orElseThrow(() -> new MemberNotFoundException(status));
+        Page<Member> members = memberRepository.findAllByMemberStatus(pageable, memberStatus)
+                .orElseThrow(() -> new MemberNotFoundException(memberStatus));
 
         return members.getContent().stream()
                 .map(FindAllMembersResponse::from)
@@ -110,7 +113,7 @@ public class MemberService {
             final String username,
             final SaveMemberInfoRequest request
     ) {
-        Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
 
         member.saveMemberInfo(request);
@@ -122,7 +125,7 @@ public class MemberService {
      */
     @Transactional
     public UpdateNicknameResponse updateNickname(final String username) {
-        Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
         String nickname = nicknameUtil.generateRandomNickname();
 
@@ -139,10 +142,10 @@ public class MemberService {
      */
     @Transactional
     public void logout(final String username) {
-        Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
 
-        member.updateTokenStatus("로그아웃");
+        member.updateTokenStatus(RefreshTokenStatus.LOGOUT);
         emitterRepository.deleteAllStartWithId(username);
         emitterRepository.deleteAllEventCacheStartWithId(username);
     }
@@ -152,13 +155,13 @@ public class MemberService {
      */
     @Transactional
     public void leaveMember(final String username) {
-        Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
 
-        member.updateTokenStatus("로그아웃");
-        member.updateAuthorization(Role.GUEST);
         member.updateFishShapedBun(0);
-        member.updateStatus("탈퇴");
+        member.updateAuthorization(Role.GUEST);
+        member.updateTokenStatus(RefreshTokenStatus.LOGOUT);
+        member.updateStatus(MemberStatus.LEAVE);
         emitterRepository.deleteAllStartWithId(username);
         emitterRepository.deleteAllEventCacheStartWithId(username);
     }

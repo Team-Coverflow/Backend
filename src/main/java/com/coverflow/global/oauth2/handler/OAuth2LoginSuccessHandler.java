@@ -4,6 +4,7 @@ import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.oauth2.CustomOAuth2User;
 import com.coverflow.member.application.CurrencyService;
 import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.visitor.application.VisitorService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,7 +71,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     }
 
     private void updateConnectedAt(final UUID memberId) {
-        Member member = memberRepository.findByIdAndStatus(memberId, "등록")
+        Member member = memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
         member.updateConnectedAt();

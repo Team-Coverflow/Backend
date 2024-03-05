@@ -3,6 +3,7 @@ package com.coverflow.global.jwt.service;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.infrastructure.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -183,7 +184,7 @@ public class JwtService {
             final UUID memberId,
             final String refreshToken
     ) {
-        Member member = memberRepository.findByIdAndStatus(memberId, "등록")
+        Member member = memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
 
         member.updateRefreshToken(refreshToken);
