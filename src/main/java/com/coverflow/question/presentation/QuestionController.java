@@ -112,7 +112,7 @@ public class QuestionController {
                         .build());
     }
 
-    @PutMapping("/admin/question/{questionId}")
+    @DeleteMapping("/admin/question/{questionId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
             @PathVariable @Valid final long questionId

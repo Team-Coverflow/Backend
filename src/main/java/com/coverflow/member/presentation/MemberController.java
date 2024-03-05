@@ -101,7 +101,7 @@ public class MemberController {
                         .build());
     }
 
-    @PutMapping("/leave")
+    @DeleteMapping("/leave")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteMember(
             @AuthenticationPrincipal final UserDetails userDetails

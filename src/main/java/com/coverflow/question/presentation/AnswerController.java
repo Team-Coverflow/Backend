@@ -110,7 +110,7 @@ public class AnswerController {
                         .build());
     }
 
-    @PutMapping("/admin/answer/{answerId}")
+    @DeleteMapping("/admin/answer/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
             @PathVariable @Valid final long answerId
