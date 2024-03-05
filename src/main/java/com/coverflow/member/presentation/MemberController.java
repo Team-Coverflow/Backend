@@ -82,7 +82,6 @@ public class MemberController {
     public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        memberService.updateNickname(userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<UpdateNicknameResponse>builder()
                         .statusCode(HttpStatus.OK)

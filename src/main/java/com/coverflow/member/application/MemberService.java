@@ -7,7 +7,6 @@ import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
-import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.infrastructure.EmitterRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
+import static com.coverflow.member.exception.MemberException.*;
 
 @RequiredArgsConstructor
 @Service
@@ -62,7 +62,7 @@ public class MemberService {
     @Transactional(readOnly = true)
     public FindMemberInfoResponse findMemberById(final String username) {
         Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
-                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
+                .orElseThrow(() -> new MemberNotFoundException(username));
         return FindMemberInfoResponse.from(member);
     }
 
@@ -76,7 +76,7 @@ public class MemberService {
     ) {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Member> members = memberRepository.findAllMembers(pageable)
-                .orElseThrow(MemberException.AllMemberNotFoundException::new);
+                .orElseThrow(AllMemberNotFoundException::new);
 
         return members.getContent().stream()
                 .map(FindAllMembersResponse::from)
@@ -95,7 +95,7 @@ public class MemberService {
     ) {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Member> members = memberRepository.findAllByStatus(pageable, status)
-                .orElseThrow(() -> new MemberException.MemberNotFoundException(status));
+                .orElseThrow(() -> new MemberNotFoundException(status));
 
         return members.getContent().stream()
                 .map(FindAllMembersResponse::from)
@@ -111,7 +111,7 @@ public class MemberService {
             final SaveMemberInfoRequest request
     ) {
         Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
-                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
+                .orElseThrow(() -> new MemberNotFoundException(username));
 
         member.saveMemberInfo(request);
         member.updateAuthorization(Role.MEMBER);
@@ -123,9 +123,12 @@ public class MemberService {
     @Transactional
     public UpdateNicknameResponse updateNickname(final String username) {
         Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
-                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
+                .orElseThrow(() -> new MemberNotFoundException(username));
         String nickname = nicknameUtil.generateRandomNickname();
 
+        if (member.getFishShapedBun() < 20) {
+            throw new NotEnoughCurrencyException();
+        }
         member.updateNickname(nickname);
         member.updateFishShapedBun(member.getFishShapedBun() - 20);
         return UpdateNicknameResponse.from(nickname);
@@ -137,7 +140,7 @@ public class MemberService {
     @Transactional
     public void logout(final String username) {
         Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
-                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
+                .orElseThrow(() -> new MemberNotFoundException(username));
 
         member.updateTokenStatus("로그아웃");
         emitterRepository.deleteAllStartWithId(username);
@@ -150,7 +153,7 @@ public class MemberService {
     @Transactional
     public void leaveMember(final String username) {
         Member member = memberRepository.findByIdAndStatus(UUID.fromString(username), "등록")
-                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
+                .orElseThrow(() -> new MemberNotFoundException(username));
 
         member.updateTokenStatus("로그아웃");
         member.updateAuthorization(Role.GUEST);
