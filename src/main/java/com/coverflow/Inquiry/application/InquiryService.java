@@ -16,7 +16,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -41,12 +40,10 @@ public class InquiryService {
         Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(pageable, memberId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(memberId));
-        List<FindInquiryResponse> findInquiries = new ArrayList<>();
 
-        for (int i = 0; i < inquiries.getContent().size(); i++) {
-            findInquiries.add(i, FindInquiryResponse.from(inquiries.getContent().get(i)));
-        }
-        return findInquiries;
+        return inquiries.getContent().stream()
+                .map(FindInquiryResponse::from)
+                .toList();
     }
 
     /**
@@ -60,12 +57,10 @@ public class InquiryService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Inquiry> inquiries = inquiryRepository.findInquiries(pageable)
                 .orElseThrow(InquiryException.InquiryNotFoundException::new);
-        List<FindAllInquiriesResponse> findInquiries = new ArrayList<>();
 
-        for (int i = 0; i < inquiries.getContent().size(); i++) {
-            findInquiries.add(i, FindAllInquiriesResponse.from(inquiries.getContent().get(i)));
-        }
-        return findInquiries;
+        return inquiries.getContent().stream()
+                .map(FindAllInquiriesResponse::from)
+                .toList();
     }
 
     /**
@@ -81,12 +76,10 @@ public class InquiryService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(status));
-        List<FindAllInquiriesResponse> findInquiries = new ArrayList<>();
 
-        for (int i = 0; i < inquiries.getContent().size(); i++) {
-            findInquiries.add(i, FindAllInquiriesResponse.from(inquiries.getContent().get(i)));
-        }
-        return findInquiries;
+        return inquiries.getContent().stream()
+                .map(FindAllInquiriesResponse::from)
+                .toList();
     }
 
     /**

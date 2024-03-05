@@ -98,12 +98,10 @@ public class QuestionService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Question> questions = questionRepository.findAllQuestions(pageable)
                 .orElseThrow(QuestionException.QuestionNotFoundException::new);
-        List<FindAllQuestionsResponse> findQuestions = new ArrayList<>();
 
-        for (int i = 0; i < questions.getContent().size(); i++) {
-            findQuestions.add(i, FindAllQuestionsResponse.from(questions.getContent().get(i)));
-        }
-        return findQuestions;
+        return questions.getContent().stream()
+                .map(FindAllQuestionsResponse::from)
+                .toList();
     }
 
     /**
@@ -119,12 +117,10 @@ public class QuestionService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Question> questions = questionRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(status));
-        List<FindAllQuestionsResponse> findQuestions = new ArrayList<>();
 
-        for (int i = 0; i < questions.getContent().size(); i++) {
-            findQuestions.add(i, FindAllQuestionsResponse.from(questions.getContent().get(i)));
-        }
-        return findQuestions;
+        return questions.getContent().stream()
+                .map(FindAllQuestionsResponse::from)
+                .toList();
     }
 
     /**

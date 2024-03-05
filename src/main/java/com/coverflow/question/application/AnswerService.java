@@ -80,12 +80,10 @@ public class AnswerService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Answer> answers = answerRepository.findAllAnswers(pageable)
                 .orElseThrow(AnswerException.AnswerNotFoundException::new);
-        List<FindAnswerResponse> findAnswers = new ArrayList<>();
 
-        for (int i = 0; i < answers.getContent().size(); i++) {
-            findAnswers.add(i, FindAnswerResponse.from(answers.getContent().get(i)));
-        }
-        return findAnswers;
+        return answers.getContent().stream()
+                .map(FindAnswerResponse::from)
+                .toList();
     }
 
     /**
@@ -101,12 +99,10 @@ public class AnswerService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Answer> answers = answerRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(status));
-        List<FindAnswerResponse> findAnswers = new ArrayList<>();
 
-        for (int i = 0; i < answers.getContent().size(); i++) {
-            findAnswers.add(i, FindAnswerResponse.from(answers.getContent().get(i)));
-        }
-        return findAnswers;
+        return answers.getContent().stream()
+                .map(FindAnswerResponse::from)
+                .toList();
     }
 
     /**

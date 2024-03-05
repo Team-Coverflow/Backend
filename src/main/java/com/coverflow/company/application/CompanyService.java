@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
@@ -40,12 +39,10 @@ public class CompanyService {
         Pageable pageable = PageRequest.of(0, NORMAL_PAGE_SIZE, Sort.by("name").ascending());
         Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        List<FindAutoCompleteResponse> findCompanies = new ArrayList<>();
 
-        for (int i = 0; i < companies.getContent().size(); i++) {
-            findCompanies.add(i, FindAutoCompleteResponse.from(companies.getContent().get(i)));
-        }
-        return findCompanies;
+        return companies.getContent().stream()
+                .map(FindAutoCompleteResponse::from)
+                .toList();
     }
 
     /**
@@ -60,12 +57,10 @@ public class CompanyService {
         Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by("name").ascending());
         Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        List<SearchCompanyResponse> findCompanies = new ArrayList<>();
 
-        for (int i = 0; i < companies.getContent().size(); i++) {
-            findCompanies.add(i, SearchCompanyResponse.from(companies.getContent().get(i)));
-        }
-        return findCompanies;
+        return companies.getContent().stream()
+                .map(SearchCompanyResponse::from)
+                .toList();
     }
 
     /**
@@ -96,12 +91,10 @@ public class CompanyService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Company> companies = companyRepository.findAllCompanies(pageable)
                 .orElseThrow(CompanyException.CompanyNotFoundException::new);
-        List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
 
-        for (int i = 0; i < companies.getContent().size(); i++) {
-            findCompanies.add(i, FindAllCompaniesResponse.from(companies.getContent().get(i)));
-        }
-        return findCompanies;
+        return companies.getContent().stream()
+                .map(FindAllCompaniesResponse::from)
+                .toList();
     }
 
     /**
@@ -117,12 +110,10 @@ public class CompanyService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Company> companies = companyRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
-        List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
 
-        for (int i = 0; i < companies.getContent().size(); i++) {
-            findCompanies.add(i, FindAllCompaniesResponse.from(companies.getContent().get(i)));
-        }
-        return findCompanies;
+        return companies.getContent().stream()
+                .map(FindAllCompaniesResponse::from)
+                .toList();
     }
 
     /**

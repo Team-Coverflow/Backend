@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -45,12 +44,10 @@ public class ReportService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Report> reports = reportRepository.findReportsByMemberId(memberId, pageable)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(memberId));
-        List<FindReportResponse> findReports = new ArrayList<>();
 
-        for (int i = 0; i < reports.getContent().size(); i++) {
-            findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
-        }
-        return findReports;
+        return reports.getContent().stream()
+                .map(FindReportResponse::from)
+                .toList();
     }
 
     /**
@@ -64,12 +61,10 @@ public class ReportService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Report> reports = reportRepository.findAllReports(pageable)
                 .orElseThrow(ReportException.ReportNotFoundException::new);
-        List<FindReportResponse> findReports = new ArrayList<>();
 
-        for (int i = 0; i < reports.getContent().size(); i++) {
-            findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
-        }
-        return findReports;
+        return reports.getContent().stream()
+                .map(FindReportResponse::from)
+                .toList();
     }
 
     /**
@@ -85,12 +80,10 @@ public class ReportService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Report> reports = reportRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(status));
-        List<FindReportResponse> findReports = new ArrayList<>();
 
-        for (int i = 0; i < reports.getContent().size(); i++) {
-            findReports.add(i, FindReportResponse.from(reports.getContent().get(i)));
-        }
-        return findReports;
+        return reports.getContent().stream()
+                .map(FindReportResponse::from)
+                .toList();
     }
 
     /**

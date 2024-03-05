@@ -18,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -78,12 +77,10 @@ public class MemberService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Member> members = memberRepository.findAllMembers(pageable)
                 .orElseThrow(MemberException.AllMemberNotFoundException::new);
-        List<FindAllMembersResponse> findMembers = new ArrayList<>();
 
-        for (int i = 0; i < members.getContent().size(); i++) {
-            findMembers.add(i, FindAllMembersResponse.from(members.getContent().get(i)));
-        }
-        return findMembers;
+        return members.getContent().stream()
+                .map(FindAllMembersResponse::from)
+                .toList();
     }
 
     /**
@@ -99,12 +96,10 @@ public class MemberService {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
         Page<Member> members = memberRepository.findAllByStatus(pageable, status)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(status));
-        List<FindAllMembersResponse> findMembers = new ArrayList<>();
 
-        for (int i = 0; i < members.getContent().size(); i++) {
-            findMembers.add(i, FindAllMembersResponse.from(members.getContent().get(i)));
-        }
-        return findMembers;
+        return members.getContent().stream()
+                .map(FindAllMembersResponse::from)
+                .toList();
     }
 
     /**
