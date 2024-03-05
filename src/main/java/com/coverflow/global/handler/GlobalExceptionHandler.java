@@ -65,6 +65,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = {
             MemberException.MemberNotFoundException.class,
+            MemberException.AllMemberNotFoundException.class,
             CompanyException.CompanyNotFoundException.class,
             VisitorException.DayNotFoundException.class,
             QuestionException.QuestionNotFoundException.class,
