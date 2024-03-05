@@ -127,7 +127,7 @@ public class MemberService {
         String nickname = nicknameUtil.generateRandomNickname();
 
         member.updateNickname(nickname);
-        member.updateFishShapedBun(member.getFishShapedBun() - 50);
+        member.updateFishShapedBun(member.getFishShapedBun() - 20);
         return UpdateNicknameResponse.from(nickname);
     }
 
