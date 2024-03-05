@@ -1,6 +1,7 @@
 package com.coverflow.company.application;
 
 import com.coverflow.company.domain.Company;
+import com.coverflow.company.domain.CompanyStatus;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
@@ -105,11 +106,11 @@ public class CompanyService {
     public List<FindAllCompaniesResponse> findPending(
             final int pageNo,
             final String criterion,
-            final String status
+            final CompanyStatus companyStatus
     ) {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Company> companies = companyRepository.findAllByStatus(pageable, status)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
+        Page<Company> companies = companyRepository.findAllByStatus(pageable, companyStatus)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyStatus));
 
         return companies.getContent().stream()
                 .map(FindAllCompaniesResponse::from)
@@ -132,7 +133,7 @@ public class CompanyService {
                 .district(request.district())
                 .establishment(request.establishment())
                 .questionCount(0)
-                .status("검토")
+                .companyStatus(CompanyStatus.EXAMINATION)
                 .build();
 
         companyRepository.save(company);
@@ -152,7 +153,7 @@ public class CompanyService {
                 .city(request.city())
                 .district(request.district())
                 .establishment(request.establishment())
-                .status(request.status())
+                .companyStatus(request.companyStatus())
                 .build());
     }
 
@@ -164,7 +165,7 @@ public class CompanyService {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
-        company.updateStatus("삭제");
+        company.updateStatus(CompanyStatus.DELETE);
     }
 
     /**

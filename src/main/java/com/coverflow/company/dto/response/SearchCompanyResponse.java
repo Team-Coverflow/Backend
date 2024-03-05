@@ -1,6 +1,7 @@
 package com.coverflow.company.dto.response;
 
 import com.coverflow.company.domain.Company;
+import com.coverflow.company.domain.CompanyStatus;
 
 public record SearchCompanyResponse(
         long companyId,
@@ -9,7 +10,7 @@ public record SearchCompanyResponse(
         String companyAddress,
         String companyEstablishment,
         int questionCount,
-        String companyStatus
+        CompanyStatus companyStatus
 ) {
 
     public static SearchCompanyResponse from(final Company company) {
@@ -20,7 +21,7 @@ public record SearchCompanyResponse(
                 company.getCity() + " " + company.getDistrict(),
                 company.getEstablishment(),
                 company.getQuestionCount(),
-                company.getStatus()
+                company.getCompanyStatus()
         );
     }
 }

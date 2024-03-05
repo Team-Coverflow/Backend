@@ -1,6 +1,7 @@
 package com.coverflow.company.infrastructure;
 
 import com.coverflow.company.domain.Company;
+import com.coverflow.company.domain.CompanyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("SELECT c " +
             "FROM Company c " +
             "WHERE c.name LIKE :name " +
-            "AND c.status = '등록' " +
+            "AND c.companyStatus = 'REGISTRATION' " +
             "ORDER BY c.name ASC")
     Optional<Page<Company>> findAllByNameStartingWithAndStatus(
             final Pageable pageable,
@@ -26,7 +27,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("SELECT c " +
             "FROM Company c " +
             "WHERE c.id = :companyId " +
-            "AND c.status = '등록'")
+            "AND c.companyStatus = 'REGISTRATION'")
     Optional<Company> findRegisteredCompany(@Param("companyId") final long companyId);
 
     @Query("SELECT c " +
@@ -35,9 +36,9 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
 
     @Query("SELECT c " +
             "FROM Company c " +
-            "WHERE c.status = :status")
+            "WHERE c.companyStatus = :companyStatus")
     Optional<Page<Company>> findAllByStatus(
             final Pageable pageable,
-            final String status
+            final CompanyStatus companyStatus
     );
 }

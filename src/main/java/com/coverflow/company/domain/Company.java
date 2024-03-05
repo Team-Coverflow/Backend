@@ -31,8 +31,9 @@ public class Company extends BaseTimeEntity {
     private String establishment; // 설립일
     @Column
     private int questionCount; // 질문 수
-    @Column
-    private String status; // 상태 (검토/등록/삭제)
+
+    @Enumerated(EnumType.STRING)
+    private CompanyStatus companyStatus; // 상태 (검토/등록/삭제)
 
     @Builder.Default
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
@@ -50,7 +51,7 @@ public class Company extends BaseTimeEntity {
         this.questionCount = questionCount;
     }
 
-    public void updateStatus(final String status) {
-        this.status = status;
+    public void updateStatus(final CompanyStatus companyStatus) {
+        this.companyStatus = companyStatus;
     }
 }

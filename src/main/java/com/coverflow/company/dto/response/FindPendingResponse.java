@@ -1,6 +1,7 @@
 package com.coverflow.company.dto.response;
 
 import com.coverflow.company.domain.Company;
+import com.coverflow.company.domain.CompanyStatus;
 
 public record FindPendingResponse(
         long id,
@@ -9,7 +10,7 @@ public record FindPendingResponse(
         String address,
         String establishment,
         int questionCount,
-        String status
+        CompanyStatus companyStatus
 ) {
 
     public static FindPendingResponse from(final Company company) {
@@ -20,7 +21,7 @@ public record FindPendingResponse(
                 company.getCity() + " " + company.getDistrict(),
                 company.getEstablishment(),
                 company.getQuestionCount(),
-                company.getStatus()
+                company.getCompanyStatus()
         );
     }
 }

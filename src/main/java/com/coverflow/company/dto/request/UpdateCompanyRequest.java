@@ -1,5 +1,7 @@
 package com.coverflow.company.dto.request;
 
+import com.coverflow.company.domain.CompanyStatus;
+
 public record UpdateCompanyRequest(
         long companyId,
         String name,
@@ -7,6 +9,6 @@ public record UpdateCompanyRequest(
         String city,
         String district,
         String establishment,
-        String status
+        CompanyStatus companyStatus
 ) {
 }

@@ -1,6 +1,7 @@
 package com.coverflow.company.presentation;
 
 import com.coverflow.company.application.CompanyService;
+import com.coverflow.company.domain.CompanyStatus;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
@@ -82,12 +83,12 @@ public class CompanyController {
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findPending(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록") @Valid final String status
+            @RequestParam(defaultValue = "REGISTRATION") @Valid final CompanyStatus companyStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(companyService.findPending(pageNo, criterion, status))
+                        .data(companyService.findPending(pageNo, criterion, companyStatus))
                         .build()
                 );
     }
