@@ -1,13 +1,13 @@
-package com.coverflow.Inquiry.presentation;
+package com.coverflow.inquiry.presentation;
 
-import com.coverflow.Inquiry.application.InquiryService;
-import com.coverflow.Inquiry.dto.request.SaveInquiryRequest;
-import com.coverflow.Inquiry.dto.request.UpdateInquiryRequest;
-import com.coverflow.Inquiry.dto.response.FindAllInquiriesResponse;
-import com.coverflow.Inquiry.dto.response.FindInquiryResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
+import com.coverflow.inquiry.application.InquiryService;
+import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
+import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
+import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
+import com.coverflow.inquiry.dto.response.FindInquiryResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

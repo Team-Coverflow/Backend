@@ -1,4 +1,4 @@
-package com.coverflow.Inquiry.exception;
+package com.coverflow.inquiry.exception;
 
 public class InquiryException extends RuntimeException {
 

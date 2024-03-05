@@ -1,12 +1,12 @@
-package com.coverflow.Inquiry.application;
+package com.coverflow.inquiry.application;
 
-import com.coverflow.Inquiry.domain.Inquiry;
-import com.coverflow.Inquiry.dto.request.SaveInquiryRequest;
-import com.coverflow.Inquiry.dto.request.UpdateInquiryRequest;
-import com.coverflow.Inquiry.dto.response.FindAllInquiriesResponse;
-import com.coverflow.Inquiry.dto.response.FindInquiryResponse;
-import com.coverflow.Inquiry.exception.InquiryException;
-import com.coverflow.Inquiry.infrastructure.InquiryRepository;
+import com.coverflow.inquiry.domain.Inquiry;
+import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
+import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
+import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
+import com.coverflow.inquiry.dto.response.FindInquiryResponse;
+import com.coverflow.inquiry.exception.InquiryException;
+import com.coverflow.inquiry.infrastructure.InquiryRepository;
 import com.coverflow.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

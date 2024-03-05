@@ -1,6 +1,6 @@
-package com.coverflow.Inquiry.infrastructure;
+package com.coverflow.inquiry.infrastructure;
 
-import com.coverflow.Inquiry.domain.Inquiry;
+import com.coverflow.inquiry.domain.Inquiry;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

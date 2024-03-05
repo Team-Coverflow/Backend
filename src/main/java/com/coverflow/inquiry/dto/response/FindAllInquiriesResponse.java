@@ -1,6 +1,6 @@
-package com.coverflow.Inquiry.dto.response;
+package com.coverflow.inquiry.dto.response;
 
-import com.coverflow.Inquiry.domain.Inquiry;
+import com.coverflow.inquiry.domain.Inquiry;
 
 public record FindAllInquiriesResponse(
         long inquiryId,

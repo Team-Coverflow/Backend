@@ -1,13 +1,5 @@
 package com.coverflow.global.handler;
 
-import com.coverflow.Inquiry.exception.InquiryException;
-import com.coverflow.company.exception.CompanyException;
-import com.coverflow.member.exception.MemberException;
-import com.coverflow.notification.exception.NotificationException;
-import com.coverflow.question.exception.AnswerException;
-import com.coverflow.question.exception.QuestionException;
-import com.coverflow.report.exception.ReportException;
-import com.coverflow.visitor.exception.VisitorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +11,18 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.time.DateTimeException;
 import java.util.Random;
+
+import static com.coverflow.company.exception.CompanyException.CompanyExistException;
+import static com.coverflow.company.exception.CompanyException.CompanyNotFoundException;
+import static com.coverflow.inquiry.exception.InquiryException.InquiryNotFoundException;
+import static com.coverflow.member.exception.MemberException.*;
+import static com.coverflow.notification.exception.NotificationException.NotificationNotFoundException;
+import static com.coverflow.question.exception.AnswerException.AnswerExistException;
+import static com.coverflow.question.exception.AnswerException.AnswerNotFoundException;
+import static com.coverflow.question.exception.QuestionException.QuestionExistException;
+import static com.coverflow.question.exception.QuestionException.QuestionNotFoundException;
+import static com.coverflow.report.exception.ReportException.ReportNotFoundException;
+import static com.coverflow.visitor.exception.VisitorException.DayNotFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -64,15 +68,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {
-            MemberException.MemberNotFoundException.class,
-            MemberException.AllMemberNotFoundException.class,
-            CompanyException.CompanyNotFoundException.class,
-            VisitorException.DayNotFoundException.class,
-            QuestionException.QuestionNotFoundException.class,
-            AnswerException.AnswerNotFoundException.class,
-            NotificationException.NotificationNotFoundException.class,
-            ReportException.ReportNotFoundException.class,
-            InquiryException.InquiryNotFoundException.class
+            CompanyNotFoundException.class,
+            InquiryNotFoundException.class,
+            NotificationNotFoundException.class,
+            MemberNotFoundException.class,
+            AllMemberNotFoundException.class,
+            QuestionNotFoundException.class,
+            AnswerNotFoundException.class,
+            ReportNotFoundException.class,
+            DayNotFoundException.class,
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(final RuntimeException exception) {
         String message = exception.getMessage();
@@ -84,9 +88,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {
-            CompanyException.CompanyExistException.class,
-            QuestionException.QuestionExistException.class,
-            AnswerException.AnswerExistException.class
+            CompanyExistException.class,
+            QuestionExistException.class,
+            AnswerExistException.class,
     })
     public ResponseEntity<ErrorResponse> handleExistException(final RuntimeException exception) {
         String message = exception.getMessage();
@@ -99,7 +103,7 @@ public class GlobalExceptionHandler {
 
     // 커스텀 예외 사용 시
     @ExceptionHandler(value = {
-            MemberException.NotEnoughCurrencyException.class
+            NotEnoughCurrencyException.class
     })
     public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
         String message = exception.getMessage();

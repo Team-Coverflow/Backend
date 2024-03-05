@@ -1,4 +1,4 @@
-package com.coverflow.Inquiry.dto.request;
+package com.coverflow.inquiry.dto.request;
 
 public record SaveInquiryRequest(
         String title,

@@ -1,4 +1,4 @@
-package com.coverflow.Inquiry.domain;
+package com.coverflow.inquiry.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
