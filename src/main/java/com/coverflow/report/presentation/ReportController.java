@@ -81,7 +81,7 @@ public class ReportController {
     @PutMapping("/admin/report/{reportId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
-            @PathVariable @Valid final Long reportId
+            @PathVariable @Valid final long reportId
     ) {
         reportService.deleteReport(reportId);
         return ResponseEntity.ok()

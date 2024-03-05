@@ -1,7 +1,7 @@
 package com.coverflow.company.dto.request;
 
 public record UpdateCompanyRequest(
-        Long companyId,
+        long companyId,
         String name,
         String type,
         String city,

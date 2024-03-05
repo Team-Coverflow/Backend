@@ -76,7 +76,7 @@ public class CompanyService {
     public FindCompanyResponse findCompanyById(
             final int pageNo,
             final String criterion,
-            final Long companyId
+            final long companyId
     ) {
         Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
@@ -169,7 +169,7 @@ public class CompanyService {
      * [관리자 전용: 회사 삭제 메서드]
      */
     @Transactional
-    public void deleteCompany(final Long companyId) {
+    public void deleteCompany(final long companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
@@ -180,7 +180,7 @@ public class CompanyService {
      * [관리자 전용: 회사 물리 삭제 메서드]
      */
     @Transactional
-    public void deleteCompanyReal(final Long companyId) {
+    public void deleteCompanyReal(final long companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 

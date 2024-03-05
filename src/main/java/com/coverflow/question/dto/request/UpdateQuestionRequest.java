@@ -1,7 +1,7 @@
 package com.coverflow.question.dto.request;
 
 public record UpdateQuestionRequest(
-        Long questionId,
+        long questionId,
         String title,
         String content
 ) {

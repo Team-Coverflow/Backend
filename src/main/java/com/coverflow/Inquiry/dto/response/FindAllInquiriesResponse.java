@@ -3,7 +3,7 @@ package com.coverflow.Inquiry.dto.response;
 import com.coverflow.Inquiry.domain.Inquiry;
 
 public record FindAllInquiriesResponse(
-        Long inquiryId,
+        long inquiryId,
         String inquiryTitle,
         String inquiryContent,
         String inquiryAnswer,

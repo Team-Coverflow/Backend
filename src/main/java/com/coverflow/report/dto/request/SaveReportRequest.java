@@ -5,7 +5,7 @@ import com.coverflow.report.domain.ReportType;
 public record SaveReportRequest(
         String content,
         ReportType type,
-        Long id
+        long id
 
 ) {
 }

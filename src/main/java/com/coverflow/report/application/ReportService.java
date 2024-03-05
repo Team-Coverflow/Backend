@@ -141,7 +141,7 @@ public class ReportService {
      * [관리자 전용: 신고 삭제 메서드]
      */
     @Transactional
-    public void deleteReport(final Long reportId) {
+    public void deleteReport(final long reportId) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(reportId));
 

@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     Optional<Answer> findByIdAndStatus(
-            final Long id,
+            final long id,
             final String status
     );
 
@@ -22,7 +22,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
             "AND a.status = '등록'")
     Optional<Page<Answer>> findAllAnswersByQuestionIdAndStatus(
             final Pageable pageable,
-            @Param("questionId") final Long questionId
+            @Param("questionId") final long questionId
     );
 
     @Query("SELECT a " +

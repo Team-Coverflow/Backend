@@ -36,9 +36,9 @@ public class JwtService {
     @Value("${jwt.secret-key}")
     private String secretKey;
     @Value("${jwt.access.expiration}")
-    private Long accessTokenExpirationPeriod;
+    private long accessTokenExpirationPeriod;
     @Value("${jwt.refresh.expiration}")
-    private Long refreshTokenExpirationPeriod;
+    private long refreshTokenExpirationPeriod;
     @Value("${jwt.access.header}")
     private String accessHeader;
     @Value("${jwt.refresh.header}")

@@ -27,7 +27,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             "FROM Company c " +
             "WHERE c.id = :companyId " +
             "AND c.status = '등록'")
-    Optional<Company> findRegisteredCompany(@Param("companyId") final Long companyId);
+    Optional<Company> findRegisteredCompany(@Param("companyId") final long companyId);
 
     @Query("SELECT c " +
             "FROM Company c ")

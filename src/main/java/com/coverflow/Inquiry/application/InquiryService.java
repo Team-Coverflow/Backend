@@ -127,7 +127,7 @@ public class InquiryService {
      * [관리자 전용: 문의 삭제 메서드]
      */
     @Transactional
-    public void deleteInquiry(final Long inquiryId) {
+    public void deleteInquiry(final long inquiryId) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
 

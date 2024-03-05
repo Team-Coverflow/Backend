@@ -3,7 +3,7 @@ package com.coverflow.company.dto.response;
 import com.coverflow.company.domain.Company;
 
 public record SearchCompanyResponse(
-        Long companyId,
+        long companyId,
         String companyName,
         String companyType,
         String companyAddress,

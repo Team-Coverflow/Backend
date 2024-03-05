@@ -6,7 +6,7 @@ import com.coverflow.question.dto.QuestionDTO;
 import java.util.List;
 
 public record FindCompanyResponse(
-        Long companyId,
+        long companyId,
         String companyName,
         String companyType,
         String companyAddress,

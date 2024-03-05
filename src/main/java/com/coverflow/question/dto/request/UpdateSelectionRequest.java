@@ -1,7 +1,7 @@
 package com.coverflow.question.dto.request;
 
 public record UpdateSelectionRequest(
-        Long answerId,
+        long answerId,
         boolean selection
 ) {
 }

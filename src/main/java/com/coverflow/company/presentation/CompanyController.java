@@ -51,7 +51,7 @@ public class CompanyController {
 
     @GetMapping("/company/{companyId}")
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
-            @PathVariable @Valid final Long companyId,
+            @PathVariable @Valid final long companyId,
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion
     ) {
@@ -118,7 +118,7 @@ public class CompanyController {
     @PutMapping("/admin/company/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
-            @PathVariable @Valid final Long companyId
+            @PathVariable @Valid final long companyId
     ) {
         companyService.deleteCompany(companyId);
         return ResponseEntity.ok()
@@ -130,7 +130,7 @@ public class CompanyController {
     @DeleteMapping("/admin/real/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompanyReal(
-            @PathVariable @Valid final Long companyId
+            @PathVariable @Valid final long companyId
     ) {
         companyService.deleteCompanyReal(companyId);
         return ResponseEntity.ok()

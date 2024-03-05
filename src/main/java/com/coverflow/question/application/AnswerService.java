@@ -49,7 +49,7 @@ public class AnswerService {
     public List<AnswerDTO> findAllAnswersByQuestionId(
             final int pageNo,
             final String criterion,
-            final Long questionId
+            final long questionId
     ) {
         Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by(criterion).descending());
         Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndStatus(pageable, questionId);
@@ -188,7 +188,7 @@ public class AnswerService {
      * [관리자 전용: 답변 삭제 메서드]
      */
     @Transactional
-    public void deleteAnswer(final Long answerId) {
+    public void deleteAnswer(final long answerId) {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
 

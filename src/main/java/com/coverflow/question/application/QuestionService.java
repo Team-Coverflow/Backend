@@ -46,7 +46,7 @@ public class QuestionService {
     public List<QuestionDTO> findAllQuestionsByCompanyId(
             final int pageNo,
             final String criterion,
-            final Long companyId
+            final long companyId
     ) {
         Pageable pageable = PageRequest.of(pageNo, SMALL_PAGE_SIZE, Sort.by(criterion).descending());
         Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(pageable, companyId);
@@ -78,7 +78,7 @@ public class QuestionService {
     public FindQuestionResponse findQuestionById(
             final int pageNo,
             final String criterion,
-            final Long questionId
+            final long questionId
     ) {
         Question question = questionRepository.findRegisteredQuestion(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
@@ -175,7 +175,7 @@ public class QuestionService {
      * [관리자 전용: 질문 삭제 메서드]
      */
     @Transactional
-    public void deleteQuestion(final Long questionId) {
+    public void deleteQuestion(final long questionId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 

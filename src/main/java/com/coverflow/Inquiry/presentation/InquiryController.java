@@ -98,7 +98,7 @@ public class InquiryController {
     @PutMapping("/admin/inquiry/{inquiryId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteInquiry(
-            @PathVariable @Valid final Long inquiryId
+            @PathVariable @Valid final long inquiryId
     ) {
         inquiryService.deleteInquiry(inquiryId);
         return ResponseEntity.ok()

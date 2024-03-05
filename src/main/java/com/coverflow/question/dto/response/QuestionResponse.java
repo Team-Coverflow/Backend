@@ -5,12 +5,12 @@ import com.coverflow.question.domain.Question;
 import java.util.UUID;
 
 public record QuestionResponse(
-        Long questionId,
+        long questionId,
         String title,
         String content,
         int viewCount,
         int answerCount,
-        Long companyId,
+        long companyId,
         UUID memberId
 ) {
 

@@ -3,7 +3,7 @@ package com.coverflow.company.dto.response;
 import com.coverflow.company.domain.Company;
 
 public record FindAutoCompleteResponse(
-        Long companyId,
+        long companyId,
         String companyName,
         String companyType,
         String companyAddress,

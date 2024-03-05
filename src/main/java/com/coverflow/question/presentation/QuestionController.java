@@ -33,7 +33,7 @@ public class QuestionController {
     public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @PathVariable @Valid final Long companyId
+            @PathVariable @Valid final long companyId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<QuestionDTO>>builder()
@@ -48,7 +48,7 @@ public class QuestionController {
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @PathVariable @Valid final Long questionId
+            @PathVariable @Valid final long questionId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
@@ -115,7 +115,7 @@ public class QuestionController {
     @PutMapping("/admin/question/{questionId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
-            @PathVariable @Valid final Long questionId
+            @PathVariable @Valid final long questionId
     ) {
         questionService.deleteQuestion(questionId);
         return ResponseEntity.ok()

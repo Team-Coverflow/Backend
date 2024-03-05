@@ -3,12 +3,12 @@ package com.coverflow.report.dto.response;
 import com.coverflow.report.domain.Report;
 
 public record FindReportResponse(
-        Long reportId,
+        long reportId,
         String reportContent,
         String reportStatus,
         String reporterNickname,
-        Long questionId,
-        Long answerId
+        long questionId,
+        long answerId
 ) {
 
     public static FindReportResponse from(final Report report) {

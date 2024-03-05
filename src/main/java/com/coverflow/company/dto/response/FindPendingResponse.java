@@ -3,7 +3,7 @@ package com.coverflow.company.dto.response;
 import com.coverflow.company.domain.Company;
 
 public record FindPendingResponse(
-        Long id,
+        long id,
         String name,
         String type,
         String address,

@@ -34,7 +34,7 @@ public class AnswerController {
     public ResponseEntity<ResponseHandler<List<AnswerDTO>>> findAnswer(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @PathVariable @Valid final Long questionId
+            @PathVariable @Valid final long questionId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<AnswerDTO>>builder()
@@ -113,7 +113,7 @@ public class AnswerController {
     @PutMapping("/admin/answer/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
-            @PathVariable @Valid final Long answerId
+            @PathVariable @Valid final long answerId
     ) {
         answerService.deleteAnswer(answerId);
         return ResponseEntity.ok()

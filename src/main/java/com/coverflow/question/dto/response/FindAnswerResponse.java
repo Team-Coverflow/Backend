@@ -5,7 +5,7 @@ import com.coverflow.question.domain.Answer;
 import java.time.LocalDateTime;
 
 public record FindAnswerResponse(
-        Long answerId,
+        long answerId,
         String answerContent,
         boolean selection,
         String answererNickname,

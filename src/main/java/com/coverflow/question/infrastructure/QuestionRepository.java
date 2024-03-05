@@ -18,14 +18,14 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             "ORDER BY q.createdAt DESC")
     Optional<Page<Question>> findRegisteredQuestions(
             final Pageable pageable,
-            @Param("companyId") final Long companyId
+            @Param("companyId") final long companyId
     );
 
     @Query("SELECT DISTINCT q " +
             "FROM Question q " +
             "WHERE q.id = :questionId " +
             "AND q.status = '등록'")
-    Optional<Question> findRegisteredQuestion(@Param("questionId") final Long questionId);
+    Optional<Question> findRegisteredQuestion(@Param("questionId") final long questionId);
 
     @Query("SELECT q " +
             "FROM Question q ")
