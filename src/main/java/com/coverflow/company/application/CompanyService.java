@@ -158,14 +158,7 @@ public class CompanyService {
         Company company = companyRepository.findById(request.companyId())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.companyId()));
 
-        company.updateCompany(Company.builder()
-                .name(request.name())
-                .type(request.type())
-                .city(request.city())
-                .district(request.district())
-                .establishment(request.establishment())
-                .companyStatus(CompanyStatus.REGISTRATION)
-                .build());
+        company.updateCompany(request);
     }
 
     /**
