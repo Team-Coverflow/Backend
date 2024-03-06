@@ -104,6 +104,18 @@ public class CompanyController {
                         .build());
     }
 
+    @PatchMapping("/admin/company/{companyId}")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<Void>> updateCompanyStatus(
+            @PathVariable @Valid final long companyId
+    ) {
+        companyService.updateCompanyStatus(companyId);
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.NO_CONTENT)
+                        .build());
+    }
+
     @PutMapping("/admin/company")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateCompany(

@@ -19,7 +19,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             AND c.companyStatus = 'REGISTRATION'
             ORDER BY c.name ASC
             """)
-    Optional<Page<Company>> findAllByNameStartingWithAndStatus(
+    Optional<Page<Company>> findAllByNameStartingWithAndCompanyStatus(
             final Pageable pageable,
             @Param("name") final String name
     );
@@ -45,7 +45,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             FROM Company c
             WHERE c.companyStatus = :companyStatus
             """)
-    Optional<Page<Company>> findAllByStatus(
+    Optional<Page<Company>> findAllByCompanyStatus(
             final Pageable pageable,
             @Param("companyStatus") final CompanyStatus companyStatus
     );

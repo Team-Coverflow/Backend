@@ -18,7 +18,7 @@ public class Company extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id; // 회사 고유 번호
+    private Long id; // 기업 고유 번호
     @Column
     private String name; // 이름
     @Column
@@ -33,7 +33,7 @@ public class Company extends BaseTimeEntity {
     private int questionCount; // 질문 수
 
     @Enumerated(EnumType.STRING)
-    private CompanyStatus companyStatus; // 상태 (검토/등록/삭제)
+    private CompanyStatus companyStatus; // 기업 상태 (검토/등록/삭제)
 
     @Builder.Default
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
@@ -45,13 +45,14 @@ public class Company extends BaseTimeEntity {
         this.city = company.getCity();
         this.district = company.getDistrict();
         this.establishment = company.getEstablishment();
+        this.companyStatus = company.getCompanyStatus();
     }
 
     public void updateQuestionCount(final int questionCount) {
         this.questionCount = questionCount;
     }
 
-    public void updateStatus(final CompanyStatus companyStatus) {
+    public void updateCompanyStatus(final CompanyStatus companyStatus) {
         this.companyStatus = companyStatus;
     }
 }

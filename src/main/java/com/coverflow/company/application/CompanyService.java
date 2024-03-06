@@ -38,7 +38,7 @@ public class CompanyService {
     @Transactional(readOnly = true)
     public List<FindAutoCompleteResponse> autoComplete(final String name) {
         Pageable pageable = PageRequest.of(0, NORMAL_PAGE_SIZE, Sort.by("name").ascending());
-        Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
+        Page<Company> companies = companyRepository.findAllByNameStartingWithAndCompanyStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
 
         return companies.getContent().stream()
@@ -56,7 +56,7 @@ public class CompanyService {
             final String name
     ) {
         Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by("name").ascending());
-        Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
+        Page<Company> companies = companyRepository.findAllByNameStartingWithAndCompanyStatus(pageable, name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
 
         return companies.getContent().stream()
@@ -109,7 +109,7 @@ public class CompanyService {
             final CompanyStatus companyStatus
     ) {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Company> companies = companyRepository.findAllByStatus(pageable, companyStatus)
+        Page<Company> companies = companyRepository.findAllByCompanyStatus(pageable, companyStatus)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyStatus));
 
         return companies.getContent().stream()
@@ -140,12 +140,23 @@ public class CompanyService {
     }
 
     /**
+     * [관리자 전용: 회사 상태 변경 메서드]
+     */
+    @Transactional
+    public void updateCompanyStatus(final long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
+
+        company.updateCompanyStatus(CompanyStatus.REGISTRATION);
+    }
+
+    /**
      * [관리자 전용: 회사 수정 메서드]
      */
     @Transactional
     public void updateCompany(final UpdateCompanyRequest request) {
-        Company company = companyRepository.findByName(request.name())
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
+        Company company = companyRepository.findById(request.companyId())
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.companyId()));
 
         company.updateCompany(Company.builder()
                 .name(request.name())
@@ -153,7 +164,7 @@ public class CompanyService {
                 .city(request.city())
                 .district(request.district())
                 .establishment(request.establishment())
-                .companyStatus(request.companyStatus())
+                .companyStatus(CompanyStatus.REGISTRATION)
                 .build());
     }
 
@@ -165,7 +176,7 @@ public class CompanyService {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
-        company.updateStatus(CompanyStatus.DELETION);
+        company.updateCompanyStatus(CompanyStatus.DELETION);
     }
 
     /**
