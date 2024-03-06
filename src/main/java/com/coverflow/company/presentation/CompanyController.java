@@ -83,7 +83,7 @@ public class CompanyController {
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findPending(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam(defaultValue = "REGISTRATION") @Valid final CompanyStatus companyStatus
+            @RequestParam @Valid final CompanyStatus companyStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()

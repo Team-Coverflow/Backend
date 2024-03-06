@@ -1,6 +1,7 @@
 package com.coverflow.question.infrastructure;
 
 import com.coverflow.question.domain.Question;
+import com.coverflow.question.domain.QuestionStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("SELECT q " +
             "FROM Question q " +
             "WHERE q.company.id = :companyId " +
-            "AND q.status = '등록' " +
+            "AND q.questionStatus = 'REGISTRATION' " +
             "ORDER BY q.createdAt DESC")
     Optional<Page<Question>> findRegisteredQuestions(
             final Pageable pageable,
@@ -24,7 +25,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("SELECT DISTINCT q " +
             "FROM Question q " +
             "WHERE q.id = :questionId " +
-            "AND q.status = '등록'")
+            "AND q.questionStatus = 'REGISTRATION'")
     Optional<Question> findRegisteredQuestion(@Param("questionId") final long questionId);
 
     @Query("SELECT q " +
@@ -33,9 +34,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
 
     @Query("SELECT q " +
             "FROM Question q " +
-            "WHERE q.status = :status")
-    Optional<Page<Question>> findAllByStatus(
+            "WHERE q.questionStatus = :questionStatus")
+    Optional<Page<Question>> findAllByQuestionStatus(
             final Pageable pageable,
-            @Param("status") final String status
+            @Param("questionStatus") final QuestionStatus questionStatus
     );
 }

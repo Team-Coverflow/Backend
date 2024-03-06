@@ -2,6 +2,7 @@ package com.coverflow.report.application;
 
 import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Answer;
+import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.exception.AnswerException;
 import com.coverflow.question.infrastructure.AnswerRepository;
@@ -109,7 +110,7 @@ public class ReportService {
                     .build();
         }
         if ((ANSWER).equals(request.type())) {
-            Answer answer = answerRepository.findByIdAndStatus(request.id(), "등록")
+            Answer answer = answerRepository.findByIdAndAnswerStatus(request.id(), AnswerStatus.REGISTRATION)
                     .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.id()));
 
             report = Report.builder()

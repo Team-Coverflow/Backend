@@ -24,8 +24,9 @@ public class Answer extends BaseTimeEntity {
     private String content; // 내용
     @Column
     private boolean selection; // 채택(T/F)
-    @Column
-    private String status; // 상태 (등록/삭제)
+
+    @Enumerated(EnumType.STRING)
+    private AnswerStatus answerStatus; // 답변 상태 (등록/삭제)
 
     @ManyToOne
     @JoinColumn(name = "question_id")
@@ -47,7 +48,7 @@ public class Answer extends BaseTimeEntity {
         this.selection = selection;
     }
 
-    public void updateStatus(final String status) {
-        this.status = status;
+    public void updateStatus(final AnswerStatus answerStatus) {
+        this.answerStatus = answerStatus;
     }
 }

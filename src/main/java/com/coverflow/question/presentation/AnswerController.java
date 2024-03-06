@@ -4,6 +4,7 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.question.application.AnswerService;
+import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.dto.AnswerDTO;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
@@ -63,12 +64,12 @@ public class AnswerController {
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswersByStatus(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록") @Valid final String status
+            @RequestParam @Valid final AnswerStatus answerStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAnswerResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(answerService.findAnswersByStatus(pageNo, criterion, status))
+                        .data(answerService.findAnswersByStatus(pageNo, criterion, answerStatus))
                         .build()
                 );
     }

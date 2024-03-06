@@ -31,8 +31,9 @@ public class Question extends BaseTimeEntity {
     private int answerCount; // 답변 수
     @Column
     private int reward; // 채택 시 보상
-    @Column
-    private String status; // 상태 (등록/삭제)
+
+    @Enumerated(EnumType.STRING)
+    private QuestionStatus questionStatus; // 질문 상태 (등록/삭제)
 
     @ManyToOne
     @JoinColumn(name = "company_id")
@@ -55,8 +56,8 @@ public class Question extends BaseTimeEntity {
         this.content = question.getContent();
     }
 
-    public void updateStatus(final String status) {
-        this.status = status;
+    public void updateStatus(final QuestionStatus questionStatus) {
+        this.questionStatus = questionStatus;
     }
 
     public void updateViewCount(int viewCount) {

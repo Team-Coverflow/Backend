@@ -16,7 +16,7 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
     @Query("SELECT n " +
             "FROM Notification n " +
             "WHERE n.member.id = :member_id " +
-            "AND n.status = '안읽음' " +
+            "AND n.notificationStatus = 'NO' " +
             "ORDER BY n.createdAt DESC")
     Optional<List<Notification>> findByMemberId(@Param("member_id") final UUID memberId);
 

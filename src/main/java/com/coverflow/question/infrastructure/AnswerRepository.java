@@ -1,6 +1,7 @@
 package com.coverflow.question.infrastructure;
 
 import com.coverflow.question.domain.Answer;
+import com.coverflow.question.domain.AnswerStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,16 +12,16 @@ import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
-    Optional<Answer> findByIdAndStatus(
+    Optional<Answer> findByIdAndAnswerStatus(
             final long id,
-            final String status
+            final AnswerStatus answerStatus
     );
 
     @Query("SELECT a " +
             "FROM Answer a " +
             "WHERE a.question.id = :questionId " +
-            "AND a.status = '등록'")
-    Optional<Page<Answer>> findAllAnswersByQuestionIdAndStatus(
+            "AND a.answerStatus = 'REGISTRATION'")
+    Optional<Page<Answer>> findAllAnswersByQuestionIdAndAnswerStatus(
             final Pageable pageable,
             @Param("questionId") final long questionId
     );
@@ -31,9 +32,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     @Query("SELECT a " +
             "FROM Answer a " +
-            "WHERE a.status = :status")
-    Optional<Page<Answer>> findAllByStatus(
+            "WHERE a.answerStatus = :answerStatus")
+    Optional<Page<Answer>> findAllByAnswerStatus(
             final Pageable pageable,
-            @Param("status") final String status
+            @Param("status") final AnswerStatus answerStatus
     );
 }

@@ -8,6 +8,7 @@ import com.coverflow.notification.domain.Notification;
 import com.coverflow.notification.domain.NotificationStatus;
 import com.coverflow.notification.domain.NotificationType;
 import com.coverflow.question.domain.Answer;
+import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.AnswerDTO;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
@@ -53,7 +54,7 @@ public class AnswerService {
             final long questionId
     ) {
         Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by(criterion).descending());
-        Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndStatus(pageable, questionId);
+        Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndAnswerStatus(pageable, questionId);
         List<AnswerDTO> answers = new ArrayList<>();
 
         if (optionalAnswers.isPresent()) {
@@ -95,11 +96,11 @@ public class AnswerService {
     public List<FindAnswerResponse> findAnswersByStatus(
             final int pageNo,
             final String criterion,
-            final String status
+            final AnswerStatus answerStatus
     ) {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Answer> answers = answerRepository.findAllByStatus(pageable, status)
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(status));
+        Page<Answer> answers = answerRepository.findAllByAnswerStatus(pageable, answerStatus)
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerStatus));
 
         return answers.getContent().stream()
                 .map(FindAnswerResponse::from)
@@ -119,7 +120,7 @@ public class AnswerService {
         Answer answer = Answer.builder()
                 .content(request.content())
                 .selection(false)
-                .status("등록")
+                .answerStatus(AnswerStatus.REGISTRATION)
                 .question(Question.builder()
                         .id(request.questionId())
                         .build())
@@ -189,6 +190,6 @@ public class AnswerService {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
 
-        answer.updateStatus("삭제");
+        answer.updateStatus(AnswerStatus.DELETION);
     }
 }

@@ -56,7 +56,7 @@ public class MemberController {
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findMembersByStatus(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam(defaultValue = "REGISTRATION") @Valid final MemberStatus memberStatus
+            @RequestParam @Valid final MemberStatus memberStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllMembersResponse>>builder()

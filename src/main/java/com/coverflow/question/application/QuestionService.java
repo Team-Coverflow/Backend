@@ -6,6 +6,7 @@ import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.CurrencyService;
 import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Question;
+import com.coverflow.question.domain.QuestionStatus;
 import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
@@ -112,11 +113,11 @@ public class QuestionService {
     public List<FindAllQuestionsResponse> findQuestionsByStatus(
             final int pageNo,
             final String criterion,
-            final String status
+            final QuestionStatus questionStatus
     ) {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Question> questions = questionRepository.findAllByStatus(pageable, status)
-                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(status));
+        Page<Question> questions = questionRepository.findAllByQuestionStatus(pageable, questionStatus)
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionStatus));
 
         return questions.getContent().stream()
                 .map(FindAllQuestionsResponse::from)
@@ -139,7 +140,7 @@ public class QuestionService {
                 .viewCount(1)
                 .answerCount(0)
                 .reward(request.reward())
-                .status("등록")
+                .questionStatus(QuestionStatus.REGISTRATION)
                 .company(Company.builder()
                         .id(request.companyId())
                         .build())
@@ -175,6 +176,6 @@ public class QuestionService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
-        question.updateStatus("삭제");
+        question.updateStatus(QuestionStatus.DELETION);
     }
 }

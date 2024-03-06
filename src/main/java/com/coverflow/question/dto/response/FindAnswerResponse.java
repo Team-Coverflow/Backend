@@ -1,6 +1,7 @@
 package com.coverflow.question.dto.response;
 
 import com.coverflow.question.domain.Answer;
+import com.coverflow.question.domain.AnswerStatus;
 
 import java.time.LocalDateTime;
 
@@ -10,7 +11,7 @@ public record FindAnswerResponse(
         boolean selection,
         String answererNickname,
         String answererTag,
-        String answerStatus,
+        AnswerStatus answerStatus,
         LocalDateTime createAt
 ) {
 
@@ -21,7 +22,7 @@ public record FindAnswerResponse(
                 answer.isSelection(),
                 answer.getMember().getNickname(),
                 answer.getMember().getTag(),
-                answer.getStatus(),
+                answer.getAnswerStatus(),
                 answer.getCreatedAt()
         );
     }
