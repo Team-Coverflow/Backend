@@ -5,6 +5,7 @@ import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
+import com.coverflow.notification.domain.NotificationStatus;
 import com.coverflow.notification.domain.NotificationType;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
@@ -133,7 +134,7 @@ public class AnswerService {
                         "/" +
                         question.getId().toString())
                 .type(NotificationType.ANSWER)
-                .status("안읽음")
+                .notificationStatus(NotificationStatus.NO)
                 .member(question.getMember())
                 .build();
 
@@ -158,7 +159,7 @@ public class AnswerService {
                         "/" +
                         answer.getQuestion().getId().toString())
                 .type(NotificationType.SELECTION)
-                .status("안읽음")
+                .notificationStatus(NotificationStatus.NO)
                 .member(member)
                 .build();
 

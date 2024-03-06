@@ -136,7 +136,7 @@ public class NotificationService {
             final Notification notification = notificationRepository.findById(updateNotificationRequest.notificationId())
                     .orElseThrow(() -> new NotificationException.NotificationNotFoundException(updateNotificationRequest.notificationId()));
 
-            notification.updateStatus(updateNotificationRequest.status());
+            notification.updateStatus(updateNotificationRequest.notificationStatus());
         }
     }
 

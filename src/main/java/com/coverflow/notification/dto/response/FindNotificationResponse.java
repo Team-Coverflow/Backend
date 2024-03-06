@@ -1,6 +1,7 @@
 package com.coverflow.notification.dto.response;
 
 import com.coverflow.notification.domain.Notification;
+import com.coverflow.notification.domain.NotificationStatus;
 import com.coverflow.notification.domain.NotificationType;
 
 import java.time.LocalDateTime;
@@ -9,7 +10,7 @@ public record FindNotificationResponse(
         String content,
         String url,
         NotificationType type,
-        String status,
+        NotificationStatus notificationStatus,
         LocalDateTime createdAt
 ) {
 
@@ -18,7 +19,7 @@ public record FindNotificationResponse(
                 notification.getContent(),
                 notification.getUrl(),
                 notification.getType(),
-                notification.getStatus(),
+                notification.getNotificationStatus(),
                 notification.getCreatedAt()
         );
     }
