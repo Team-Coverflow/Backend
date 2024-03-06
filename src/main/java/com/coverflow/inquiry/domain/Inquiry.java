@@ -10,7 +10,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "tbl_enquiry")
+@Table(name = "tbl_inquiry")
 public class Inquiry extends BaseTimeEntity {
 
     @Id
