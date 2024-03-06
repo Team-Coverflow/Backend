@@ -40,7 +40,9 @@ public class Inquiry extends BaseTimeEntity {
         this.title = request.title();
         this.content = request.content();
         this.inquiryStatus = InquiryStatus.WAIT;
-        this.member = new Member(UUID.fromString(memberId));
+        this.member = Member.builder()
+                .id(UUID.fromString(memberId))
+                .build();
     }
 
     public void updateAnswer(final String answer) {

@@ -69,8 +69,12 @@ public class Question extends BaseTimeEntity {
         this.answerCount = 0;
         this.reward = request.reward();
         this.questionStatus = QuestionStatus.REGISTRATION;
-        this.company = new Company(request.companyId());
-        this.member = new Member(UUID.fromString(memberId));
+        this.company = Company.builder()
+                .id(request.companyId())
+                .build();
+        this.member = Member.builder()
+                .id(UUID.fromString(memberId))
+                .build();
     }
 
     public void updateQuestion(final Question question) {

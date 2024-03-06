@@ -76,10 +76,6 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Report> reports = new ArrayList<>(); // 회원의 신고 리스트
 
-    public Member(final UUID id) {
-        this.id = id;
-    }
-
     public Member(final MemberSignUpDTO memberSignUpDTO) {
         this.email = memberSignUpDTO.getEmail();
         this.nickname = memberSignUpDTO.getNickname();
