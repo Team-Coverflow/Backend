@@ -31,7 +31,7 @@ public class Notification extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member; // 회원 정보
 
-    public void updateStatus(final NotificationStatus notificationStatus) {
+    public void updateNotificationStatus(final NotificationStatus notificationStatus) {
         this.notificationStatus = notificationStatus;
     }
 }

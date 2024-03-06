@@ -112,6 +112,7 @@ public class NotificationService {
 
     /**
      * [알림 조회 메서드]
+     * 현재 사용 x
      */
     @Transactional(readOnly = true)
     public List<FindNotificationResponse> findNotification(String memberId) {
@@ -136,7 +137,7 @@ public class NotificationService {
             final Notification notification = notificationRepository.findById(updateNotificationRequest.notificationId())
                     .orElseThrow(() -> new NotificationException.NotificationNotFoundException(updateNotificationRequest.notificationId()));
 
-            notification.updateStatus(updateNotificationRequest.notificationStatus());
+            notification.updateNotificationStatus(updateNotificationRequest.notificationStatus());
         }
     }
 
