@@ -1,6 +1,7 @@
 package com.coverflow.member.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
+import com.coverflow.member.dto.MemberSignUpDTO;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.question.domain.Answer;
@@ -79,6 +80,20 @@ public class Member extends BaseTimeEntity {
         this.id = id;
     }
 
+    public Member(final MemberSignUpDTO memberSignUpDTO) {
+        this.email = memberSignUpDTO.getEmail();
+        this.nickname = memberSignUpDTO.getNickname();
+        this.tag = memberSignUpDTO.getTag();
+        this.age = memberSignUpDTO.getAge();
+        this.gender = memberSignUpDTO.getGender();
+        this.fishShapedBun = 300;
+        this.socialId = memberSignUpDTO.getSocialId();
+        this.socialType = memberSignUpDTO.getSocialType();
+        this.role = Role.GUEST;
+        this.memberStatus = MemberStatus.REGISTRATION;
+        this.refreshTokenStatus = RefreshTokenStatus.LOGIN;
+    }
+
     public void saveMemberInfo(final SaveMemberInfoRequest request) {
         this.tag = request.tag();
         this.age = request.age();
@@ -109,7 +124,7 @@ public class Member extends BaseTimeEntity {
         this.fishShapedBun = fishShapedBun;
     }
 
-    public void updateStatus(final MemberStatus memberStatus) {
+    public void updateMemberStatus(final MemberStatus memberStatus) {
         this.memberStatus = memberStatus;
     }
 

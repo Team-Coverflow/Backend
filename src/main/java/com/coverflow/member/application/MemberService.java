@@ -161,7 +161,7 @@ public class MemberService {
         member.updateFishShapedBun(0);
         member.updateAuthorization(Role.GUEST);
         member.updateTokenStatus(RefreshTokenStatus.LOGOUT);
-        member.updateStatus(MemberStatus.LEAVE);
+        member.updateMemberStatus(MemberStatus.LEAVE);
         emitterRepository.deleteAllStartWithId(username);
         emitterRepository.deleteAllEventCacheStartWithId(username);
     }
