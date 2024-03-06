@@ -8,13 +8,13 @@ import java.util.List;
 
 public record FindQuestionResponse(
         Long questionId,
-        String title,
+        String questionTitle,
         String questionContent,
         int viewCount,
         int answerCount,
         int reward,
-        String questionNickname,
-        String questionTag,
+        String questionerNickname,
+        String questionerTag,
         LocalDateTime createAt,
         List<AnswerDTO> answers
 ) {

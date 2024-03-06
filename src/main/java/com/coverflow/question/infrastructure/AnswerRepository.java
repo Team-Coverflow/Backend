@@ -1,16 +1,17 @@
 package com.coverflow.question.infrastructure;
 
 import com.coverflow.question.domain.Answer;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
-    Optional<List<Answer>> findAllAnswersByQuestionIdAndStatus(
+    Optional<Answer> findByIdAndStatus(
             final Long id,
             final String status
     );
@@ -18,8 +19,21 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @Query("SELECT a " +
             "FROM Answer a " +
             "WHERE a.question.id = :questionId " +
-            "AND a.status != '삭제'")
-    List<Answer> findByQuestionIdAndStatusIsNotDeleted(@Param("questionId") Long questionId);
+            "AND a.status = '등록'")
+    Optional<Page<Answer>> findAllAnswersByQuestionIdAndStatus(
+            final Pageable pageable,
+            @Param("questionId") final Long questionId
+    );
 
-    Optional<Answer> findByIdAndStatus(Long id, String status);
+    @Query("SELECT a " +
+            "FROM Answer a ")
+    Optional<Page<Answer>> findAllAnswers(final Pageable pageable);
+
+    @Query("SELECT a " +
+            "FROM Answer a " +
+            "WHERE a.status = :status")
+    Optional<Page<Answer>> findAllByStatus(
+            final Pageable pageable,
+            @Param("status") final String status
+    );
 }

@@ -14,7 +14,7 @@ public class MemberException extends RuntimeException {
         }
 
         public MemberNotFoundException(final String username) {
-            super(String.format("회원이 존재하지 않습니다. - request info { username : %s }", username));
+            super(String.format("회원이 존재하지 않습니다. - request info { string : %s }", username));
         }
     }
 

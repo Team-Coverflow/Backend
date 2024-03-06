@@ -5,6 +5,7 @@ import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.member.application.MemberService;
 import com.coverflow.member.dto.request.SaveMemberInfoRequest;
+import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
 import jakarta.validation.Valid;
@@ -37,15 +38,34 @@ public class MemberController {
                         .build());
     }
 
-    @GetMapping("/find-all-member")
+    @GetMapping("/admin/find-members")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindMemberInfoResponse>>> findAllMemberById() {
+    public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findAllMemberById(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+    ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindMemberInfoResponse>>builder()
+                .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("모든 회원 조회 성공했습니다.")
-                        .data(memberService.findAllMembers())
+                        .message("전체 회원 조회 성공했습니다.")
+                        .data(memberService.findAllMembers(pageNo, criterion))
                         .build());
+    }
+
+    @GetMapping("/admin/find-by-status")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findMembersByStatus(
+            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
+            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
+            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
+                        .statusCode(HttpStatus.OK)
+                        .message("특정 상태의 회원 조회에 성공했습니다.")
+                        .data(memberService.findMembersByStatus(pageNo, criterion, status))
+                        .build()
+                );
     }
 
     @PostMapping("/save-member-info")

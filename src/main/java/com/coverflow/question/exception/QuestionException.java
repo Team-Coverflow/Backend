@@ -11,6 +11,10 @@ public class QuestionException extends RuntimeException {
             super(String.format("질문 글이 존재하지 않습니다. - request info { id : %d }", questionId));
         }
 
+        public QuestionNotFoundException(final String string) {
+            super(String.format("질문 글이 존재하지 않습니다. - request info { string : %s }", string));
+        }
+
         public QuestionNotFoundException() {
             super("질문 글이 존재하지 않습니다.");
         }

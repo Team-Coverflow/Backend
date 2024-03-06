@@ -7,8 +7,10 @@ import java.time.LocalDateTime;
 public record FindAnswerResponse(
         Long answerId,
         String answerContent,
-        String answerNickname,
-        String answerTag,
+        boolean selection,
+        String answererNickname,
+        String answererTag,
+        String answerStatus,
         LocalDateTime createAt
 ) {
 
@@ -16,8 +18,10 @@ public record FindAnswerResponse(
         return new FindAnswerResponse(
                 answer.getId(),
                 answer.getContent(),
+                answer.isSelection(),
                 answer.getMember().getNickname(),
                 answer.getMember().getTag(),
+                answer.getStatus(),
                 answer.getCreatedAt()
         );
     }
