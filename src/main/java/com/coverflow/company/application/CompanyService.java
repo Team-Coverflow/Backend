@@ -126,17 +126,7 @@ public class CompanyService {
             throw new CompanyException.CompanyExistException(request.name());
         }
 
-        Company company = Company.builder()
-                .name(request.name())
-                .type(request.type())
-                .city(request.city())
-                .district(request.district())
-                .establishment(request.establishment())
-                .questionCount(0)
-                .companyStatus(CompanyStatus.EXAMINATION)
-                .build();
-
-        companyRepository.save(company);
+        companyRepository.save(new Company(request));
     }
 
     /**

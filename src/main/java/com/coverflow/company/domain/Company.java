@@ -1,5 +1,6 @@
 package com.coverflow.company.domain;
 
+import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.question.domain.Question;
@@ -39,6 +40,16 @@ public class Company extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     private List<Question> questions = new ArrayList<>();
+
+    public Company(final SaveCompanyRequest request) {
+        this.name = request.name();
+        this.type = request.type();
+        this.city = request.city();
+        this.district = request.district();
+        this.establishment = request.establishment();
+        this.questionCount = 0;
+        this.companyStatus = CompanyStatus.EXAMINATION;
+    }
 
     public void updateCompany(final UpdateCompanyRequest request) {
         this.name = request.name();
