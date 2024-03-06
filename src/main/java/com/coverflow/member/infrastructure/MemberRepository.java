@@ -14,11 +14,13 @@ import java.util.UUID;
 
 public interface MemberRepository extends JpaRepository<Member, UUID> {
 
-    @Query(value = "SELECT m " +
-            "FROM Member m " +
-            "WHERE m.id = :id " +
-            "AND m.memberStatus= :memberStatus " +
-            "ORDER BY m.createdAt ASC")
+    @Query("""
+            SELECT m
+            FROM Member m
+            WHERE m.id = :id
+            AND m.memberStatus= :memberStatus
+            ORDER BY m.createdAt ASC
+            """)
     Optional<Member> findByIdAndMemberStatus(
             @Param("id") final UUID id,
             @Param("memberStatus") final MemberStatus memberStatus
@@ -42,13 +44,17 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
             final MemberStatus memberStatus
     );
 
-    @Query(value = "SELECT m " +
-            "FROM Member m")
+    @Query("""
+            SELECT m
+            FROM Member m
+            """)
     Optional<Page<Member>> findAllMembers(final Pageable pageable);
 
-    @Query(value = "SELECT m " +
-            "FROM Member m " +
-            "WHERE m.memberStatus = :memberStatus")
+    @Query("""
+            SELECT m
+            FROM Member m
+            WHERE m.memberStatus = :memberStatus
+            """)
     Optional<Page<Member>> findAllByMemberStatus(
             final Pageable pageable,
             @Param("memberStatus") final MemberStatus memberStatus

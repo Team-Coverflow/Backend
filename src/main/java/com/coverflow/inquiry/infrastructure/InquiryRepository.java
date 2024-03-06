@@ -12,22 +12,28 @@ import java.util.Optional;
 
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
-    @Query("SELECT e " +
-            "FROM Inquiry e " +
-            "WHERE e.member.id = :memberId " +
-            "AND e.inquiryStatus != 'DELETION'")
+    @Query("""
+            SELECT e
+            FROM Inquiry e
+            WHERE e.member.id = :memberId
+            AND e.inquiryStatus != 'DELETION'
+            """)
     Optional<Page<Inquiry>> findAllByMemberIdAndStatus(
             final Pageable pageable,
             @Param("memberId") final String memberId
     );
 
-    @Query("SELECT e " +
-            "FROM Inquiry e ")
+    @Query("""
+            SELECT e
+            FROM Inquiry e
+            """)
     Optional<Page<Inquiry>> findInquiries(final Pageable pageable);
 
-    @Query("SELECT e " +
-            "FROM Inquiry e " +
-            "WHERE e.inquiryStatus = :inquiryStatus")
+    @Query("""
+            SELECT e
+            FROM Inquiry e
+            WHERE e.inquiryStatus = :inquiryStatus
+            """)
     Optional<Page<Inquiry>> findAllByStatus(
             final Pageable pageable,
             @Param("inquiryStatus") final InquiryStatus inquiryStatus

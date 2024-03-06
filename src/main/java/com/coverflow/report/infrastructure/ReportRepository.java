@@ -12,22 +12,28 @@ import java.util.Optional;
 
 public interface ReportRepository extends JpaRepository<Report, Long> {
 
-    @Query("SELECT r " +
-            "FROM Report r " +
-            "WHERE r.member.id = :memberId " +
-            "AND r.reportStatus = 'REGISTRATION'")
+    @Query("""
+            SELECT r
+            FROM Report r
+            WHERE r.member.id = :memberId
+            AND r.reportStatus = 'REGISTRATION'
+            """)
     Optional<Page<Report>> findReportsByMemberId(
             @Param("memberId") final String memberId,
             final Pageable pageable
     );
 
-    @Query("SELECT r " +
-            "FROM Report r ")
+    @Query("""
+            SELECT r
+            FROM Report r
+            """)
     Optional<Page<Report>> findAllReports(final Pageable pageable);
 
-    @Query("SELECT r " +
-            "FROM Report r " +
-            "WHERE r.reportStatus = :reportStatus")
+    @Query("""
+            SELECT r
+            FROM Report r
+            WHERE r.reportStatus = :reportStatus
+            """)
     Optional<Page<Report>> findAllByReportStatus(
             final Pageable pageable,
             @Param("reportStatus") final ReportStatus reportStatus

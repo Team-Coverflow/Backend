@@ -17,24 +17,30 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
             final AnswerStatus answerStatus
     );
 
-    @Query("SELECT a " +
-            "FROM Answer a " +
-            "WHERE a.question.id = :questionId " +
-            "AND a.answerStatus = 'REGISTRATION'")
+    @Query("""
+            SELECT a
+            FROM Answer a
+            WHERE a.question.id = :questionId
+            AND a.answerStatus = 'REGISTRATION'
+            """)
     Optional<Page<Answer>> findAllAnswersByQuestionIdAndAnswerStatus(
             final Pageable pageable,
             @Param("questionId") final long questionId
     );
 
-    @Query("SELECT a " +
-            "FROM Answer a ")
+    @Query("""
+            SELECT a
+            FROM Answer a
+            """)
     Optional<Page<Answer>> findAllAnswers(final Pageable pageable);
 
-    @Query("SELECT a " +
-            "FROM Answer a " +
-            "WHERE a.answerStatus = :answerStatus")
+    @Query("""
+            SELECT a
+            FROM Answer a
+            WHERE a.answerStatus = :answerStatus
+            """)
     Optional<Page<Answer>> findAllByAnswerStatus(
             final Pageable pageable,
-            @Param("status") final AnswerStatus answerStatus
+            @Param("answerStatus") final AnswerStatus answerStatus
     );
 }
