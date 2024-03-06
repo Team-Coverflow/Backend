@@ -57,11 +57,11 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         // 리프레쉬 토큰 DB에 저장
         jwtService.updateRefreshToken(oAuth2User.getMemberId(), refreshToken);
 
-        // 출석 체크
-        currencyService.dailyCheck(oAuth2User.getMemberId());
-
         // 접속 시간 업데이트
         updateConnectedAt(oAuth2User.getMemberId());
+
+        // 출석 체크
+        currencyService.dailyCheck(oAuth2User.getMemberId());
 
         // 프론트의 토큰 관리 페이지로 리다이렉트
         response.sendRedirect(targetUrl);
