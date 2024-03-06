@@ -101,8 +101,8 @@ public class QuestionController {
                         .build());
     }
 
-    @PutMapping("/admin/question")
-    @AdminAuthorize
+    @PutMapping("/question")
+    @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateQuestion(
             @RequestBody @Valid final UpdateQuestionRequest updateQuestionRequest
     ) {

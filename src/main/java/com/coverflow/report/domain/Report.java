@@ -22,7 +22,7 @@ public class Report extends BaseTimeEntity {
     private String content; // 내용
     @Column
     private ReportType type; // 신고 종류
-    
+
     @Enumerated(EnumType.STRING)
     private ReportStatus reportStatus; // 상태(등록/삭제)
 
@@ -38,7 +38,7 @@ public class Report extends BaseTimeEntity {
     @JoinColumn(name = "answer_id")
     private Answer answer; // 답변 정보
 
-    public void updateStatus(final ReportStatus reportStatus) {
+    public void updateReportStatus(final ReportStatus reportStatus) {
         this.reportStatus = reportStatus;
     }
 }

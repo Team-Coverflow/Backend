@@ -76,7 +76,7 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Report> reports = new ArrayList<>(); // 회원의 신고 리스트
 
-    public Member(UUID id) {
+    public Member(final UUID id) {
         this.id = id;
     }
 

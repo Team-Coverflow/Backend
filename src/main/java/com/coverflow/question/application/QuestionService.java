@@ -4,7 +4,6 @@ import com.coverflow.company.domain.Company;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.CurrencyService;
-import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.domain.QuestionStatus;
 import com.coverflow.question.dto.QuestionDTO;
@@ -25,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.SMALL_PAGE_SIZE;
@@ -134,38 +132,21 @@ public class QuestionService {
     ) {
         Company company = companyRepository.findById(request.companyId())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.companyId()));
-        Question question = Question.builder()
-                .title(request.title())
-                .content(request.content())
-                .viewCount(1)
-                .answerCount(0)
-                .reward(request.reward())
-                .questionStatus(QuestionStatus.REGISTRATION)
-                .company(Company.builder()
-                        .id(request.companyId())
-                        .build())
-                .member(Member.builder()
-                        .id(UUID.fromString(memberId))
-                        .build())
-                .build();
 
         currencyService.writeQuestion(memberId, request.reward());
-        questionRepository.save(question);
+        questionRepository.save(new Question(request, memberId));
         company.updateQuestionCount(company.getQuestionCount() + 1);
     }
 
     /**
-     * [관리자 전용: 질문 수정 메서드]
+     * [질문 수정 메서드]
      */
     @Transactional
     public void updateQuestion(final UpdateQuestionRequest request) {
         Question question = questionRepository.findById(request.questionId())
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
 
-        question.updateQuestion(Question.builder()
-                .title(request.title())
-                .content(request.content())
-                .build());
+        question.updateQuestion(new Question(request));
     }
 
     /**
@@ -176,6 +157,6 @@ public class QuestionService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
-        question.updateStatus(QuestionStatus.DELETION);
+        question.updateQuestionStatus(QuestionStatus.DELETION);
     }
 }

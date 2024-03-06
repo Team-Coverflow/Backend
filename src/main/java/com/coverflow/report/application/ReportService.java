@@ -140,6 +140,6 @@ public class ReportService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(reportId));
 
-        report.updateStatus(ReportStatus.DELETION);
+        report.updateReportStatus(ReportStatus.DELETION);
     }
 }

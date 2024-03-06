@@ -3,12 +3,15 @@ package com.coverflow.question.domain;
 import com.coverflow.company.domain.Company;
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
+import com.coverflow.question.dto.request.SaveQuestionRequest;
+import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.report.domain.Report;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -51,12 +54,31 @@ public class Question extends BaseTimeEntity {
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private List<Report> reports = new ArrayList<>(); // 질문에 대한 신고 리스트
 
+    public Question(final UpdateQuestionRequest request) {
+        this.title = request.title();
+        this.content = request.content();
+    }
+
+    public Question(
+            final SaveQuestionRequest request,
+            final String memberId
+    ) {
+        this.title = request.title();
+        this.content = request.content();
+        this.viewCount = 1;
+        this.answerCount = 0;
+        this.reward = request.reward();
+        this.questionStatus = QuestionStatus.REGISTRATION;
+        this.company = new Company(request.companyId());
+        this.member = new Member(UUID.fromString(memberId));
+    }
+
     public void updateQuestion(final Question question) {
         this.title = question.getTitle();
         this.content = question.getContent();
     }
 
-    public void updateStatus(final QuestionStatus questionStatus) {
+    public void updateQuestionStatus(final QuestionStatus questionStatus) {
         this.questionStatus = questionStatus;
     }
 

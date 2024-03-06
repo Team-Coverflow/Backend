@@ -41,6 +41,10 @@ public class Company extends BaseTimeEntity {
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
     private List<Question> questions = new ArrayList<>();
 
+    public Company(final Long id) {
+        this.id = id;
+    }
+
     public Company(final SaveCompanyRequest request) {
         this.name = request.name();
         this.type = request.type();
