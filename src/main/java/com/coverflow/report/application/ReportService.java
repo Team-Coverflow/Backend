@@ -1,9 +1,7 @@
 package com.coverflow.report.application;
 
-import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.AnswerStatus;
-import com.coverflow.question.domain.Question;
 import com.coverflow.question.exception.AnswerException;
 import com.coverflow.question.infrastructure.AnswerRepository;
 import com.coverflow.report.domain.Report;
@@ -21,7 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.report.domain.ReportType.ANSWER;
@@ -99,34 +96,13 @@ public class ReportService {
         Report report = Report.builder().build();
 
         if ((QUESTION).equals(request.type())) {
-            report = Report.builder()
-                    .content(request.content())
-                    .reportStatus(ReportStatus.REGISTRATION)
-                    .member(Member.builder()
-                            .id(UUID.fromString(memberId))
-                            .build())
-                    .question(Question.builder()
-                            .id(request.id())
-                            .build())
-                    .build();
+            report = new Report(request, memberId);
         }
         if ((ANSWER).equals(request.type())) {
             Answer answer = answerRepository.findByIdAndAnswerStatus(request.id(), AnswerStatus.REGISTRATION)
                     .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.id()));
 
-            report = Report.builder()
-                    .content(request.content())
-                    .reportStatus(ReportStatus.REGISTRATION)
-                    .member(Member.builder()
-                            .id(UUID.fromString(memberId))
-                            .build())
-                    .question(Question.builder()
-                            .id(answer.getId())
-                            .build())
-                    .answer(Answer.builder()
-                            .id(request.id())
-                            .build())
-                    .build();
+            report = new Report(request, answer, memberId);
         }
 
         reportRepository.save(report);

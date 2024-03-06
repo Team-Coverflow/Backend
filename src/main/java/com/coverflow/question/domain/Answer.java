@@ -53,8 +53,12 @@ public class Answer extends BaseTimeEntity {
         this.content = request.content();
         this.selection = false;
         this.answerStatus = AnswerStatus.REGISTRATION;
-        this.question = new Question(request.questionId());
-        this.member = new Member(UUID.fromString(memberId));
+        this.question = Question.builder()
+                .id(request.questionId())
+                .build();
+        this.member = Member.builder()
+                .id(UUID.fromString(memberId))
+                .build();
     }
 
     public void updateAnswer(final Answer answer) {
