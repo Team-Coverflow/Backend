@@ -5,6 +5,7 @@ import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
+import com.coverflow.notification.domain.NotificationStatus;
 import com.coverflow.notification.domain.NotificationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,7 +31,7 @@ public class CurrencyService {
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
         Notification notification = Notification.builder()
                 .type(NotificationType.DAILY)
-                .status("안읽음")
+                .notificationStatus(NotificationStatus.NO)
                 .member(member)
                 .build();
 
