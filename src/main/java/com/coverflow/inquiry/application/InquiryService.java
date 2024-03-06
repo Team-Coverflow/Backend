@@ -8,7 +8,6 @@ import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
 import com.coverflow.inquiry.dto.response.FindInquiryResponse;
 import com.coverflow.inquiry.exception.InquiryException;
 import com.coverflow.inquiry.infrastructure.InquiryRepository;
-import com.coverflow.member.domain.Member;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.UUID;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
@@ -91,16 +89,8 @@ public class InquiryService {
             final SaveInquiryRequest request,
             final String memberId
     ) {
-        Inquiry inquiry = Inquiry.builder()
-                .title(request.title())
-                .content(request.content())
-                .inquiryStatus(InquiryStatus.WAIT)
-                .member(Member.builder()
-                        .id(UUID.fromString(memberId))
-                        .build())
-                .build();
 
-        inquiryRepository.save(inquiry);
+        inquiryRepository.save(new Inquiry(request, memberId));
     }
 
     /**
@@ -114,7 +104,7 @@ public class InquiryService {
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(request.inquiryId()));
 
         inquiry.updateAnswer(request.inquiryAnswer());
-        inquiry.updateStatus(InquiryStatus.COMPLETE);
+        inquiry.updateInquiryStatus(InquiryStatus.COMPLETE);
     }
 
     /**
@@ -125,6 +115,6 @@ public class InquiryService {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
 
-        inquiry.updateStatus(InquiryStatus.DELETION);
+        inquiry.updateInquiryStatus(InquiryStatus.DELETION);
     }
 }

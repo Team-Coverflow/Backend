@@ -1,9 +1,12 @@
 package com.coverflow.inquiry.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
+import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
 import com.coverflow.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,11 +33,21 @@ public class Inquiry extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member; // 작성자 정보
 
+    public Inquiry(
+            final SaveInquiryRequest request,
+            final String memberId
+    ) {
+        this.title = request.title();
+        this.content = request.content();
+        this.inquiryStatus = InquiryStatus.WAIT;
+        this.member = new Member(UUID.fromString(memberId));
+    }
+
     public void updateAnswer(final String answer) {
         this.answer = answer;
     }
 
-    public void updateStatus(final InquiryStatus inquiryStatus) {
+    public void updateInquiryStatus(final InquiryStatus inquiryStatus) {
         this.inquiryStatus = inquiryStatus;
     }
 }

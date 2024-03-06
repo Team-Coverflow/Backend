@@ -75,6 +75,10 @@ public class Member extends BaseTimeEntity {
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Report> reports = new ArrayList<>(); // 회원의 신고 리스트
 
+    public Member(UUID id) {
+        this.id = id;
+    }
+
     public void saveMemberInfo(final SaveMemberInfoRequest request) {
         this.tag = request.tag();
         this.age = request.age();
