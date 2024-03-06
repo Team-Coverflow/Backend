@@ -20,13 +20,13 @@ public class Notification extends BaseTimeEntity {
     private String content; // 내용
     @Column
     private String url; // 필요 시 리다이렉트 시킬 url
-    @Column
+
+    @Enumerated(EnumType.STRING)
     private NotificationStatus notificationStatus; // 상태 (안읽음/읽음/삭제)
 
     @Enumerated(EnumType.STRING)
     private NotificationType type; // 알림 종류 (DAILY, QUESTION, ANSWER)
-
-
+    
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member; // 회원 정보
