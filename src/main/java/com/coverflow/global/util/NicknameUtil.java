@@ -56,7 +56,9 @@ public class NicknameUtil {
 
             member = memberRepository.findByNickname(nickname);
 
-        } while (member.isPresent()); // 해당 닉네임을 가진 회원이 존재하면 계속 반복
+        } while (member.isPresent()
+                || firstName.get(0).isEmpty()
+                || secondName.get(0).isEmpty()); // 해당 닉네임을 가진 회원이 존재 or 첫 번째 이름이나 두 번째 이름이 없으면 계속 반복
 
         return nickname; // 유일한 닉네임 반환
     }
