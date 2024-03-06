@@ -7,6 +7,7 @@ import com.coverflow.question.domain.Question;
 import com.coverflow.question.exception.AnswerException;
 import com.coverflow.question.infrastructure.AnswerRepository;
 import com.coverflow.report.domain.Report;
+import com.coverflow.report.domain.ReportStatus;
 import com.coverflow.report.dto.request.SaveReportRequest;
 import com.coverflow.report.dto.response.FindReportResponse;
 import com.coverflow.report.exception.ReportException;
@@ -76,11 +77,11 @@ public class ReportService {
     public List<FindReportResponse> findReportsByStatus(
             final int pageNo,
             final String criterion,
-            final String status
+            final ReportStatus reportStatus
     ) {
         Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Report> reports = reportRepository.findAllByStatus(pageable, status)
-                .orElseThrow(() -> new ReportException.ReportNotFoundException(status));
+        Page<Report> reports = reportRepository.findAllByReportStatus(pageable, reportStatus)
+                .orElseThrow(() -> new ReportException.ReportNotFoundException(reportStatus));
 
         return reports.getContent().stream()
                 .map(FindReportResponse::from)
@@ -100,7 +101,7 @@ public class ReportService {
         if ((QUESTION).equals(request.type())) {
             report = Report.builder()
                     .content(request.content())
-                    .status("등록")
+                    .reportStatus(ReportStatus.REGISTRATION)
                     .member(Member.builder()
                             .id(UUID.fromString(memberId))
                             .build())
@@ -115,7 +116,7 @@ public class ReportService {
 
             report = Report.builder()
                     .content(request.content())
-                    .status("등록")
+                    .reportStatus(ReportStatus.REGISTRATION)
                     .member(Member.builder()
                             .id(UUID.fromString(memberId))
                             .build())
@@ -139,6 +140,6 @@ public class ReportService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(reportId));
 
-        report.updateStatus("삭제");
+        report.updateStatus(ReportStatus.DELETION);
     }
 }

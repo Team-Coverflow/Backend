@@ -4,6 +4,7 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.report.application.ReportService;
+import com.coverflow.report.domain.ReportStatus;
 import com.coverflow.report.dto.request.SaveReportRequest;
 import com.coverflow.report.dto.response.FindReportResponse;
 import jakarta.validation.Valid;
@@ -55,12 +56,12 @@ public class ReportController {
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportsByStatus(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
             @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록") @Valid final String status
+            @RequestParam @Valid final ReportStatus reportStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(reportService.findReportsByStatus(pageNo, criterion, status))
+                        .data(reportService.findReportsByStatus(pageNo, criterion, reportStatus))
                         .build()
                 );
     }

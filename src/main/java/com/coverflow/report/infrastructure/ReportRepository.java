@@ -1,6 +1,7 @@
 package com.coverflow.report.infrastructure;
 
 import com.coverflow.report.domain.Report;
+import com.coverflow.report.domain.ReportStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,7 +15,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     @Query("SELECT r " +
             "FROM Report r " +
             "WHERE r.member.id = :memberId " +
-            "AND r.status = '등록'")
+            "AND r.reportStatus = 'REGISTRATION'")
     Optional<Page<Report>> findReportsByMemberId(
             @Param("memberId") final String memberId,
             final Pageable pageable
@@ -26,9 +27,9 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
 
     @Query("SELECT r " +
             "FROM Report r " +
-            "WHERE r.status = :status")
-    Optional<Page<Report>> findAllByStatus(
+            "WHERE r.reportStatus = :reportStatus")
+    Optional<Page<Report>> findAllByReportStatus(
             final Pageable pageable,
-            @Param("status") final String status
+            @Param("reportStatus") final ReportStatus reportStatus
     );
 }
