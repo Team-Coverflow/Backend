@@ -54,6 +54,9 @@ public class Question extends BaseTimeEntity {
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private List<Report> reports = new ArrayList<>(); // 질문에 대한 신고 리스트
 
+    public Question(final long questionId) {
+    }
+
     public Question(final UpdateQuestionRequest request) {
         this.title = request.title();
         this.content = request.content();

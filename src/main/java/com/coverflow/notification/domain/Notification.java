@@ -2,6 +2,8 @@ package com.coverflow.notification.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
+import com.coverflow.question.domain.Answer;
+import com.coverflow.question.domain.Question;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,6 +32,31 @@ public class Notification extends BaseTimeEntity {
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member; // 회원 정보
+
+    public Notification(final Question question) {
+        this.content = question.getCompany().getName();
+        this.url = "/company-info/" +
+                question.getCompany().getId().toString() +
+                "/" +
+                question.getId().toString();
+        this.type = NotificationType.ANSWER;
+        this.notificationStatus = NotificationStatus.NO;
+        this.member = question.getMember();
+    }
+
+    public Notification(
+            final Answer answer,
+            final Member member
+    ) {
+        this.content = answer.getQuestion().getCompany().getName();
+        this.url = "/company-info/" +
+                answer.getQuestion().getCompany().getId().toString() +
+                "/" +
+                answer.getQuestion().getId().toString();
+        this.type = NotificationType.SELECTION;
+        this.notificationStatus = NotificationStatus.NO;
+        this.member = member;
+    }
 
     public void updateNotificationStatus(final NotificationStatus notificationStatus) {
         this.notificationStatus = notificationStatus;

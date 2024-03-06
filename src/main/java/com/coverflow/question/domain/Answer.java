@@ -2,12 +2,14 @@ package com.coverflow.question.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
+import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.report.domain.Report;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -40,6 +42,21 @@ public class Answer extends BaseTimeEntity {
     @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
     private List<Report> reports = new ArrayList<>(); // 답변에 대한 신고 리스트
 
+    public Answer(final String content) {
+        this.content = content;
+    }
+
+    public Answer(
+            final SaveAnswerRequest request,
+            final String memberId
+    ) {
+        this.content = request.content();
+        this.selection = false;
+        this.answerStatus = AnswerStatus.REGISTRATION;
+        this.question = new Question(request.questionId());
+        this.member = new Member(UUID.fromString(memberId));
+    }
+
     public void updateAnswer(final Answer answer) {
         this.content = answer.getContent();
     }
@@ -48,7 +65,7 @@ public class Answer extends BaseTimeEntity {
         this.selection = selection;
     }
 
-    public void updateStatus(final AnswerStatus answerStatus) {
+    public void updateAnswerStatus(final AnswerStatus answerStatus) {
         this.answerStatus = answerStatus;
     }
 }

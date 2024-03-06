@@ -5,8 +5,6 @@ import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
-import com.coverflow.notification.domain.NotificationStatus;
-import com.coverflow.notification.domain.NotificationType;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.domain.Question;
@@ -30,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
@@ -117,30 +114,9 @@ public class AnswerService {
     ) {
         Question question = questionRepository.findById(request.questionId())
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
-        Answer answer = Answer.builder()
-                .content(request.content())
-                .selection(false)
-                .answerStatus(AnswerStatus.REGISTRATION)
-                .question(Question.builder()
-                        .id(request.questionId())
-                        .build())
-                .member(Member.builder()
-                        .id(UUID.fromString(memberId))
-                        .build())
-                .build();
-        Notification notification = Notification.builder()
-                .content(question.getCompany().getName())
-                .url("/company-info/" +
-                        question.getCompany().getId().toString() +
-                        "/" +
-                        question.getId().toString())
-                .type(NotificationType.ANSWER)
-                .notificationStatus(NotificationStatus.NO)
-                .member(question.getMember())
-                .build();
 
-        answerRepository.save(answer);
-        notificationService.sendNotification(notification);
+        answerRepository.save(new Answer(request, memberId));
+        notificationService.sendNotification(new Notification(question));
         question.updateAnswerCount(question.getAnswerCount() + 1);
     }
 
@@ -153,20 +129,10 @@ public class AnswerService {
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
         Member member = memberRepository.findById(answer.getMember().getId())
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(answer.getMember().getId()));
-        Notification notification = Notification.builder()
-                .content(answer.getQuestion().getCompany().getName())
-                .url("/company-info/" +
-                        answer.getQuestion().getCompany().getId().toString() +
-                        "/" +
-                        answer.getQuestion().getId().toString())
-                .type(NotificationType.SELECTION)
-                .notificationStatus(NotificationStatus.NO)
-                .member(member)
-                .build();
 
         answer.updateSelection(request.selection());
         member.updateFishShapedBun(member.getFishShapedBun() + answer.getQuestion().getReward());
-        notificationService.sendNotification(notification);
+        notificationService.sendNotification(new Notification(answer, member));
     }
 
     /**
@@ -177,9 +143,7 @@ public class AnswerService {
         Answer answer = answerRepository.findById(request.answerId())
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
 
-        answer.updateAnswer(Answer.builder()
-                .content(request.content())
-                .build());
+        answer.updateAnswer(new Answer(request.content()));
     }
 
     /**
@@ -190,6 +154,6 @@ public class AnswerService {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
 
-        answer.updateStatus(AnswerStatus.DELETION);
+        answer.updateAnswerStatus(AnswerStatus.DELETION);
     }
 }
