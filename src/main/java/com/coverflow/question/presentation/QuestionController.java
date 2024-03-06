@@ -97,7 +97,7 @@ public class QuestionController {
         questionService.saveQuestion(saveQuestionRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
@@ -109,7 +109,7 @@ public class QuestionController {
         questionService.updateQuestion(updateQuestionRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
@@ -121,7 +121,7 @@ public class QuestionController {
         questionService.deleteQuestion(questionId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }

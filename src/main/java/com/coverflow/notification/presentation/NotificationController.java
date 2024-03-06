@@ -57,7 +57,7 @@ public class NotificationController {
         notificationService.updateNotification(requests);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build()
                 );
     }

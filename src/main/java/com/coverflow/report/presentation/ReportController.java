@@ -75,7 +75,7 @@ public class ReportController {
         reportService.saveReport(saveReportRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
@@ -87,7 +87,7 @@ public class ReportController {
         reportService.deleteReport(reportId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }

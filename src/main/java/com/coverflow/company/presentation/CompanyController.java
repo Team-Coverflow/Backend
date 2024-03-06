@@ -100,7 +100,7 @@ public class CompanyController {
         companyService.saveCompany(saveCompanyRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
@@ -112,7 +112,7 @@ public class CompanyController {
         companyService.updateCompany(updateCompanyRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
@@ -124,7 +124,7 @@ public class CompanyController {
         companyService.deleteCompany(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
@@ -136,7 +136,7 @@ public class CompanyController {
         companyService.deleteCompanyReal(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }

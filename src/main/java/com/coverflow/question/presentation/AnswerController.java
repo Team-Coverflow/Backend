@@ -83,7 +83,7 @@ public class AnswerController {
         answerService.saveAnswer(saveAnswerRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
@@ -95,7 +95,7 @@ public class AnswerController {
         answerService.chooseAnswer(updateSelectionRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
@@ -107,7 +107,7 @@ public class AnswerController {
         answerService.updateAnswer(updateAnswerRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
@@ -119,7 +119,7 @@ public class AnswerController {
         answerService.deleteAnswer(answerId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }

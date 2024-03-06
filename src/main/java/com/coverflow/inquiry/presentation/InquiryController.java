@@ -77,7 +77,7 @@ public class InquiryController {
         inquiryService.saveInquiry(saveInquiryRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
@@ -89,7 +89,7 @@ public class InquiryController {
         inquiryService.updateInquiry(updateInquiryRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
@@ -104,7 +104,7 @@ public class InquiryController {
         inquiryService.deleteInquiry(inquiryId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }

@@ -74,7 +74,7 @@ public class MemberController {
         memberService.saveMemberInfo(userDetails.getUsername(), request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
@@ -85,7 +85,7 @@ public class MemberController {
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<UpdateNicknameResponse>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.RESET_CONTENT)
                         .data(memberService.updateNickname(userDetails.getUsername()))
                         .build());
     }
@@ -98,7 +98,7 @@ public class MemberController {
         memberService.logout(userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
@@ -110,7 +110,7 @@ public class MemberController {
         memberService.leaveMember(userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }
