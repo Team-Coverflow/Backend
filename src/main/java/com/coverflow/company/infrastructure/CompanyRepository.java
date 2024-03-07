@@ -5,9 +5,11 @@ import com.coverflow.company.domain.CompanyStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface CompanyRepository extends JpaRepository<Company, Long> {
@@ -49,4 +51,12 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
             final Pageable pageable,
             @Param("companyStatus") final CompanyStatus companyStatus
     );
+
+    @Modifying
+    @Query("""
+            DELETE FROM Company c
+            WHERE c.updatedAt< :date
+            AND c.companyStatus = 'DELETION'
+            """)
+    void deleteByCompanyStatus(@Param("date") final LocalDateTime date);
 }

@@ -12,9 +12,11 @@ import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.question.application.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
@@ -151,5 +153,15 @@ public class CompanyService {
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
         companyRepository.delete(company);
+    }
+
+    /**
+     * 삭제 상태 30일마다 삭제 메서드
+     */
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    protected void deleteCompanyPeriodically() {
+        LocalDateTime date = LocalDateTime.now().minusDays(30);
+        companyRepository.deleteByCompanyStatus(date);
     }
 }
