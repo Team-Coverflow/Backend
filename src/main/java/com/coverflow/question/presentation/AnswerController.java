@@ -11,6 +11,8 @@ import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.request.UpdateSelectionRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +35,9 @@ public class AnswerController {
     @GetMapping("/answers/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<AnswerDTO>>> findAnswer(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @PathVariable @Valid final long questionId
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @PathVariable @Positive final long questionId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<AnswerDTO>>builder()
@@ -48,8 +50,8 @@ public class AnswerController {
     @GetMapping("/admin/answers")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAllAnswers(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAnswerResponse>>builder()
@@ -62,9 +64,9 @@ public class AnswerController {
     @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswersByStatus(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam @Valid final AnswerStatus answerStatus
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @RequestParam @NotBlank final AnswerStatus answerStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAnswerResponse>>builder()
@@ -114,7 +116,7 @@ public class AnswerController {
     @DeleteMapping("/admin/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
-            @PathVariable @Valid final long answerId
+            @PathVariable @Positive final long answerId
     ) {
         answerService.deleteAnswer(answerId);
         return ResponseEntity.ok()
