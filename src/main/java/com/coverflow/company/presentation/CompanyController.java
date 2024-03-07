@@ -27,7 +27,7 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    @GetMapping("/search")
+    @GetMapping("/")
     public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "name") @NotBlank final String name
@@ -54,7 +54,7 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/admin/search")
+    @GetMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies(
             @RequestParam @PositiveOrZero final int pageNo,
