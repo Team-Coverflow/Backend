@@ -2,7 +2,7 @@ package com.coverflow.member.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.dto.MemberSignUpDTO;
-import com.coverflow.member.dto.request.SaveMemberInfoRequest;
+import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
@@ -90,7 +90,7 @@ public class Member extends BaseTimeEntity {
         this.refreshTokenStatus = RefreshTokenStatus.LOGIN;
     }
 
-    public void saveMemberInfo(final SaveMemberInfoRequest request) {
+    public void saveMemberInfo(final SaveMemberRequest request) {
         this.tag = request.tag();
         this.age = request.age();
         this.gender = request.gender();

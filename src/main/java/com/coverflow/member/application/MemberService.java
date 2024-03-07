@@ -5,7 +5,7 @@ import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.RefreshTokenStatus;
 import com.coverflow.member.domain.Role;
-import com.coverflow.member.dto.request.SaveMemberInfoRequest;
+import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
@@ -111,7 +111,7 @@ public class MemberService {
     @Transactional
     public void saveMemberInfo(
             final String username,
-            final SaveMemberInfoRequest request
+            final SaveMemberRequest request
     ) {
         Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));

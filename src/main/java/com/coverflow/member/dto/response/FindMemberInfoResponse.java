@@ -15,7 +15,7 @@ public record FindMemberInfoResponse(
         String gender,
         int fishShapedBun,
         MemberStatus memberStatus,
-        LocalDateTime connected_at,
+        LocalDateTime connectedAt,
         Role role,
         SocialType socialType
 ) {

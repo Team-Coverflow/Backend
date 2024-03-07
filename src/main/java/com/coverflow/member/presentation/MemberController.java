@@ -5,11 +5,12 @@ import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.member.application.MemberService;
 import com.coverflow.member.domain.MemberStatus;
-import com.coverflow.member.dto.request.SaveMemberInfoRequest;
+import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,8 +42,8 @@ public class MemberController {
     @GetMapping("/admin/members")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findAllMemberById(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
@@ -54,9 +55,9 @@ public class MemberController {
     @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findMembersByStatus(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam @Valid final MemberStatus memberStatus
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @RequestParam @NotBlank final MemberStatus memberStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
@@ -69,7 +70,7 @@ public class MemberController {
     @PostMapping("/")
     public ResponseEntity<ResponseHandler<Void>> saveMemberInfo(
             @AuthenticationPrincipal final UserDetails userDetails,
-            @RequestBody @Valid final SaveMemberInfoRequest request
+            @RequestBody final SaveMemberRequest request
     ) {
         memberService.saveMemberInfo(userDetails.getUsername(), request);
         return ResponseEntity.ok()
