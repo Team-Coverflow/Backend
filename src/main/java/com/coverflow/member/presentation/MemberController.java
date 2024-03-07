@@ -39,7 +39,7 @@ public class MemberController {
                         .build());
     }
 
-    @GetMapping("/admin/members")
+    @GetMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findAllMemberById(
             @RequestParam @PositiveOrZero final int pageNo,
@@ -68,7 +68,7 @@ public class MemberController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponseHandler<Void>> saveMemberInfo(
+    public ResponseEntity<ResponseHandler<Void>> saveMember(
             @AuthenticationPrincipal final UserDetails userDetails,
             @RequestBody final SaveMemberRequest request
     ) {
