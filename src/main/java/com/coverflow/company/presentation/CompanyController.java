@@ -1,15 +1,17 @@
 package com.coverflow.company.presentation;
 
 import com.coverflow.company.application.CompanyService;
+import com.coverflow.company.domain.CompanyStatus;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
-import com.coverflow.company.dto.response.FindAutoCompleteResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,92 +26,86 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    @GetMapping("/auto-complete")
-    public ResponseEntity<ResponseHandler<List<FindAutoCompleteResponse>>> autoComplete(
-            @RequestParam(defaultValue = "name") @Valid final String name
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAutoCompleteResponse>>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("자동 완성 검색에 성공했습니다.")
-                        .data(companyService.autoComplete(name))
-                        .build()
-                );
-    }
-
-    @GetMapping("/search-companies")
+    @GetMapping("/companies")
     public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "name") @Valid final String name
+            @RequestParam @NotBlank final int pageNo,
+            @RequestParam(defaultValue = "name") @NotBlank final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회사 검색에 성공했습니다.")
                         .data(companyService.searchCompanies(pageNo, name))
                         .build()
                 );
     }
 
-    @GetMapping("/find-company/{companyId}")
+    @GetMapping("/{companyId}")
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
-            @PathVariable @Valid final Long companyId,
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
+            @PathVariable @Positive final long companyId,
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 회사와 질문 조회에 성공했습니다.")
                         .data(companyService.findCompanyById(pageNo, criterion, companyId))
                         .build()
                 );
     }
 
-    @GetMapping("/admin/find-companies")
+    @GetMapping("/admin/companies")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("전체 회사 리스트 검색에 성공했습니다.")
                         .data(companyService.findAllCompanies(pageNo, criterion))
                         .build()
                 );
     }
 
-    @GetMapping("/admin/find-by-status")
+    @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findPending(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록") @Valid final String status
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @RequestParam @NotBlank final CompanyStatus companyStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 회사 검색에 성공했습니다.")
-                        .data(companyService.findPending(pageNo, criterion, status))
+                        .data(companyService.findPending(pageNo, criterion, companyStatus))
                         .build()
                 );
     }
 
-    @PostMapping("/save-company")
+    @PostMapping("/")
     public ResponseEntity<ResponseHandler<Void>> saveCompany(
             @RequestBody @Valid final SaveCompanyRequest saveCompanyRequest
     ) {
         companyService.saveCompany(saveCompanyRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("회사 등록에 성공했습니다.")
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
-    @PostMapping("/admin/update-company")
+    @PatchMapping("/admin/{companyId}")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<Void>> updateCompanyStatus(
+            @PathVariable @Positive final long companyId
+    ) {
+        companyService.updateCompanyStatus(companyId);
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.NO_CONTENT)
+                        .build());
+    }
+
+    @PutMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateCompany(
             @RequestBody @Valid final UpdateCompanyRequest updateCompanyRequest
@@ -117,34 +113,31 @@ public class CompanyController {
         companyService.updateCompany(updateCompanyRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("회사 수정에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
-    @PostMapping("/admin/delete-company/{companyId}")
+    @DeleteMapping("/admin/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
-            @PathVariable @Valid final Long companyId
+            @PathVariable @Positive final long companyId
     ) {
         companyService.deleteCompany(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("회사 삭제에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
-    @PostMapping("/admin/delete-real/{companyId}")
+    @DeleteMapping("/admin/real/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompanyReal(
-            @PathVariable @Valid final Long companyId
+            @PathVariable @Positive final long companyId
     ) {
         companyService.deleteCompanyReal(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("회사 물리 삭제에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }

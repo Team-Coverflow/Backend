@@ -1,11 +1,12 @@
 package com.coverflow.question.dto.response;
 
 import com.coverflow.question.domain.Question;
+import com.coverflow.question.domain.QuestionStatus;
 
 import java.time.LocalDateTime;
 
 public record FindAllQuestionsResponse(
-        Long questionId,
+        long questionId,
         String companyName,
         String questionerNickname,
         String questionerTag,
@@ -13,7 +14,7 @@ public record FindAllQuestionsResponse(
         int viewCount,
         int answerCount,
         int reward,
-        String questionStatus,
+        QuestionStatus questionStatus,
         LocalDateTime createAt
 ) {
 
@@ -27,7 +28,7 @@ public record FindAllQuestionsResponse(
                 question.getViewCount(),
                 question.getAnswerCount(),
                 question.getReward(),
-                question.getStatus(),
+                question.getQuestionStatus(),
                 question.getCreatedAt()
         );
     }

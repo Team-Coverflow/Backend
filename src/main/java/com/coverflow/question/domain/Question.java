@@ -3,12 +3,15 @@ package com.coverflow.question.domain;
 import com.coverflow.company.domain.Company;
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
+import com.coverflow.question.dto.request.SaveQuestionRequest;
+import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.report.domain.Report;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -31,8 +34,9 @@ public class Question extends BaseTimeEntity {
     private int answerCount; // 답변 수
     @Column
     private int reward; // 채택 시 보상
-    @Column
-    private String status; // 상태 (등록/삭제)
+
+    @Enumerated(EnumType.STRING)
+    private QuestionStatus questionStatus; // 질문 상태 (등록/삭제)
 
     @ManyToOne
     @JoinColumn(name = "company_id")
@@ -50,13 +54,36 @@ public class Question extends BaseTimeEntity {
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
     private List<Report> reports = new ArrayList<>(); // 질문에 대한 신고 리스트
 
+    public Question(final UpdateQuestionRequest request) {
+        this.title = request.title();
+        this.content = request.content();
+    }
+
+    public Question(
+            final SaveQuestionRequest request,
+            final String memberId
+    ) {
+        this.title = request.title();
+        this.content = request.content();
+        this.viewCount = 1;
+        this.answerCount = 0;
+        this.reward = request.reward();
+        this.questionStatus = QuestionStatus.REGISTRATION;
+        this.company = Company.builder()
+                .id(request.companyId())
+                .build();
+        this.member = Member.builder()
+                .id(UUID.fromString(memberId))
+                .build();
+    }
+
     public void updateQuestion(final Question question) {
         this.title = question.getTitle();
         this.content = question.getContent();
     }
 
-    public void updateStatus(final String status) {
-        this.status = status;
+    public void updateQuestionStatus(final QuestionStatus questionStatus) {
+        this.questionStatus = questionStatus;
     }
 
     public void updateViewCount(int viewCount) {

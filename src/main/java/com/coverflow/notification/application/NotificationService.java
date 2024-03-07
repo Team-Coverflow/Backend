@@ -21,12 +21,11 @@ import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class NotificationService {
 
-    private static final Long DEFAULT_TIMEOUT = 60L * 1000 * 60;
+    private static final long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
 
@@ -40,10 +39,10 @@ public class NotificationService {
             final String lastEventId
     ) {
         // 매 연결마다 고유 이벤트 id 부여
-        final String eventId = memberId + "_" + System.currentTimeMillis();
+        String eventId = memberId + "_" + System.currentTimeMillis();
 
         // SseEmitter 인스턴스 생성 후 Map에 저장
-        final SseEmitter emitter = emitterRepository.save(eventId, new SseEmitter(DEFAULT_TIMEOUT));
+        SseEmitter emitter = emitterRepository.save(eventId, new SseEmitter(DEFAULT_TIMEOUT));
 
         // 이벤트 전송 시
         emitter.onCompletion(() -> {
@@ -113,11 +112,13 @@ public class NotificationService {
 
     /**
      * [알림 조회 메서드]
+     * 현재 사용 x
      */
+    @Transactional(readOnly = true)
     public List<FindNotificationResponse> findNotification(String memberId) {
-        final List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId))
+        List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId))
                 .orElseThrow(() -> new NotificationException.NotificationNotFoundException(memberId));
-        final List<FindNotificationResponse> findNotifications = new ArrayList<>();
+        List<FindNotificationResponse> findNotifications = new ArrayList<>();
 
         for (int i = 0; i < notifications.size(); i++) {
             if (notifications.get(i).getCreatedAt().isAfter(LocalDateTime.now().minusDays(31))) {
@@ -136,7 +137,7 @@ public class NotificationService {
             final Notification notification = notificationRepository.findById(updateNotificationRequest.notificationId())
                     .orElseThrow(() -> new NotificationException.NotificationNotFoundException(updateNotificationRequest.notificationId()));
 
-            notification.updateStatus(updateNotificationRequest.status());
+            notification.updateNotificationStatus(updateNotificationRequest.notificationStatus());
         }
     }
 

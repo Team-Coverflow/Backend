@@ -12,12 +12,8 @@ public class NotificationException extends RuntimeException {
             super("알림이 존재하지 않습니다.");
         }
 
-        public NotificationNotFoundException(final Long notificationId) {
-            super(String.format("알림이 존재하지 않습니다. - request info { companyId : %d }", notificationId));
-        }
-
-        public NotificationNotFoundException(final String string) {
-            super(String.format("알림이 존재하지 않습니다. - request info { string : %s }", string));
+        public NotificationNotFoundException(final Object object) {
+            super(String.format("알림이 존재하지 않습니다. - request info => %s", object));
         }
     }
 }

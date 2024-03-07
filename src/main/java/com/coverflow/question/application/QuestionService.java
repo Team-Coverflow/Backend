@@ -4,8 +4,8 @@ import com.coverflow.company.domain.Company;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.CurrencyService;
-import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Question;
+import com.coverflow.question.domain.QuestionStatus;
 import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
@@ -15,18 +15,17 @@ import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-@Transactional(readOnly = true)
+import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
+import static com.coverflow.global.constant.Constant.SMALL_PAGE_SIZE;
+import static com.coverflow.global.util.PageUtil.generatePageDesc;
+
 @RequiredArgsConstructor
 @Service
 public class QuestionService {
@@ -40,14 +39,14 @@ public class QuestionService {
      * [특정 회사의 질문 조회 메서드]
      * 회사 id로 조회
      */
+    @Transactional(readOnly = true)
     public List<QuestionDTO> findAllQuestionsByCompanyId(
             final int pageNo,
             final String criterion,
-            final Long companyId
+            final long companyId
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 5, Sort.by(criterion).descending());
-        final Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(pageable, companyId);
-        final List<QuestionDTO> questions = new ArrayList<>();
+        Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), companyId);
+        List<QuestionDTO> questions = new ArrayList<>();
 
         if (optionalQuestions.isPresent()) {
             Page<Question> questionList = optionalQuestions.get();
@@ -75,9 +74,9 @@ public class QuestionService {
     public FindQuestionResponse findQuestionById(
             final int pageNo,
             final String criterion,
-            final Long questionId
+            final long questionId
     ) {
-        final Question question = questionRepository.findRegisteredQuestion(questionId)
+        Question question = questionRepository.findRegisteredQuestion(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
         question.updateViewCount(question.getViewCount() + 1);
@@ -87,39 +86,35 @@ public class QuestionService {
     /**
      * [관리자 전용: 전체 질문 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public List<FindAllQuestionsResponse> findAllQuestions(
             final int pageNo,
             final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Question> questions = questionRepository.findAllQuestions(pageable)
+        Page<Question> questions = questionRepository.findAllQuestions(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(QuestionException.QuestionNotFoundException::new);
-        final List<FindAllQuestionsResponse> findQuestions = new ArrayList<>();
 
-        for (int i = 0; i < questions.getContent().size(); i++) {
-            findQuestions.add(i, FindAllQuestionsResponse.from(questions.getContent().get(i)));
-        }
-        return findQuestions;
+        return questions.getContent().stream()
+                .map(FindAllQuestionsResponse::from)
+                .toList();
     }
 
     /**
      * [관리자 전용: 특정 상태 질문 조회 메서드]
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindAllQuestionsResponse> findQuestionsByStatus(
             final int pageNo,
             final String criterion,
-            final String status
+            final QuestionStatus questionStatus
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Question> questions = questionRepository.findAllByStatus(pageable, status)
-                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(status));
-        final List<FindAllQuestionsResponse> findQuestions = new ArrayList<>();
+        Page<Question> questions = questionRepository.findAllByQuestionStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), questionStatus)
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionStatus));
 
-        for (int i = 0; i < questions.getContent().size(); i++) {
-            findQuestions.add(i, FindAllQuestionsResponse.from(questions.getContent().get(i)));
-        }
-        return findQuestions;
+        return questions.getContent().stream()
+                .map(FindAllQuestionsResponse::from)
+                .toList();
     }
 
     /**
@@ -130,50 +125,33 @@ public class QuestionService {
             final SaveQuestionRequest request,
             final String memberId
     ) {
-        final Company company = companyRepository.findById(request.companyId())
+        Company company = companyRepository.findById(request.companyId())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.companyId()));
-        final Question question = Question.builder()
-                .title(request.title())
-                .content(request.content())
-                .viewCount(1)
-                .answerCount(0)
-                .reward(request.reward())
-                .status("등록")
-                .company(Company.builder()
-                        .id(request.companyId())
-                        .build())
-                .member(Member.builder()
-                        .id(UUID.fromString(memberId))
-                        .build())
-                .build();
 
         currencyService.writeQuestion(memberId, request.reward());
-        questionRepository.save(question);
+        questionRepository.save(new Question(request, memberId));
         company.updateQuestionCount(company.getQuestionCount() + 1);
     }
 
     /**
-     * [관리자 전용: 질문 수정 메서드]
+     * [질문 수정 메서드]
      */
     @Transactional
     public void updateQuestion(final UpdateQuestionRequest request) {
-        final Question question = questionRepository.findById(request.questionId())
+        Question question = questionRepository.findById(request.questionId())
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
 
-        question.updateQuestion(Question.builder()
-                .title(request.title())
-                .content(request.content())
-                .build());
+        question.updateQuestion(new Question(request));
     }
 
     /**
      * [관리자 전용: 질문 삭제 메서드]
      */
     @Transactional
-    public void deleteQuestion(final Long questionId) {
-        final Question question = questionRepository.findById(questionId)
+    public void deleteQuestion(final long questionId) {
+        Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
-        question.updateStatus("삭제");
+        question.updateQuestionStatus(QuestionStatus.DELETION);
     }
 }

@@ -33,34 +33,31 @@ public class NotificationController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<SseEmitter>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("알림 서버 연결 성공했습니다.")
                         .data(notificationService.connect(userDetails.getUsername(), lastEventId))
                         .build()
                 );
     }
 
-    @GetMapping("/find-notification")
+    @GetMapping("/")
     public ResponseEntity<ResponseHandler<List<FindNotificationResponse>>> findNotification(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindNotificationResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("최근 30일 이내의 전체 알림 조회에 성공했습니다.")
                         .data(notificationService.findNotification(userDetails.getUsername()))
                         .build()
                 );
     }
 
-    @PostMapping("/update-notification")
+    @PutMapping("/")
     public ResponseEntity<ResponseHandler<Void>> updateNotification(
             @RequestBody @Valid final List<UpdateNotificationRequest> requests
     ) {
         notificationService.updateNotification(requests);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("알림 상태 변경에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build()
                 );
     }

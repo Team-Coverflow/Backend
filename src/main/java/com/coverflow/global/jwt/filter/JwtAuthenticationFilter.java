@@ -3,6 +3,8 @@ package com.coverflow.global.jwt.filter;
 import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.util.PasswordUtil;
 import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.MemberStatus;
+import com.coverflow.member.domain.RefreshTokenStatus;
 import com.coverflow.member.infrastructure.MemberRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -90,7 +92,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) {
         memberRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
-                    if (user.getTokenStatus().equals("로그인")) {
+                    if ((RefreshTokenStatus.LOGIN).equals(user.getRefreshTokenStatus())) {
                         jwtService.sendAccessAndRefreshToken(
                                 response,
                                 jwtService.createAccessToken(String.valueOf(user.getId()), user.getRole()),
@@ -108,7 +110,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String reIssueRefreshToken(
             final Member member
     ) {
-
         String reIssuedRefreshToken = jwtService.createRefreshToken();
         member.updateRefreshToken(reIssuedRefreshToken);
         memberRepository.saveAndFlush(member);
@@ -135,7 +136,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .ifPresent(accessToken -> {
                     jwtService.extractMemberId(accessToken)
                             .ifPresent(memberId -> {
-                                memberRepository.findByIdAndStatus(memberId, "등록")
+                                memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION)
                                         .ifPresent(this::saveAuthentication);
                             });
                 });

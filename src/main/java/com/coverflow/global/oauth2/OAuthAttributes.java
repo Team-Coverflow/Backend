@@ -5,8 +5,8 @@ import com.coverflow.global.oauth2.userinfo.KakaoOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.NaverOAuth2UserInfo;
 import com.coverflow.global.oauth2.userinfo.OAuth2UserInfo;
 import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.Role;
 import com.coverflow.member.domain.SocialType;
+import com.coverflow.member.dto.MemberSignUpDTO;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -107,18 +107,15 @@ public class OAuthAttributes {
             gender = oauth2UserInfo.getGender();
         }
 
-        return Member.builder()
-                .email(email)
-                .nickname(nickname)
-                .tag("취준생")
-                .age(age)
-                .gender(gender)
-                .fishShapedBun(300)
-                .status("등록")
-                .tokenStatus("로그인")
-                .role(Role.GUEST)
-                .socialType(socialType)
-                .socialId(oauth2UserInfo.getId())
-                .build();
+        MemberSignUpDTO memberSignUpDTO = new MemberSignUpDTO(
+                email,
+                nickname,
+                "취준생",
+                age, gender,
+                oauth2UserInfo.getId(),
+                socialType
+        );
+
+        return new Member(memberSignUpDTO);
     }
 }

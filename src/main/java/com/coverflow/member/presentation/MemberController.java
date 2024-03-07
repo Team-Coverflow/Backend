@@ -4,11 +4,13 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.member.application.MemberService;
-import com.coverflow.member.dto.request.SaveMemberInfoRequest;
+import com.coverflow.member.domain.MemberStatus;
+import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
-import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +27,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/find-member")
+    @GetMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindMemberInfoResponse>> findMemberById(
             @AuthenticationPrincipal final UserDetails userDetails
@@ -33,69 +35,63 @@ public class MemberController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindMemberInfoResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("회원 조회 성공했습니다.")
                         .data(memberService.findMemberById(userDetails.getUsername()))
                         .build());
     }
 
-    @GetMapping("/admin/find-members")
+    @GetMapping("/admin/members")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findAllMemberById(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("전체 회원 조회 성공했습니다.")
                         .data(memberService.findAllMembers(pageNo, criterion))
                         .build());
     }
 
-    @GetMapping("/admin/find-by-status")
+    @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findMembersByStatus(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @RequestParam @NotBlank final MemberStatus memberStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 회원 조회에 성공했습니다.")
-                        .data(memberService.findMembersByStatus(pageNo, criterion, status))
+                        .data(memberService.findMembersByStatus(pageNo, criterion, memberStatus))
                         .build()
                 );
     }
 
-    @PostMapping("/save-member-info")
+    @PostMapping("/")
     public ResponseEntity<ResponseHandler<Void>> saveMemberInfo(
             @AuthenticationPrincipal final UserDetails userDetails,
-            @RequestBody @Valid final SaveMemberInfoRequest request
+            @RequestBody final SaveMemberRequest request
     ) {
         memberService.saveMemberInfo(userDetails.getUsername(), request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("회원 정보 등록에 성공했습니다.")
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
-    @PostMapping("/update-nickname")
+    @PutMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        memberService.updateNickname(userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<UpdateNicknameResponse>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("닉네임 변경에 성공했습니다.")
+                        .statusCode(HttpStatus.RESET_CONTENT)
                         .data(memberService.updateNickname(userDetails.getUsername()))
                         .build());
     }
 
-    @PostMapping("/logout")
+    @PutMapping("/logout")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> logout(
             @AuthenticationPrincipal final UserDetails userDetails
@@ -103,12 +99,11 @@ public class MemberController {
         memberService.logout(userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("로그아웃에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
-    @PostMapping("/leave")
+    @DeleteMapping("/leave")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteMember(
             @AuthenticationPrincipal final UserDetails userDetails
@@ -116,8 +111,7 @@ public class MemberController {
         memberService.leaveMember(userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("회원 탈퇴에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }
