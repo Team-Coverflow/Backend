@@ -12,6 +12,7 @@ import com.coverflow.inquiry.dto.response.FindInquiryResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,7 +32,7 @@ public class InquiryController {
     @GetMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindInquiryResponse>>> findInquiryByMemberId(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
@@ -42,10 +43,10 @@ public class InquiryController {
                         .build());
     }
 
-    @GetMapping("/admin/inquiries")
+    @GetMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiries(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
@@ -58,7 +59,7 @@ public class InquiryController {
     @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiriesByStatus(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @Valid final InquiryStatus inquiryStatus
     ) {
@@ -83,7 +84,7 @@ public class InquiryController {
                         .build());
     }
 
-    @PutMapping("/")
+    @PutMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateInquiry(
             @RequestBody @Valid final UpdateInquiryRequest updateInquiryRequest

@@ -13,6 +13,7 @@ import com.coverflow.question.dto.response.FindQuestionResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class QuestionController {
      */
     @GetMapping("/questions/{companyId}")
     public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @PathVariable @Positive final long companyId
     ) {
@@ -49,7 +50,7 @@ public class QuestionController {
     @GetMapping("/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @PathVariable @Positive final long questionId
     ) {
@@ -61,10 +62,10 @@ public class QuestionController {
                 );
     }
 
-    @GetMapping("/admin/questions")
+    @GetMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findAllQuestions(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
@@ -78,7 +79,7 @@ public class QuestionController {
     @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findQuestionsByStatus(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final QuestionStatus questionStatus
     ) {

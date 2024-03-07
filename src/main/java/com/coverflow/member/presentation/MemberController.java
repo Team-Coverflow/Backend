@@ -10,7 +10,7 @@ import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,10 +39,10 @@ public class MemberController {
                         .build());
     }
 
-    @GetMapping("/admin/members")
+    @GetMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findAllMemberById(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
@@ -55,7 +55,7 @@ public class MemberController {
     @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findMembersByStatus(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final MemberStatus memberStatus
     ) {
@@ -68,7 +68,7 @@ public class MemberController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<ResponseHandler<Void>> saveMemberInfo(
+    public ResponseEntity<ResponseHandler<Void>> saveMember(
             @AuthenticationPrincipal final UserDetails userDetails,
             @RequestBody final SaveMemberRequest request
     ) {
