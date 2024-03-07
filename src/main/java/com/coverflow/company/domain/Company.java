@@ -15,7 +15,11 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "tbl_company")
+@Table(name = "tbl_company",
+        indexes = {
+                @Index(name = "company_name_idx", columnList = "name"),
+                @Index(name = "company_status_idx", columnList = "companyStatus")
+        })
 public class Company extends BaseTimeEntity {
 
     @Id
