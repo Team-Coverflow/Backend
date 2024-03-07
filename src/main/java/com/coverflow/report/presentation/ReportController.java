@@ -41,7 +41,7 @@ public class ReportController {
                         .build());
     }
 
-    @GetMapping("/admin/reports")
+    @GetMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReports(
             @RequestParam @PositiveOrZero final int pageNo,
