@@ -10,6 +10,8 @@ import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
 import com.coverflow.inquiry.dto.response.FindInquiryResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +31,8 @@ public class InquiryController {
     @GetMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindInquiryResponse>>> findInquiryByMemberId(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
@@ -43,8 +45,8 @@ public class InquiryController {
     @GetMapping("/admin/inquiries")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiries(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
@@ -56,8 +58,8 @@ public class InquiryController {
     @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiriesByStatus(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @Valid final InquiryStatus inquiryStatus
     ) {
         return ResponseEntity.ok()
@@ -99,7 +101,7 @@ public class InquiryController {
     @DeleteMapping("/admin/{inquiryId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteInquiry(
-            @PathVariable @Valid final long inquiryId
+            @PathVariable @Positive final long inquiryId
     ) {
         inquiryService.deleteInquiry(inquiryId);
         return ResponseEntity.ok()
