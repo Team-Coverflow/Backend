@@ -48,7 +48,7 @@ public class AnswerController {
                 );
     }
 
-    @GetMapping("/admin/answers")
+    @GetMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAllAnswers(
             @RequestParam @PositiveOrZero final int pageNo,
