@@ -8,6 +8,8 @@ import com.coverflow.report.domain.ReportStatus;
 import com.coverflow.report.dto.request.SaveReportRequest;
 import com.coverflow.report.dto.response.FindReportResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +29,8 @@ public class ReportController {
     @GetMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportByMemberId(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
@@ -41,8 +43,8 @@ public class ReportController {
     @GetMapping("/admin/reports")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReports(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
@@ -54,9 +56,9 @@ public class ReportController {
     @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportsByStatus(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam @Valid final ReportStatus reportStatus
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @RequestParam @NotBlank final ReportStatus reportStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
@@ -82,7 +84,7 @@ public class ReportController {
     @DeleteMapping("/admin/{reportId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
-            @PathVariable @Valid final long reportId
+            @PathVariable @Positive final long reportId
     ) {
         reportService.deleteReport(reportId);
         return ResponseEntity.ok()
