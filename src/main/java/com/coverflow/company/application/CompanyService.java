@@ -12,9 +12,6 @@ import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.question.application.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +19,8 @@ import java.util.List;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
+import static com.coverflow.global.util.PageUtil.generatePageAsc;
+import static com.coverflow.global.util.PageUtil.generatePageDesc;
 
 @RequiredArgsConstructor
 @Service
@@ -39,8 +38,7 @@ public class CompanyService {
             final int pageNo,
             final String name
     ) {
-        Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by("name").ascending());
-        Page<Company> companies = companyRepository.findAllByNameStartingWithAndCompanyStatus(pageable, name)
+        Page<Company> companies = companyRepository.findAllByNameStartingWithAndCompanyStatus(generatePageAsc(pageNo, NORMAL_PAGE_SIZE, "name"), name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
 
         return companies.getContent().stream()
@@ -73,8 +71,7 @@ public class CompanyService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Company> companies = companyRepository.findAllCompanies(pageable)
+        Page<Company> companies = companyRepository.findAllCompanies(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(CompanyException.CompanyNotFoundException::new);
 
         return companies.getContent().stream()
@@ -92,8 +89,7 @@ public class CompanyService {
             final String criterion,
             final CompanyStatus companyStatus
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Company> companies = companyRepository.findAllByCompanyStatus(pageable, companyStatus)
+        Page<Company> companies = companyRepository.findAllByCompanyStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), companyStatus)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyStatus));
 
         return companies.getContent().stream()

@@ -10,9 +10,6 @@ import com.coverflow.inquiry.exception.InquiryException;
 import com.coverflow.inquiry.infrastructure.InquiryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +17,7 @@ import java.util.List;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
+import static com.coverflow.global.util.PageUtil.generatePageDesc;
 
 @RequiredArgsConstructor
 @Service
@@ -36,8 +34,7 @@ public class InquiryService {
             final String criterion,
             final String memberId
     ) {
-        Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(pageable, memberId)
+        Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), memberId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(memberId));
 
         return inquiries.getContent().stream()
@@ -53,8 +50,7 @@ public class InquiryService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Inquiry> inquiries = inquiryRepository.findInquiries(pageable)
+        Page<Inquiry> inquiries = inquiryRepository.findInquiries(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(InquiryException.InquiryNotFoundException::new);
 
         return inquiries.getContent().stream()
@@ -72,8 +68,7 @@ public class InquiryService {
             final String criterion,
             final InquiryStatus inquiryStatus
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(pageable, inquiryStatus)
+        Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), inquiryStatus)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryStatus));
 
         return inquiries.getContent().stream()

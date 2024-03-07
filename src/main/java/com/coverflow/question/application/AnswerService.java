@@ -19,9 +19,6 @@ import com.coverflow.question.infrastructure.AnswerRepository;
 import com.coverflow.question.infrastructure.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +28,7 @@ import java.util.Optional;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
+import static com.coverflow.global.util.PageUtil.generatePageDesc;
 
 @RequiredArgsConstructor
 @Service
@@ -50,8 +48,7 @@ public class AnswerService {
             final String criterion,
             final long questionId
     ) {
-        Pageable pageable = PageRequest.of(pageNo, NORMAL_PAGE_SIZE, Sort.by(criterion).descending());
-        Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndAnswerStatus(pageable, questionId);
+        Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndAnswerStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), questionId);
         List<AnswerDTO> answers = new ArrayList<>();
 
         if (optionalAnswers.isPresent()) {
@@ -76,8 +73,7 @@ public class AnswerService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Answer> answers = answerRepository.findAllAnswers(pageable)
+        Page<Answer> answers = answerRepository.findAllAnswers(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(AnswerException.AnswerNotFoundException::new);
 
         return answers.getContent().stream()
@@ -95,8 +91,7 @@ public class AnswerService {
             final String criterion,
             final AnswerStatus answerStatus
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Answer> answers = answerRepository.findAllByAnswerStatus(pageable, answerStatus)
+        Page<Answer> answers = answerRepository.findAllByAnswerStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), answerStatus)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerStatus));
 
         return answers.getContent().stream()

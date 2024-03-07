@@ -15,9 +15,6 @@ import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +24,7 @@ import java.util.Optional;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.SMALL_PAGE_SIZE;
+import static com.coverflow.global.util.PageUtil.generatePageDesc;
 
 @RequiredArgsConstructor
 @Service
@@ -47,8 +45,7 @@ public class QuestionService {
             final String criterion,
             final long companyId
     ) {
-        Pageable pageable = PageRequest.of(pageNo, SMALL_PAGE_SIZE, Sort.by(criterion).descending());
-        Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(pageable, companyId);
+        Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), companyId);
         List<QuestionDTO> questions = new ArrayList<>();
 
         if (optionalQuestions.isPresent()) {
@@ -94,8 +91,7 @@ public class QuestionService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Question> questions = questionRepository.findAllQuestions(pageable)
+        Page<Question> questions = questionRepository.findAllQuestions(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(QuestionException.QuestionNotFoundException::new);
 
         return questions.getContent().stream()
@@ -113,8 +109,7 @@ public class QuestionService {
             final String criterion,
             final QuestionStatus questionStatus
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Question> questions = questionRepository.findAllByQuestionStatus(pageable, questionStatus)
+        Page<Question> questions = questionRepository.findAllByQuestionStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), questionStatus)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionStatus));
 
         return questions.getContent().stream()

@@ -12,15 +12,13 @@ import com.coverflow.report.exception.ReportException;
 import com.coverflow.report.infrastructure.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
+import static com.coverflow.global.util.PageUtil.generatePageDesc;
 import static com.coverflow.report.domain.ReportType.ANSWER;
 import static com.coverflow.report.domain.ReportType.QUESTION;
 
@@ -40,8 +38,7 @@ public class ReportService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Report> reports = reportRepository.findReportsByMemberId(memberId, pageable)
+        Page<Report> reports = reportRepository.findReportsByMemberId(memberId, generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(memberId));
 
         return reports.getContent().stream()
@@ -57,8 +54,7 @@ public class ReportService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Report> reports = reportRepository.findAllReports(pageable)
+        Page<Report> reports = reportRepository.findAllReports(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(ReportException.ReportNotFoundException::new);
 
         return reports.getContent().stream()
@@ -76,8 +72,7 @@ public class ReportService {
             final String criterion,
             final ReportStatus reportStatus
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Report> reports = reportRepository.findAllByReportStatus(pageable, reportStatus)
+        Page<Report> reports = reportRepository.findAllByReportStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), reportStatus)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(reportStatus));
 
         return reports.getContent().stream()

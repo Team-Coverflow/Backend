@@ -13,9 +13,6 @@ import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.infrastructure.EmitterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
+import static com.coverflow.global.util.PageUtil.generatePageDesc;
 import static com.coverflow.member.exception.MemberException.*;
 
 @RequiredArgsConstructor
@@ -77,8 +75,7 @@ public class MemberService {
             final int pageNo,
             final String criterion
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Member> members = memberRepository.findAllMembers(pageable)
+        Page<Member> members = memberRepository.findAllMembers(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(AllMemberNotFoundException::new);
 
         return members.getContent().stream()
@@ -96,8 +93,7 @@ public class MemberService {
             final String criterion,
             final MemberStatus memberStatus
     ) {
-        Pageable pageable = PageRequest.of(pageNo, LARGE_PAGE_SIZE, Sort.by(criterion).descending());
-        Page<Member> members = memberRepository.findAllByMemberStatus(pageable, memberStatus)
+        Page<Member> members = memberRepository.findAllByMemberStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), memberStatus)
                 .orElseThrow(() -> new MemberNotFoundException(memberStatus));
 
         return members.getContent().stream()
