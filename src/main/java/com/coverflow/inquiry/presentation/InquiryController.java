@@ -43,7 +43,7 @@ public class InquiryController {
                         .build());
     }
 
-    @GetMapping("/admin/inquiries")
+    @GetMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiries(
             @RequestParam @PositiveOrZero final int pageNo,
@@ -84,7 +84,7 @@ public class InquiryController {
                         .build());
     }
 
-    @PutMapping("/")
+    @PutMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateInquiry(
             @RequestBody @Valid final UpdateInquiryRequest updateInquiryRequest
