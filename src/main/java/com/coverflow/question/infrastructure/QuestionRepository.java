@@ -1,6 +1,7 @@
 package com.coverflow.question.infrastructure;
 
 import com.coverflow.question.domain.Question;
+import com.coverflow.question.domain.QuestionStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,31 +12,39 @@ import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
-    @Query("SELECT q " +
-            "FROM Question q " +
-            "WHERE q.company.id = :companyId " +
-            "AND q.status = '등록' " +
-            "ORDER BY q.createdAt DESC")
+    @Query("""
+            SELECT q
+            FROM Question q
+            WHERE q.company.id = :companyId
+            AND q.questionStatus = 'REGISTRATION'
+            ORDER BY q.createdAt DESC
+            """)
     Optional<Page<Question>> findRegisteredQuestions(
             final Pageable pageable,
-            @Param("companyId") final Long companyId
+            @Param("companyId") final long companyId
     );
 
-    @Query("SELECT DISTINCT q " +
-            "FROM Question q " +
-            "WHERE q.id = :questionId " +
-            "AND q.status = '등록'")
-    Optional<Question> findRegisteredQuestion(@Param("questionId") final Long questionId);
+    @Query("""
+            SELECT DISTINCT q
+            FROM Question q
+            WHERE q.id = :questionId
+            AND q.questionStatus = 'REGISTRATION'
+            """)
+    Optional<Question> findRegisteredQuestion(@Param("questionId") final long questionId);
 
-    @Query("SELECT q " +
-            "FROM Question q ")
+    @Query("""
+            SELECT q
+            FROM Question q
+            """)
     Optional<Page<Question>> findAllQuestions(final Pageable pageable);
 
-    @Query("SELECT q " +
-            "FROM Question q " +
-            "WHERE q.status = :status")
-    Optional<Page<Question>> findAllByStatus(
+    @Query("""
+            SELECT q
+            FROM Question q
+            WHERE q.questionStatus = :questionStatus
+            """)
+    Optional<Page<Question>> findAllByQuestionStatus(
             final Pageable pageable,
-            @Param("status") final String status
+            @Param("questionStatus") final QuestionStatus questionStatus
     );
 }

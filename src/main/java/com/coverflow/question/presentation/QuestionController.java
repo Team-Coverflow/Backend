@@ -4,12 +4,15 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.question.application.QuestionService;
+import com.coverflow.question.domain.QuestionStatus;
 import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
 import com.coverflow.question.dto.response.FindQuestionResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,69 +32,65 @@ public class QuestionController {
     /**
      * 일단 보류
      */
-    @GetMapping("/find-questions/{companyId}")
+    @GetMapping("/questions/{companyId}")
     public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @PathVariable @Valid final Long companyId
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @PathVariable @Positive final long companyId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<QuestionDTO>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 회사의 질문 조회에 성공했습니다.")
                         .data(questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId))
                         .build()
                 );
     }
 
-    @GetMapping("/find-question/{questionId}")
+    @GetMapping("/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @PathVariable @Valid final Long questionId
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @PathVariable @Positive final long questionId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 질문과 답변 조회에 성공했습니다.")
                         .data(questionService.findQuestionById(pageNo, criterion, questionId))
                         .build()
                 );
     }
 
-    @GetMapping("/admin/find-questions")
+    @GetMapping("/admin/questions")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findAllQuestions(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("전체 질문 조회에 성공했습니다.")
                         .data(questionService.findAllQuestions(pageNo, criterion))
                         .build()
                 );
     }
 
-    @GetMapping("/admin/find-by-status")
+    @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findQuestionsByStatus(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @RequestParam @NotBlank final QuestionStatus questionStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 질문 검색에 성공했습니다.")
-                        .data(questionService.findQuestionsByStatus(pageNo, criterion, status))
+                        .data(questionService.findQuestionsByStatus(pageNo, criterion, questionStatus))
                         .build()
                 );
     }
 
-    @PostMapping("/save-question")
+    @PostMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveQuestion(
             @RequestBody @Valid final SaveQuestionRequest saveQuestionRequest,
@@ -100,34 +99,31 @@ public class QuestionController {
         questionService.saveQuestion(saveQuestionRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("질문 등록에 성공했습니다.")
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
-    @PostMapping("/admin/update-question")
-    @AdminAuthorize
+    @PutMapping("/")
+    @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateQuestion(
             @RequestBody @Valid final UpdateQuestionRequest updateQuestionRequest
     ) {
         questionService.updateQuestion(updateQuestionRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("질문 수정에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
-    @PostMapping("/admin/delete-question/{questionId}")
+    @DeleteMapping("/admin/{questionId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
-            @PathVariable @Valid final Long questionId
+            @PathVariable @Positive final long questionId
     ) {
         questionService.deleteQuestion(questionId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("질문 삭제에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }

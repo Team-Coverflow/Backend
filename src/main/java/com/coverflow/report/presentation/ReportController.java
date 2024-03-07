@@ -4,9 +4,12 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.report.application.ReportService;
+import com.coverflow.report.domain.ReportStatus;
 import com.coverflow.report.dto.request.SaveReportRequest;
 import com.coverflow.report.dto.response.FindReportResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,11 +26,11 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping("/find-report")
+    @GetMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportByMemberId(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
@@ -37,11 +40,11 @@ public class ReportController {
                         .build());
     }
 
-    @GetMapping("/admin/find-reports")
+    @GetMapping("/admin/reports")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReports(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
@@ -50,22 +53,22 @@ public class ReportController {
                         .build());
     }
 
-    @GetMapping("/admin/find-by-status")
+    @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportsByStatus(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록") @Valid final String status
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @RequestParam @NotBlank final ReportStatus reportStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindReportResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(reportService.findReportsByStatus(pageNo, criterion, status))
+                        .data(reportService.findReportsByStatus(pageNo, criterion, reportStatus))
                         .build()
                 );
     }
 
-    @PostMapping("/save-report")
+    @PostMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveReport(
             @RequestBody @Valid final SaveReportRequest saveReportRequest,
@@ -74,21 +77,19 @@ public class ReportController {
         reportService.saveReport(saveReportRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("신고 등록에 성공했습니다.")
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
-    @PostMapping("/admin/delete-report/{reportId}")
+    @DeleteMapping("/admin/{reportId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
-            @PathVariable @Valid final Long reportId
+            @PathVariable @Positive final long reportId
     ) {
         reportService.deleteReport(reportId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("신고 삭제에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }

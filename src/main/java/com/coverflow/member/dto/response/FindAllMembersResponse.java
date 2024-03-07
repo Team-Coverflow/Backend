@@ -1,6 +1,7 @@
 package com.coverflow.member.dto.response;
 
 import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.domain.SocialType;
 
@@ -15,7 +16,7 @@ public record FindAllMembersResponse(
         String age,
         String gender,
         int fishShapedBun,
-        String status,
+        MemberStatus memberStatus,
         LocalDateTime connectedAt,
         Role role,
         SocialType socialType
@@ -30,7 +31,7 @@ public record FindAllMembersResponse(
                 member.getAge(),
                 member.getGender(),
                 member.getFishShapedBun(),
-                member.getStatus(),
+                member.getMemberStatus(),
                 member.getConnectedAt(),
                 member.getRole(),
                 member.getSocialType()

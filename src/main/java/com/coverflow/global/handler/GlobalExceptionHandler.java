@@ -1,12 +1,5 @@
 package com.coverflow.global.handler;
 
-import com.coverflow.company.exception.CompanyException;
-import com.coverflow.member.exception.MemberException;
-import com.coverflow.notification.exception.NotificationException;
-import com.coverflow.question.exception.AnswerException;
-import com.coverflow.question.exception.QuestionException;
-import com.coverflow.report.exception.ReportException;
-import com.coverflow.visitor.exception.VisitorException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +11,18 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.time.DateTimeException;
 import java.util.Random;
+
+import static com.coverflow.company.exception.CompanyException.CompanyExistException;
+import static com.coverflow.company.exception.CompanyException.CompanyNotFoundException;
+import static com.coverflow.inquiry.exception.InquiryException.InquiryNotFoundException;
+import static com.coverflow.member.exception.MemberException.*;
+import static com.coverflow.notification.exception.NotificationException.NotificationNotFoundException;
+import static com.coverflow.question.exception.AnswerException.AnswerExistException;
+import static com.coverflow.question.exception.AnswerException.AnswerNotFoundException;
+import static com.coverflow.question.exception.QuestionException.QuestionExistException;
+import static com.coverflow.question.exception.QuestionException.QuestionNotFoundException;
+import static com.coverflow.report.exception.ReportException.ReportNotFoundException;
+import static com.coverflow.visitor.exception.VisitorException.DayNotFoundException;
 
 @Slf4j
 @RestControllerAdvice
@@ -33,7 +38,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
-        final String defaultErrorMessage = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        String defaultErrorMessage = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         log.warn(defaultErrorMessage);
 
         return ResponseEntity
@@ -63,16 +68,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {
-            MemberException.MemberNotFoundException.class,
-            CompanyException.CompanyNotFoundException.class,
-            VisitorException.DayNotFoundException.class,
-            QuestionException.QuestionNotFoundException.class,
-            AnswerException.AnswerNotFoundException.class,
-            NotificationException.NotificationNotFoundException.class,
-            ReportException.ReportNotFoundException.class
+            CompanyNotFoundException.class,
+            InquiryNotFoundException.class,
+            NotificationNotFoundException.class,
+            MemberNotFoundException.class,
+            AllMemberNotFoundException.class,
+            QuestionNotFoundException.class,
+            AnswerNotFoundException.class,
+            ReportNotFoundException.class,
+            DayNotFoundException.class,
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(final RuntimeException exception) {
-        final String message = exception.getMessage();
+        String message = exception.getMessage();
         log.warn(message);
 
         return ResponseEntity
@@ -81,12 +88,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {
-            CompanyException.CompanyExistException.class,
-            QuestionException.QuestionExistException.class,
-            AnswerException.AnswerExistException.class
+            CompanyExistException.class,
+            QuestionExistException.class,
+            AnswerExistException.class,
     })
     public ResponseEntity<ErrorResponse> handleExistException(final RuntimeException exception) {
-        final String message = exception.getMessage();
+        String message = exception.getMessage();
         log.warn(message);
 
         return ResponseEntity
@@ -96,10 +103,10 @@ public class GlobalExceptionHandler {
 
     // 커스텀 예외 사용 시
     @ExceptionHandler(value = {
-            MemberException.NotEnoughCurrencyException.class
+            NotEnoughCurrencyException.class
     })
     public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
-        final String message = exception.getMessage();
+        String message = exception.getMessage();
         log.warn(message);
 
         return ResponseEntity
@@ -109,15 +116,15 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handleRuntimeException(final RuntimeException exception) {
-        final String message = exception.getMessage();
+        String message = exception.getMessage();
         final StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < ERROR_KEY_LENGTH; i++) {
             sb.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
         }
 
-        final String errorKeyInfo = String.format(ERROR_KEY_FORMAT, sb);
-        final String exceptionTypeInfo = String.format(EXCEPTION_CLASS_TYPE_MESSAGE_FORMANT, exception.getClass());
+        String errorKeyInfo = String.format(ERROR_KEY_FORMAT, sb);
+        String exceptionTypeInfo = String.format(EXCEPTION_CLASS_TYPE_MESSAGE_FORMANT, exception.getClass());
         log.error(message + errorKeyInfo + exceptionTypeInfo);
 
         return ResponseEntity

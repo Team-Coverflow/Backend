@@ -1,10 +1,10 @@
 package com.coverflow.company.application;
 
 import com.coverflow.company.domain.Company;
+import com.coverflow.company.domain.CompanyStatus;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
-import com.coverflow.company.dto.response.FindAutoCompleteResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.company.exception.CompanyException;
@@ -12,16 +12,18 @@ import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.question.application.QuestionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.List;
 
-@Transactional(readOnly = true)
+import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
+import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
+import static com.coverflow.global.util.PageUtil.generatePageAsc;
+import static com.coverflow.global.util.PageUtil.generatePageDesc;
+
 @RequiredArgsConstructor
 @Service
 public class CompanyService {
@@ -30,50 +32,33 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
 
     /**
-     * [자동 완성 메서드]
+     * [회사 검색 메서드]
      * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
      */
-    public List<FindAutoCompleteResponse> autoComplete(final String name) {
-        final Pageable pageable = PageRequest.of(0, 5, Sort.by("name").ascending());
-        final Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        final List<FindAutoCompleteResponse> findCompanies = new ArrayList<>();
-
-        for (int i = 0; i < companies.getContent().size(); i++) {
-            findCompanies.add(i, FindAutoCompleteResponse.from(companies.getContent().get(i)));
-        }
-        return findCompanies;
-    }
-
-    /**
-     * [회사 검색 메서드]
-     * 특정 이름으로 시작하는 회사 n개를 조회하는 메서드
-     */
+    @Transactional(readOnly = true)
     public List<SearchCompanyResponse> searchCompanies(
             final int pageNo,
             final String name
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by("name").ascending());
-        final Page<Company> companies = companyRepository.findAllByNameStartingWithAndStatus(pageable, name)
+        Page<Company> companies = companyRepository.findAllByNameStartingWithAndCompanyStatus(generatePageAsc(pageNo, NORMAL_PAGE_SIZE, "name"), name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
-        final List<SearchCompanyResponse> findCompanies = new ArrayList<>();
 
-        for (int i = 0; i < companies.getContent().size(); i++) {
-            findCompanies.add(i, SearchCompanyResponse.from(companies.getContent().get(i)));
-        }
-        return findCompanies;
+        return companies.getContent().stream()
+                .map(SearchCompanyResponse::from)
+                .toList();
     }
 
     /**
      * [특정 회사와 질문 조회 메서드]
      * 특정 회사와 질문 리스트를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public FindCompanyResponse findCompanyById(
             final int pageNo,
             final String criterion,
-            final Long companyId
+            final long companyId
     ) {
-        final Company company = companyRepository.findRegisteredCompany(companyId)
+        Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
         return FindCompanyResponse.of(company, questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId));
@@ -83,39 +68,35 @@ public class CompanyService {
      * [관리자 전용: 전체 회사 조회 메서드]
      * 전체 회사를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindAllCompaniesResponse> findAllCompanies(
             final int pageNo,
             final String criterion
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Company> companies = companyRepository.findAllCompanies(pageable)
+        Page<Company> companies = companyRepository.findAllCompanies(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(CompanyException.CompanyNotFoundException::new);
-        final List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
 
-        for (int i = 0; i < companies.getContent().size(); i++) {
-            findCompanies.add(i, FindAllCompaniesResponse.from(companies.getContent().get(i)));
-        }
-        return findCompanies;
+        return companies.getContent().stream()
+                .map(FindAllCompaniesResponse::from)
+                .toList();
     }
 
     /**
      * [관리자 전용: 특정 상태 회사 조회 메서드]
      * 특정 상태(검토/등록/삭제)의 회사를 조회하는 메서드
      */
+    @Transactional(readOnly = true)
     public List<FindAllCompaniesResponse> findPending(
             final int pageNo,
             final String criterion,
-            final String status
+            final CompanyStatus companyStatus
     ) {
-        final Pageable pageable = PageRequest.of(pageNo, 10, Sort.by(criterion).descending());
-        final Page<Company> companies = companyRepository.findAllByStatus(pageable, status)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(status));
-        final List<FindAllCompaniesResponse> findCompanies = new ArrayList<>();
+        Page<Company> companies = companyRepository.findAllByCompanyStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), companyStatus)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyStatus));
 
-        for (int i = 0; i < companies.getContent().size(); i++) {
-            findCompanies.add(i, FindAllCompaniesResponse.from(companies.getContent().get(i)));
-        }
-        return findCompanies;
+        return companies.getContent().stream()
+                .map(FindAllCompaniesResponse::from)
+                .toList();
     }
 
     /**
@@ -127,17 +108,18 @@ public class CompanyService {
             throw new CompanyException.CompanyExistException(request.name());
         }
 
-        final Company company = Company.builder()
-                .name(request.name())
-                .type(request.type())
-                .city(request.city())
-                .district(request.district())
-                .establishment(request.establishment())
-                .questionCount(0)
-                .status("검토")
-                .build();
+        companyRepository.save(new Company(request));
+    }
 
-        companyRepository.save(company);
+    /**
+     * [관리자 전용: 회사 상태 변경 메서드]
+     */
+    @Transactional
+    public void updateCompanyStatus(final long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
+
+        company.updateCompanyStatus(CompanyStatus.REGISTRATION);
     }
 
     /**
@@ -145,37 +127,41 @@ public class CompanyService {
      */
     @Transactional
     public void updateCompany(final UpdateCompanyRequest request) {
-        final Company company = companyRepository.findByName(request.name())
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.name()));
+        Company company = companyRepository.findById(request.companyId())
+                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.companyId()));
 
-        company.updateCompany(Company.builder()
-                .name(request.name())
-                .type(request.type())
-                .city(request.city())
-                .district(request.district())
-                .establishment(request.establishment())
-                .status(request.status())
-                .build());
+        company.updateCompany(request);
     }
 
     /**
      * [관리자 전용: 회사 삭제 메서드]
      */
     @Transactional
-    public void deleteCompany(final Long companyId) {
-        final Company company = companyRepository.findById(companyId)
+    public void deleteCompany(final long companyId) {
+        Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
-        company.updateStatus("삭제");
+        company.updateCompanyStatus(CompanyStatus.DELETION);
     }
 
     /**
      * [관리자 전용: 회사 물리 삭제 메서드]
      */
-    public void deleteCompanyReal(final Long companyId) {
-        final Company company = companyRepository.findById(companyId)
+    @Transactional
+    public void deleteCompanyReal(final long companyId) {
+        Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
         companyRepository.delete(company);
+    }
+
+    /**
+     * 삭제 상태 30일마다 삭제 메서드
+     */
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    protected void deleteCompanyPeriodically() {
+        LocalDateTime date = LocalDateTime.now().minusDays(30);
+        companyRepository.deleteByCompanyStatus(date);
     }
 }

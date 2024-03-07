@@ -4,12 +4,15 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.question.application.AnswerService;
+import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.dto.AnswerDTO;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.request.UpdateSelectionRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,54 +32,51 @@ public class AnswerController {
     /**
      * 일단 보류
      */
-    @GetMapping("/find-answers/{questionId}")
+    @GetMapping("/answers/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<AnswerDTO>>> findAnswer(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @PathVariable @Valid final Long questionId
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @PathVariable @Positive final long questionId
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<AnswerDTO>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 질문에 대한 전체 답변 조회에 성공했습니다.")
                         .data(answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId))
                         .build()
                 );
     }
 
-    @GetMapping("/admin/find-answers")
+    @GetMapping("/admin/answers")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAllAnswers(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAnswerResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("전체 답변 조회에 성공했습니다.")
                         .data(answerService.findAllAnswers(pageNo, criterion))
                         .build()
                 );
     }
-    
-    @GetMapping("/admin/find-by-status")
+
+    @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswersByStatus(
-            @RequestParam(defaultValue = "0", value = "pageNo") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt", value = "criterion") @Valid final String criterion,
-            @RequestParam(defaultValue = "등록", value = "status") @Valid final String status
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @RequestParam @NotBlank final AnswerStatus answerStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAnswerResponse>>builder()
                         .statusCode(HttpStatus.OK)
-                        .message("특정 상태의 답변 검색에 성공했습니다.")
-                        .data(answerService.findAnswersByStatus(pageNo, criterion, status))
+                        .data(answerService.findAnswersByStatus(pageNo, criterion, answerStatus))
                         .build()
                 );
     }
 
-    @PostMapping("/save-answer")
+    @PostMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveAnswer(
             @RequestBody @Valid final SaveAnswerRequest saveAnswerRequest,
@@ -85,12 +85,11 @@ public class AnswerController {
         answerService.saveAnswer(saveAnswerRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("답변 등록에 성공했습니다.")
+                        .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
-    @PostMapping("/update-selection")
+    @PutMapping("/selection")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> chooseAnswer(
             @RequestBody @Valid final UpdateSelectionRequest updateSelectionRequest
@@ -98,12 +97,11 @@ public class AnswerController {
         answerService.chooseAnswer(updateSelectionRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("답변 채택에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
-    @PostMapping("/admin/update-answer")
+    @PutMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateAnswer(
             @RequestBody @Valid final UpdateAnswerRequest updateAnswerRequest
@@ -111,21 +109,19 @@ public class AnswerController {
         answerService.updateAnswer(updateAnswerRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("답변 수정에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
-    @PostMapping("/admin/delete-answer/{answerId}")
+    @DeleteMapping("/admin/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
-            @PathVariable @Valid final Long answerId
+            @PathVariable @Positive final long answerId
     ) {
         answerService.deleteAnswer(answerId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.OK)
-                        .message("답변 삭제에 성공했습니다.")
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }

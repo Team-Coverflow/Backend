@@ -36,7 +36,6 @@ public class SecurityConfig {
     private final String[] ALLOWED_URLS = {
             "/",
             "/index.html",
-            "/login/oauth2/code/kakao",
             "/api/company/auto-complete",
             "/api/company/search-companies",
             "/api/company/save-company",

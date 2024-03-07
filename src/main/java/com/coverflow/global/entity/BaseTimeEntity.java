@@ -19,7 +19,7 @@ public abstract class BaseTimeEntity {
 
     @LastModifiedDate
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
-    private LocalDateTime modifiedAt;
+    private LocalDateTime updatedAt;
 
     @PrePersist
     public void prePersist() {
@@ -28,6 +28,6 @@ public abstract class BaseTimeEntity {
 
     @PreUpdate
     public void preUpdate() {
-        modifiedAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 }

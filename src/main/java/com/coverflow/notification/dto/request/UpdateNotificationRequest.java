@@ -1,7 +1,9 @@
 package com.coverflow.notification.dto.request;
 
+import com.coverflow.notification.domain.NotificationStatus;
+
 public record UpdateNotificationRequest(
-        Long notificationId,
-        String status
+        long notificationId,
+        NotificationStatus notificationStatus
 ) {
 }
