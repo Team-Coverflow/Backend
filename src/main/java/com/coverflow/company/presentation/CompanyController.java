@@ -5,7 +5,6 @@ import com.coverflow.company.domain.CompanyStatus;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
-import com.coverflow.company.dto.response.FindAutoCompleteResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
@@ -26,18 +25,6 @@ import java.util.List;
 public class CompanyController {
 
     private final CompanyService companyService;
-
-    @GetMapping("/auto-complete")
-    public ResponseEntity<ResponseHandler<List<FindAutoCompleteResponse>>> autoComplete(
-            @RequestParam(defaultValue = "name") @NotBlank final String name
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAutoCompleteResponse>>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(companyService.autoComplete(name))
-                        .build()
-                );
-    }
 
     @GetMapping("/companies")
     public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
