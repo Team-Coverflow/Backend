@@ -26,7 +26,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/member")
+    @GetMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindMemberInfoResponse>> findMemberById(
             @AuthenticationPrincipal final UserDetails userDetails
@@ -66,7 +66,7 @@ public class MemberController {
                 );
     }
 
-    @PostMapping("/member")
+    @PostMapping("/")
     public ResponseEntity<ResponseHandler<Void>> saveMemberInfo(
             @AuthenticationPrincipal final UserDetails userDetails,
             @RequestBody @Valid final SaveMemberInfoRequest request
@@ -78,7 +78,7 @@ public class MemberController {
                         .build());
     }
 
-    @PutMapping("/nickname")
+    @PutMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
             @AuthenticationPrincipal final UserDetails userDetails

@@ -50,7 +50,7 @@ public class CompanyController {
                 );
     }
 
-    @GetMapping("/company/{companyId}")
+    @GetMapping("/{companyId}")
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
             @PathVariable @Valid final long companyId,
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -93,7 +93,7 @@ public class CompanyController {
                 );
     }
 
-    @PostMapping("/company")
+    @PostMapping("/")
     public ResponseEntity<ResponseHandler<Void>> saveCompany(
             @RequestBody @Valid final SaveCompanyRequest saveCompanyRequest
     ) {
@@ -104,7 +104,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PatchMapping("/admin/company/{companyId}")
+    @PatchMapping("/admin/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateCompanyStatus(
             @PathVariable @Valid final long companyId
@@ -116,7 +116,7 @@ public class CompanyController {
                         .build());
     }
 
-    @PutMapping("/admin/company")
+    @PutMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateCompany(
             @RequestBody @Valid final UpdateCompanyRequest updateCompanyRequest
@@ -128,7 +128,7 @@ public class CompanyController {
                         .build());
     }
 
-    @DeleteMapping("/admin/company/{companyId}")
+    @DeleteMapping("/admin/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
             @PathVariable @Valid final long companyId

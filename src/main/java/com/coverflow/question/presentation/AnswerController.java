@@ -74,7 +74,7 @@ public class AnswerController {
                 );
     }
 
-    @PostMapping("/answer")
+    @PostMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveAnswer(
             @RequestBody @Valid final SaveAnswerRequest saveAnswerRequest,
@@ -99,7 +99,7 @@ public class AnswerController {
                         .build());
     }
 
-    @PutMapping("/admin/answer")
+    @PutMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateAnswer(
             @RequestBody @Valid final UpdateAnswerRequest updateAnswerRequest
@@ -111,7 +111,7 @@ public class AnswerController {
                         .build());
     }
 
-    @DeleteMapping("/admin/answer/{answerId}")
+    @DeleteMapping("/admin/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
             @PathVariable @Valid final long answerId

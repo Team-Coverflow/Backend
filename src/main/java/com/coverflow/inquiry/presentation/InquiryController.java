@@ -26,7 +26,7 @@ public class InquiryController {
 
     private final InquiryService inquiryService;
 
-    @GetMapping("/inquiry")
+    @GetMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindInquiryResponse>>> findInquiryByMemberId(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -68,7 +68,7 @@ public class InquiryController {
                 );
     }
 
-    @PostMapping("/inquiry")
+    @PostMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveInquiry(
             @RequestBody @Valid final SaveInquiryRequest saveInquiryRequest,
@@ -81,7 +81,7 @@ public class InquiryController {
                         .build());
     }
 
-    @PutMapping("/inquiry")
+    @PutMapping("/")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateInquiry(
             @RequestBody @Valid final UpdateInquiryRequest updateInquiryRequest
@@ -96,7 +96,7 @@ public class InquiryController {
     /**
      * TODO 사용자가 삭제할 지 or 관리자가 삭제할 지 고민 필요
      */
-    @DeleteMapping("/admin/inquiry/{inquiryId}")
+    @DeleteMapping("/admin/{inquiryId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteInquiry(
             @PathVariable @Valid final long inquiryId

@@ -44,7 +44,7 @@ public class QuestionController {
                 );
     }
 
-    @GetMapping("/question/{questionId}")
+    @GetMapping("/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
             @RequestParam(defaultValue = "0") @Valid final int pageNo,
@@ -88,7 +88,7 @@ public class QuestionController {
                 );
     }
 
-    @PostMapping("/question")
+    @PostMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveQuestion(
             @RequestBody @Valid final SaveQuestionRequest saveQuestionRequest,
@@ -101,7 +101,7 @@ public class QuestionController {
                         .build());
     }
 
-    @PutMapping("/question")
+    @PutMapping("/")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateQuestion(
             @RequestBody @Valid final UpdateQuestionRequest updateQuestionRequest
@@ -113,7 +113,7 @@ public class QuestionController {
                         .build());
     }
 
-    @DeleteMapping("/admin/question/{questionId}")
+    @DeleteMapping("/admin/{questionId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
             @PathVariable @Valid final long questionId
