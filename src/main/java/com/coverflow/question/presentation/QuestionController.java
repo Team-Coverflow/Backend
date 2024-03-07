@@ -62,7 +62,7 @@ public class QuestionController {
                 );
     }
 
-    @GetMapping("/admin/questions")
+    @GetMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findAllQuestions(
             @RequestParam @PositiveOrZero final int pageNo,
