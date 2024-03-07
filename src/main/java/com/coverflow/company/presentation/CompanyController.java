@@ -11,6 +11,8 @@ import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +29,7 @@ public class CompanyController {
 
     @GetMapping("/auto-complete")
     public ResponseEntity<ResponseHandler<List<FindAutoCompleteResponse>>> autoComplete(
-            @RequestParam(defaultValue = "name") @Valid final String name
+            @RequestParam(defaultValue = "name") @NotBlank final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAutoCompleteResponse>>builder()
@@ -39,8 +41,8 @@ public class CompanyController {
 
     @GetMapping("/companies")
     public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "name") @Valid final String name
+            @RequestParam @NotBlank final int pageNo,
+            @RequestParam(defaultValue = "name") @NotBlank final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
@@ -52,9 +54,9 @@ public class CompanyController {
 
     @GetMapping("/{companyId}")
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
-            @PathVariable @Valid final long companyId,
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
+            @PathVariable @Positive final long companyId,
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
@@ -67,8 +69,8 @@ public class CompanyController {
     @GetMapping("/admin/companies")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
@@ -81,9 +83,9 @@ public class CompanyController {
     @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findPending(
-            @RequestParam(defaultValue = "0") @Valid final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @Valid final String criterion,
-            @RequestParam @Valid final CompanyStatus companyStatus
+            @RequestParam @Positive final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @RequestParam @NotBlank final CompanyStatus companyStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
@@ -107,7 +109,7 @@ public class CompanyController {
     @PatchMapping("/admin/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateCompanyStatus(
-            @PathVariable @Valid final long companyId
+            @PathVariable @Positive final long companyId
     ) {
         companyService.updateCompanyStatus(companyId);
         return ResponseEntity.ok()
@@ -131,7 +133,7 @@ public class CompanyController {
     @DeleteMapping("/admin/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompany(
-            @PathVariable @Valid final long companyId
+            @PathVariable @Positive final long companyId
     ) {
         companyService.deleteCompany(companyId);
         return ResponseEntity.ok()
@@ -143,7 +145,7 @@ public class CompanyController {
     @DeleteMapping("/admin/real/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteCompanyReal(
-            @PathVariable @Valid final long companyId
+            @PathVariable @Positive final long companyId
     ) {
         companyService.deleteCompanyReal(companyId);
         return ResponseEntity.ok()
