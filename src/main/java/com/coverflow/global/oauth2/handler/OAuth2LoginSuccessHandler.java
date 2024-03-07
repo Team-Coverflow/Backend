@@ -89,10 +89,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("토큰 담기 성공");
 
         return UriComponentsBuilder.newInstance()
-                .scheme("http")
-                .host("15.165.1.48")
-//               .scheme("https")
-//               .host("coverflow.co.kr")
+                // .scheme("http")
+                // .host("15.165.1.48")
+              .scheme("https")
+              .host("coverflow.co.kr")
                 .path("/auth/token")
                 .queryParams(queryParams)
                 .build()
