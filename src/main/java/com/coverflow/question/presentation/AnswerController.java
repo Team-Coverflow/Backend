@@ -13,6 +13,7 @@ import com.coverflow.question.dto.response.FindAnswerResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class AnswerController {
     @GetMapping("/answers/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<AnswerDTO>>> findAnswer(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @PathVariable @Positive final long questionId
     ) {
@@ -47,10 +48,10 @@ public class AnswerController {
                 );
     }
 
-    @GetMapping("/admin/answers")
+    @GetMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAllAnswers(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
@@ -64,7 +65,7 @@ public class AnswerController {
     @GetMapping("/admin/status")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswersByStatus(
-            @RequestParam @Positive final int pageNo,
+            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final AnswerStatus answerStatus
     ) {

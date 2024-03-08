@@ -64,7 +64,7 @@ public class ReportService {
 
     /**
      * [관리자 전용: 특정 상태 신고 조회 메서드]
-     * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
+     * 특정 상태(등록/삭제)의 신고를 조회하는 메서드
      */
     @Transactional(readOnly = true)
     public List<FindReportResponse> findReportsByStatus(
