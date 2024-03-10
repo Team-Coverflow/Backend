@@ -96,11 +96,8 @@ public class InquiryController {
                         .build());
     }
 
-    /**
-     * TODO 사용자가 삭제할 지 or 관리자가 삭제할 지 고민 필요
-     */
     @DeleteMapping("/admin/{inquiryId}")
-    @AdminAuthorize
+    @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteInquiry(
             @PathVariable @Positive final long inquiryId
     ) {
