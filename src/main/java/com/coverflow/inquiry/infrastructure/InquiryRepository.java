@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
@@ -19,7 +20,7 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
             AND e.inquiryStatus = :inquiryStatus
             """)
     int findAllCountByMemberId(
-            @Param("memberId") final String memberId,
+            @Param("memberId") final UUID memberId,
             @Param("inquiryStatus") final InquiryStatus inquiryStatus
     );
 
@@ -31,7 +32,7 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
             """)
     Optional<Page<Inquiry>> findAllByMemberIdAndStatus(
             final Pageable pageable,
-            @Param("memberId") final String memberId
+            @Param("memberId") final UUID memberId
     );
 
     @Query("""
