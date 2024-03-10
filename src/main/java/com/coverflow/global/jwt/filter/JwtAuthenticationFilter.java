@@ -134,13 +134,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         log.info("checkAccessTokenAndAuthentication() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
-                .ifPresent(accessToken -> {
-                    jwtService.extractMemberId(accessToken)
-                            .ifPresent(memberId -> {
-                                memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION)
-                                        .ifPresent(this::saveAuthentication);
-                            });
-                });
+                .flatMap(jwtService::extractMemberId)
+                .flatMap(memberId -> memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION))
+                .ifPresent(this::saveAuthentication);
 
         filterChain.doFilter(request, response);
     }

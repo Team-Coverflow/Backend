@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
@@ -36,10 +37,10 @@ public class InquiryService {
             final String criterion,
             final String memberId
     ) {
-        Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), memberId)
+        Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), UUID.fromString(memberId))
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(memberId));
-        int waitInquiryCount = inquiryRepository.findAllCountByMemberId(memberId, WAIT);
-        int completeInquiryCount = inquiryRepository.findAllCountByMemberId(memberId, COMPLETE);
+        int waitInquiryCount = inquiryRepository.findAllCountByMemberId(UUID.fromString(memberId), WAIT);
+        int completeInquiryCount = inquiryRepository.findAllCountByMemberId(UUID.fromString(memberId), COMPLETE);
         int allInquiryCount = waitInquiryCount + completeInquiryCount;
 
         InquiryCountDTO inquiryCountDTO = new InquiryCountDTO(allInquiryCount, waitInquiryCount, completeInquiryCount);
