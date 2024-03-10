@@ -27,7 +27,7 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping("/")
+    @GetMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportByMemberId(
             @RequestParam @PositiveOrZero final int pageNo,
@@ -69,7 +69,7 @@ public class ReportController {
                 );
     }
 
-    @PostMapping("/")
+    @PostMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveReport(
             @RequestBody @Valid final SaveReportRequest saveReportRequest,

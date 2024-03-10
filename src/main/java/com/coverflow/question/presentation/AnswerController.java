@@ -77,7 +77,7 @@ public class AnswerController {
                 );
     }
 
-    @PostMapping("/")
+    @PostMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveAnswer(
             @RequestBody @Valid final SaveAnswerRequest saveAnswerRequest,

@@ -11,6 +11,5 @@ public record SaveReportRequest(
         ReportType type,
         @Positive
         long id
-
 ) {
 }
