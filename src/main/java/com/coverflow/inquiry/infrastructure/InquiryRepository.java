@@ -13,6 +13,17 @@ import java.util.Optional;
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
 
     @Query("""
+            SELECT count(*)
+            FROM Inquiry e
+            WHERE e.member.id = :memberId
+            AND e.inquiryStatus = :inquiryStatus
+            """)
+    int findAllCountByMemberId(
+            @Param("memberId") final String memberId,
+            @Param("inquiryStatus") final InquiryStatus inquiryStatus
+    );
+
+    @Query("""
             SELECT e
             FROM Inquiry e
             WHERE e.member.id = :memberId
