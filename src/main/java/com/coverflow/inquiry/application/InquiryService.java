@@ -2,6 +2,7 @@ package com.coverflow.inquiry.application;
 
 import com.coverflow.inquiry.domain.Inquiry;
 import com.coverflow.inquiry.domain.InquiryStatus;
+import com.coverflow.inquiry.dto.InquiryCountDTO;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
 import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
@@ -18,6 +19,7 @@ import java.util.List;
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
+import static com.coverflow.inquiry.domain.InquiryStatus.*;
 
 @RequiredArgsConstructor
 @Service
@@ -36,9 +38,16 @@ public class InquiryService {
     ) {
         Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), memberId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(memberId));
+        int waitInquiryCount = inquiryRepository.findAllCountByMemberId(memberId, WAIT);
+        int completeInquiryCount = inquiryRepository.findAllCountByMemberId(memberId, COMPLETE);
+        int allInquiryCount = waitInquiryCount + completeInquiryCount;
+
+        InquiryCountDTO inquiryCountDTO = new InquiryCountDTO(allInquiryCount, waitInquiryCount, completeInquiryCount);
+
+        System.out.println("allInquiryCount = " + allInquiryCount);
 
         return inquiries.getContent().stream()
-                .map(FindInquiryResponse::from)
+                .map(inquiry -> FindInquiryResponse.of(inquiry, inquiryCountDTO))
                 .toList();
     }
 
@@ -99,7 +108,7 @@ public class InquiryService {
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(request.inquiryId()));
 
         inquiry.updateAnswer(request.inquiryAnswer());
-        inquiry.updateInquiryStatus(InquiryStatus.COMPLETE);
+        inquiry.updateInquiryStatus(COMPLETE);
     }
 
     /**
@@ -110,6 +119,6 @@ public class InquiryService {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
 
-        inquiry.updateInquiryStatus(InquiryStatus.DELETION);
+        inquiry.updateInquiryStatus(DELETION);
     }
 }
