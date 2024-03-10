@@ -39,7 +39,8 @@ public class SecurityConfig {
             "/",
             "/index.html",
             "/api/company",
-            "/api/company/{companyId}"
+            "/api/company/{companyId}",
+            "/api/question/{questionId}"
     };
     private final LoginService loginService;
     private final JwtService jwtService;
