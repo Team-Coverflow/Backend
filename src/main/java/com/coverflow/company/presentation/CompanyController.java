@@ -27,7 +27,7 @@ public class CompanyController {
 
     private final CompanyService companyService;
 
-    @GetMapping("/")
+    @GetMapping
     public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "name") @NotBlank final String name
@@ -83,7 +83,7 @@ public class CompanyController {
                 );
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<ResponseHandler<Void>> saveCompany(
             @RequestBody @Valid final SaveCompanyRequest saveCompanyRequest
     ) {

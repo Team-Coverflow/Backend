@@ -91,7 +91,7 @@ public class QuestionController {
                 );
     }
 
-    @PostMapping("/")
+    @PostMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveQuestion(
             @RequestBody @Valid final SaveQuestionRequest saveQuestionRequest,
@@ -104,7 +104,7 @@ public class QuestionController {
                         .build());
     }
 
-    @PutMapping("/")
+    @PutMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateQuestion(
             @RequestBody @Valid final UpdateQuestionRequest updateQuestionRequest

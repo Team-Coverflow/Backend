@@ -29,7 +29,7 @@ public class InquiryController {
 
     private final InquiryService inquiryService;
 
-    @GetMapping("/")
+    @GetMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<List<FindInquiryResponse>>> findInquiryByMemberId(
             @RequestParam @PositiveOrZero final int pageNo,
@@ -71,7 +71,7 @@ public class InquiryController {
                 );
     }
 
-    @PostMapping("/")
+    @PostMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> saveInquiry(
             @RequestBody @Valid final SaveInquiryRequest saveInquiryRequest,
