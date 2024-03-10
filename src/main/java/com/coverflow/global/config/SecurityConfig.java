@@ -38,7 +38,7 @@ public class SecurityConfig {
     private final String[] ALLOWED_URLS = {
             "/",
             "/index.html",
-            "/api/company/",
+            "/api/company",
             "/api/company/{companyId}"
     };
     private final LoginService loginService;
