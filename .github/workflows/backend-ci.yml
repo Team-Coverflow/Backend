@@ -38,6 +38,22 @@ jobs:
           echo "${{ secrets.APPLICATION }}" > ./application.yml
         shell: bash
 
+      ## application-jwt.yml 파일을 생성합니다.
+      - name: make application-jwt.yml
+        run: |
+          cd ./src/main/resources
+          touch ./application-jwt.yml
+          echo "${{ secrets.APPLICATION_JWT }}" > ./application-jwt.yml
+        shell: bash
+
+      ## application-aes.yml 파일을 생성합니다.
+      - name: make application-aes.yml
+        run: |
+          cd ./src/main/resources
+          touch ./application-aes.yml
+          echo "${{ secrets.APPLICATION_AES }}" > ./application-aes.yml
+        shell: bash
+
       ## gradlew 실행 권한 부여
       - name: Grant execute permisson for gradlew
         run: chmod +x gradlew
