@@ -55,7 +55,7 @@ public class Member extends BaseTimeEntity {
     private Role role; // 권한
 
     @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus; // 회원 상태 (등록/탈퇴)
+    private MemberStatus memberStatus; // 회원 상태 (대기/등록/탈퇴)
 
     @Enumerated(EnumType.STRING)
     private RefreshTokenStatus refreshTokenStatus; // 리프레쉬 토큰 상태 (로그인/로그아웃)
@@ -86,8 +86,7 @@ public class Member extends BaseTimeEntity {
         this.socialId = memberSignUpDTO.getSocialId();
         this.socialType = memberSignUpDTO.getSocialType();
         this.role = Role.GUEST;
-        this.memberStatus = MemberStatus.REGISTRATION;
-        this.refreshTokenStatus = RefreshTokenStatus.LOGIN;
+        this.memberStatus = MemberStatus.WAIT;
     }
 
     public void saveMemberInfo(final SaveMemberRequest request) {

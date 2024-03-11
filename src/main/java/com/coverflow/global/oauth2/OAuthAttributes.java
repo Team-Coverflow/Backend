@@ -111,7 +111,8 @@ public class OAuthAttributes {
                 email,
                 nickname,
                 "취준생",
-                age, gender,
+                age,
+                gender,
                 oauth2UserInfo.getId(),
                 socialType
         );
