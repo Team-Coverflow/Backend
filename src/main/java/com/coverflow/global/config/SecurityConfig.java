@@ -38,6 +38,7 @@ public class SecurityConfig {
     private final String[] ALLOWED_URLS = {
             "/",
             "/index.html",
+            "/auth/code",
             "/api/company",
             "/api/company/{companyId}",
             "/api/question/{questionId}"
