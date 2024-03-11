@@ -11,11 +11,13 @@ import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.visitor.application.VisitorService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class OAuth2LoginService {
@@ -44,6 +46,7 @@ public class OAuth2LoginService {
         if (MemberStatus.WAIT.equals(findMember.getMemberStatus())) {
             findMember.updateMemberStatus(MemberStatus.REGISTRATION);
             findMember.updateAuthorization(Role.MEMBER);
+            log.info("회원가입 성공!");
         }
 
         // 액세스 토큰 + 리프레쉬 토큰 발급
@@ -56,11 +59,11 @@ public class OAuth2LoginService {
         findMember.updateRefreshToken(refreshToken);
         findMember.updateTokenStatus(RefreshTokenStatus.LOGIN);
 
-        // 접속 시간 업데이트
-        findMember.updateConnectedAt();
-
         // 출석 체크
         currencyService.dailyCheck(findMember.getId());
+
+        // 접속 시간 업데이트
+        findMember.updateConnectedAt();
 
         // 일일 방문자 수 증가
         visitorService.updateDailyVisitor();

@@ -23,7 +23,7 @@ public class CurrencyService {
 
     /**
      * [출석 체크 메서드]
-     * 당일 첫 로그인 시 화폐 30 증가
+     * 당일 첫 로그인 시 화폐 5 증가
      */
     @Transactional
     public void dailyCheck(final UUID username) {
@@ -36,7 +36,8 @@ public class CurrencyService {
                 .build();
 
         // 오늘 첫 로그인 시 = 출석
-        if (!member.getConnectedAt().toString().substring(0, 10).equals(LocalDateTime.now().toString().substring(0, 10))) {
+        if (null == member.getConnectedAt() ||
+                !LocalDateTime.now().toString().substring(0, 10).equals(member.getConnectedAt().toString().substring(0, 10))) {
             // 출석 체크 시 붕어빵 지급
             member.updateFishShapedBun(member.getFishShapedBun() + 5);
 
