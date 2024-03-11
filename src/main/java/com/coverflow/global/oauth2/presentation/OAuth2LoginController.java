@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/auth/code")
+@RequestMapping("/api/auth")
 @RestController
 public class OAuth2LoginController {
 
     private final OAuth2LoginService oAuth2LoginService;
 
-    @GetMapping
+    @GetMapping("/code")
     public ResponseEntity<ResponseHandler<Void>> code(
             @RequestParam @NotBlank final String code
     ) {
