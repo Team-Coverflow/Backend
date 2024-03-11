@@ -20,7 +20,7 @@ public class OAuth2LoginController {
 
     private final OAuth2LoginService oAuth2LoginService;
 
-    @GetMapping("/code")
+    @GetMapping("/token")
     public ResponseEntity<ResponseHandler<Void>> code(
             @RequestParam @NotBlank final String code
     ) {
