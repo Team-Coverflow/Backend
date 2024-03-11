@@ -1,0 +1,70 @@
+package com.coverflow.global.oauth2.service;
+
+import com.coverflow.global.jwt.service.JwtService;
+import com.coverflow.global.util.AesUtil;
+import com.coverflow.member.application.CurrencyService;
+import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.MemberStatus;
+import com.coverflow.member.domain.RefreshTokenStatus;
+import com.coverflow.member.domain.Role;
+import com.coverflow.member.exception.MemberException;
+import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.visitor.application.VisitorService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.UUID;
+
+@RequiredArgsConstructor
+@Service
+public class OAuth2LoginService {
+
+    private final JwtService jwtService;
+    private final CurrencyService currencyService;
+    private final VisitorService visitorService;
+    private final MemberRepository memberRepository;
+
+    @Transactional
+    public String getToken(final String code) {
+        // 인가 코드 디코딩
+        String decodingCode;
+        try {
+            decodingCode = AesUtil.decrypt(code);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        // 회원 정보 가져오기
+        Member findMember = memberRepository.findById(UUID.fromString(decodingCode))
+                .orElseThrow(() -> new MemberException.MemberNotFoundException("일치하는 회원이 없습니다."));
+
+        // 신규 회원이라면 회원 상태 (대기 -> 등록), 회원 권한 (GUEST -> MEMBER)로 수정
+        // =====> 회원가입
+        if (MemberStatus.WAIT.equals(findMember.getMemberStatus())) {
+            findMember.updateMemberStatus(MemberStatus.REGISTRATION);
+            findMember.updateAuthorization(Role.MEMBER);
+        }
+
+        // 액세스 토큰 + 리프레쉬 토큰 발급
+        // 리프레쉬 토큰은 1회용(보안 강화)
+        String accessToken = jwtService.createAccessToken(String.valueOf(findMember.getId()), findMember.getRole());
+        String refreshToken = jwtService.createRefreshToken();
+
+        // 리프레쉬 토큰 DB에 저장
+        // 리프레쉬 토큰 상태 로그인으로 변경
+        findMember.updateRefreshToken(refreshToken);
+        findMember.updateTokenStatus(RefreshTokenStatus.LOGIN);
+
+        // 접속 시간 업데이트
+        findMember.updateConnectedAt();
+
+        // 출석 체크
+        currencyService.dailyCheck(findMember.getId());
+
+        // 일일 방문자 수 증가
+        visitorService.updateDailyVisitor();
+
+        return accessToken + "/" + refreshToken;
+    }
+}
