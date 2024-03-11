@@ -86,8 +86,7 @@ public class Member extends BaseTimeEntity {
         this.socialId = memberSignUpDTO.getSocialId();
         this.socialType = memberSignUpDTO.getSocialType();
         this.role = Role.GUEST;
-        this.memberStatus = MemberStatus.REGISTRATION;
-        this.refreshTokenStatus = RefreshTokenStatus.LOGIN;
+        this.memberStatus = MemberStatus.WAIT;
     }
 
     public void saveMemberInfo(final SaveMemberRequest request) {
