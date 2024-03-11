@@ -87,9 +87,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     /**
-     * SocialType과 attributes에 들어있는 소셜 로그인의 식별값 id를 통해 회원을 찾아 반환하는 메소드
-     * 만약 회원이 존재하면 그대로 반환하고
-     * 없거나 탈퇴한 회원이면 saveMember()를 호출하여 회원을 저장한다.
+     * SocialType과 attributes에 들어있는 소셜 로그인의 식별값 id를 통해 DB에서 회원을 찾아 리턴하는 메소드
+     * 만약 WAIT/REGISTRATION 상태인 회원이 존재하면 그대로 리턴하고
+     * 없으면 saveMember()를 호출하여 회원을 저장하고 리턴한다.
      */
     private Member getMember(
             final OAuthAttributes attributes,
@@ -98,19 +98,19 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         Member findMember = memberRepository.findBySocialTypeAndSocialIdAndMemberStatus(
                         socialType,
                         attributes.getOauth2UserInfo().getId(),
-                        MemberStatus.REGISTRATION
+                        MemberStatus.LEAVE
                 )
                 .orElse(null);
 
-        if (findMember == null || (MemberStatus.LEAVE).equals(findMember.getMemberStatus())) {
+        if (findMember == null) {
             return saveMember(attributes, socialType);
         }
         return findMember;
     }
 
     /**
-     * OAuthAttributes의 toEntity() 메소드를 통해 빌더로 Member 객체 생성 후 반환
-     * 생성된 Member 객체를 DB에 저장
+     * DB에 저장할 신규 유저의 임시 로그인 정보
+     * OAuthAttributes의 toEntity() 메소드를 통해 Member 객체 생성 후 DB에 저장하고 반환
      */
     private Member saveMember(
             final OAuthAttributes attributes,
