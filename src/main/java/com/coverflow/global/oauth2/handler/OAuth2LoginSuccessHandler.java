@@ -2,6 +2,7 @@ package com.coverflow.global.oauth2.handler;
 
 import com.coverflow.global.oauth2.CustomOAuth2User;
 import com.coverflow.global.util.AesUtil;
+import com.coverflow.member.infrastructure.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,8 @@ import java.net.URI;
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
+    private final MemberRepository memberRepository;
+
     @Override
     @Transactional
     public void onAuthenticationSuccess(
@@ -38,23 +41,30 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // 인가 코드 발행
         String code;
+        String role = String.valueOf(oAuth2User.getRole());
         try {
             code = AesUtil.encrypt(String.valueOf(oAuth2User.getMemberId()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        String targetUrl = createURI(code).toString();
+        System.out.println("code = " + code);
+
+        String targetUrl = createURI(code, role).toString();
 
         // 프론트의 토큰 관리 페이지로 리다이렉트
         response.sendRedirect(targetUrl);
     }
 
     // 자체 인가 코드를 URL에 담아 리다이렉트
-    private URI createURI(final String code) {
+    private URI createURI(
+            final String code,
+            final String role
+    ) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 
         queryParams.add("code", code);
+        queryParams.add("role", role);
         log.info("인가 코드 담기 성공");
 
         return UriComponentsBuilder.newInstance()
