@@ -53,11 +53,9 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
             FROM Member m
             WHERE m.socialType = :socialType
             AND m.socialId = :socialId
-            AND m.memberStatus != :memberStatus
             """)
-    Optional<Member> findBySocialTypeAndSocialIdAndMemberStatus(
+    Optional<Member> findBySocialTypeAndSocialId(
             @Param("socialType") final SocialType socialType,
-            @Param("socialId") final String socialId,
-            @Param("memberStatus") final MemberStatus memberStatus
+            @Param("socialId") final String socialId
     );
 }
