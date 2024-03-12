@@ -148,16 +148,17 @@ public class MemberService {
 
     /**
      * [회원 탈퇴 메서드]
+     * 30일 동안 유예 상태 및 GUEST 권한으로 전환(모든 데이터 보존)
+     * 30일 이후엔 탈퇴 상태로 전환(붕어빵 및 권한 소멸)
      */
     @Transactional
     public void leaveMember(final String username) {
         Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
 
-        member.updateFishShapedBun(0);
         member.updateAuthorization(Role.GUEST);
         member.updateTokenStatus(RefreshTokenStatus.LOGOUT);
-        member.updateMemberStatus(MemberStatus.LEAVE);
+        member.updateMemberStatus(MemberStatus.RESPITE);
         emitterRepository.deleteAllStartWithId(username);
         emitterRepository.deleteAllEventCacheStartWithId(username);
     }
