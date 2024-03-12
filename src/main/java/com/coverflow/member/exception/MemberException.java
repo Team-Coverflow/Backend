@@ -19,6 +19,13 @@ public class MemberException extends RuntimeException {
         }
     }
 
+    public static class SuspendedMembershipException extends MemberException {
+
+        public SuspendedMembershipException(final Object data) {
+            super(String.format("유예 상태인 회원은 가입이 불가능합니다. - request info => %s", data));
+        }
+    }
+
     public static class NotEnoughCurrencyException extends MemberException {
 
         public NotEnoughCurrencyException() {

@@ -103,6 +103,7 @@ public class GlobalExceptionHandler {
 
     // 커스텀 예외 사용 시
     @ExceptionHandler(value = {
+            SuspendedMembershipException.class,
             NotEnoughCurrencyException.class
     })
     public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
