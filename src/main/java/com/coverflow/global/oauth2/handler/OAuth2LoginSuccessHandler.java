@@ -2,6 +2,7 @@ package com.coverflow.global.oauth2.handler;
 
 import com.coverflow.global.oauth2.CustomOAuth2User;
 import com.coverflow.global.util.AesUtil;
+import com.coverflow.member.infrastructure.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,8 @@ import java.net.URI;
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
+    private final MemberRepository memberRepository;
+
     @Override
     @Transactional
     public void onAuthenticationSuccess(
@@ -38,15 +41,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // 인가 코드 발행
         String code;
-        String role;
+        String role = String.valueOf(oAuth2User.getRole());
         try {
-            String[] codeArray = AesUtil.encrypt(String.valueOf(oAuth2User.getMemberId()));
-            String[] roleArray = AesUtil.encrypt(String.valueOf(oAuth2User.getRole()));
-            code = codeArray[0];
-            role = roleArray[0];
+            code = AesUtil.encrypt(String.valueOf(oAuth2User.getMemberId()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+
+        System.out.println("code = " + code);
 
         String targetUrl = createURI(code, role).toString();
 

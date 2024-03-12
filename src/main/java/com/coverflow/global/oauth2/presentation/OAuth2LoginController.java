@@ -22,15 +22,12 @@ public class OAuth2LoginController {
 
     @GetMapping("/token")
     public ResponseEntity<ResponseHandler<Void>> code(
-            @RequestParam @NotBlank final String code,
-            @RequestParam @NotBlank final String role
-
+            @RequestParam @NotBlank final String code
     ) {
         log.info("인가 코드 수신 성공 => {}", code);
-        log.info("회원 권한 수신 성공 => {}", role);
 
         // '/'를 구분자로 사용하여 문자열을 분리
-        String[] tokens = oAuth2LoginService.getToken(code, role).split("/");
+        String[] tokens = oAuth2LoginService.getToken(code).split("/");
 
         // 배열의 각 요소에 접근
         String extractedAccessToken = tokens[0];
