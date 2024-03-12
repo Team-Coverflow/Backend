@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -58,4 +60,12 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
             @Param("socialType") final SocialType socialType,
             @Param("socialId") final String socialId
     );
+
+    @Query("""
+            SELECT m
+            FROM Member m
+            WHERE m.memberStatus= 'RESPITE'
+            AND m.updatedAt <= :date
+            """)
+    Optional<List<Member>> findByStatus(final LocalDateTime date);
 }

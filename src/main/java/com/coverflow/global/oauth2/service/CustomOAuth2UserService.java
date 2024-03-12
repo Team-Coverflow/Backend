@@ -105,7 +105,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
             return saveMember(attributes, socialType);
         }
 
-        // 유예 상태 회원이면 가입 예외 발생
+        // 유예 상태 회원이면 로그인 및 가입 예외 발생
         if (MemberStatus.RESPITE.equals(findMember.getMemberStatus())) {
             throw new MemberException.SuspendedMembershipException(attributes.getOauth2UserInfo().getId());
         }

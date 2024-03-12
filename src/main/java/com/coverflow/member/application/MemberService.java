@@ -13,9 +13,11 @@ import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.infrastructure.EmitterRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -152,15 +154,33 @@ public class MemberService {
      * 30일 이후엔 탈퇴 상태로 전환(붕어빵 및 권한 소멸)
      */
     @Transactional
-    public void leaveMember(final String username) {
+    public void suspend(final String username) {
         Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
 
         member.updateAuthorization(Role.GUEST);
         member.updateTokenStatus(RefreshTokenStatus.LOGOUT);
         member.updateMemberStatus(MemberStatus.RESPITE);
-        emitterRepository.deleteAllStartWithId(username);
-        emitterRepository.deleteAllEventCacheStartWithId(username);
     }
+
+    /**
+     * [30일 후 유예 회원들 탈퇴로 진행하는 메서드]
+     */
+    @Scheduled(cron = "0 0 0 * * ?")
+    @Transactional
+    public void leave() {
+        LocalDateTime date = LocalDateTime.now().minusDays(30);
+
+        List<Member> members = memberRepository.findByStatus(date)
+                .orElseThrow(MemberNotFoundException::new);
+
+        for (Member member : members) {
+            member.updateMemberStatus(MemberStatus.LEAVE);
+            member.updateFishShapedBun(0);
+            emitterRepository.deleteAllStartWithId(String.valueOf(member.getId()));
+            emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(member.getId()));
+        }
+    }
+
 }
 
