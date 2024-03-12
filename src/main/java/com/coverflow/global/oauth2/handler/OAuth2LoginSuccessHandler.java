@@ -38,23 +38,29 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // 인가 코드 발행
         String code;
+        String role;
         try {
             code = AesUtil.encrypt(String.valueOf(oAuth2User.getMemberId()));
+            role = AesUtil.encrypt(String.valueOf(oAuth2User.getRole()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        String targetUrl = createURI(code).toString();
+        String targetUrl = createURI(code, role).toString();
 
         // 프론트의 토큰 관리 페이지로 리다이렉트
         response.sendRedirect(targetUrl);
     }
 
     // 자체 인가 코드를 URL에 담아 리다이렉트
-    private URI createURI(final String code) {
+    private URI createURI(
+            final String code,
+            final String role
+    ) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
 
         queryParams.add("code", code);
+        queryParams.add("role", role);
         log.info("인가 코드 담기 성공");
 
         return UriComponentsBuilder.newInstance()
