@@ -108,7 +108,7 @@ public class MemberController {
     public ResponseEntity<ResponseHandler<Void>> deleteMember(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        memberService.leaveMember(userDetails.getUsername());
+        memberService.suspend(userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
