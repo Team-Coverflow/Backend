@@ -17,9 +17,8 @@ public interface CompanyRepository extends JpaRepository<Company, Long> {
     @Query("""
             SELECT c
             FROM Company c
-            WHERE c.name LIKE :name
+            WHERE c.name LIKE :name%
             AND c.companyStatus = 'REGISTRATION'
-            ORDER BY c.name ASC
             """)
     Optional<Page<Company>> findAllByNameStartingWithAndCompanyStatus(
             final Pageable pageable,
