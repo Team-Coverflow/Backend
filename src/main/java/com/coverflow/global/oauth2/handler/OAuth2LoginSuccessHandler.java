@@ -40,8 +40,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String code;
         String role;
         try {
-            code = AesUtil.encrypt(String.valueOf(oAuth2User.getMemberId()));
-            role = AesUtil.encrypt(String.valueOf(oAuth2User.getRole()));
+            String[] codeArray = AesUtil.encrypt(String.valueOf(oAuth2User.getMemberId()));
+            String[] roleArray = AesUtil.encrypt(String.valueOf(oAuth2User.getRole()));
+            code = codeArray[0];
+            role = roleArray[0];
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
