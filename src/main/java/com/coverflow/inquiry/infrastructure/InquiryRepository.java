@@ -50,4 +50,6 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
             final Pageable pageable,
             @Param("inquiryStatus") final InquiryStatus inquiryStatus
     );
+
+    void deleteByMemberId(UUID id);
 }

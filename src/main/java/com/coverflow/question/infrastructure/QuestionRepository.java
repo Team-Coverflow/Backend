@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
 
@@ -47,4 +48,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             final Pageable pageable,
             @Param("questionStatus") final QuestionStatus questionStatus
     );
+    
+    void deleteByMemberId(UUID id);
 }

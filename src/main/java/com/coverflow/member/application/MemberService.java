@@ -1,6 +1,7 @@
 package com.coverflow.member.application;
 
 import com.coverflow.global.util.NicknameUtil;
+import com.coverflow.inquiry.infrastructure.InquiryRepository;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.RefreshTokenStatus;
@@ -11,6 +12,10 @@ import com.coverflow.member.dto.response.FindMemberInfoResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.infrastructure.EmitterRepository;
+import com.coverflow.notification.infrastructure.NotificationRepository;
+import com.coverflow.question.infrastructure.AnswerRepository;
+import com.coverflow.question.infrastructure.QuestionRepository;
+import com.coverflow.report.infrastructure.ReportRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,6 +35,11 @@ import static com.coverflow.member.exception.MemberException.*;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
+    private final InquiryRepository inquiryRepository;
+    private final ReportRepository reportRepository;
+    private final NotificationRepository notificationRepository;
     private final EmitterRepository emitterRepository;
     private final NicknameUtil nicknameUtil;
 
@@ -151,7 +161,7 @@ public class MemberService {
     /**
      * [회원 탈퇴 메서드]
      * 30일 동안 유예 상태 및 GUEST 권한으로 전환(모든 데이터 보존)
-     * 30일 이후엔 탈퇴 상태로 전환(붕어빵 및 권한 소멸)
+     * 30일 이후에 탈퇴(모든 데이터 소멸)
      */
     @Transactional
     public void suspend(final String username) {
@@ -159,28 +169,37 @@ public class MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(username));
 
         member.updateAuthorization(Role.GUEST);
+        member.updateMemberStatus(MemberStatus.LEAVE);
         member.updateTokenStatus(RefreshTokenStatus.LOGOUT);
-        member.updateMemberStatus(MemberStatus.RESPITE);
+
+        emitterRepository.deleteAllStartWithId(String.valueOf(member.getId()));
+        emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(member.getId()));
     }
 
     /**
      * [30일 후 유예 회원들 탈퇴로 진행하는 메서드]
+     * 회원과 연관된 모든 엔티티의 인스턴스들을 지워야 한다.
      */
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void leave() {
         LocalDateTime date = LocalDateTime.now().minusDays(30);
-
         List<Member> members = memberRepository.findByStatus(date)
                 .orElseThrow(MemberNotFoundException::new);
 
+        // 회원이 작성한 질문, 답변, 문의, 신고, 알림 데이터 삭제
         for (Member member : members) {
-            member.updateMemberStatus(MemberStatus.LEAVE);
-            member.updateFishShapedBun(0);
+            answerRepository.deleteByMemberId(member.getId());
+            questionRepository.deleteByMemberId(member.getId());
+            inquiryRepository.deleteByMemberId(member.getId());
+            reportRepository.deleteByMemberId(member.getId());
+
             emitterRepository.deleteAllStartWithId(String.valueOf(member.getId()));
             emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(member.getId()));
+            notificationRepository.deleteByMemberId(member.getId());
         }
+
+        // 탈퇴 회원 데이터 물리 삭제
+        memberRepository.deleteMembersWithStatus(date);
     }
-
 }
-
