@@ -1,6 +1,7 @@
 package com.coverflow.member.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
+import com.coverflow.inquiry.domain.Inquiry;
 import com.coverflow.member.dto.MemberSignUpDTO;
 import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.notification.domain.Notification;
@@ -71,6 +72,10 @@ public class Member extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Notification> notifications = new ArrayList<>(); // 회원의 알림 리스트
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Inquiry> inquiries = new ArrayList<>(); // 회원의 문의 리스트
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
