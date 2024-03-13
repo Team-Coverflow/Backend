@@ -10,7 +10,6 @@ import com.coverflow.question.domain.Question;
 import com.coverflow.report.domain.Report;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -108,9 +107,9 @@ public class Member extends BaseTimeEntity {
         this.nickname = updateNickname;
     }
 
-    public void updateAge(final String updateAge) {
-        this.age = updateAge;
-    }
+//    public void updateAge(final String updateAge) {
+//        this.age = updateAge;
+//    }
 
     public void updateConnectedAt() {
         this.connectedAt = LocalDateTime.now();
@@ -132,15 +131,15 @@ public class Member extends BaseTimeEntity {
         this.refreshTokenStatus = refreshTokenStatus;
     }
 
-    public void passwordEncode(final PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(this.password);
-    }
-
-    public void updatePassword(
-            final String updatePassword,
-            final PasswordEncoder passwordEncoder
-    ) {
-        this.password = passwordEncoder.encode(updatePassword);
-    }
+//    public void passwordEncode(final PasswordEncoder passwordEncoder) {
+//        this.password = passwordEncoder.encode(this.password);
+//    }
+//
+//    public void updatePassword(
+//            final String updatePassword,
+//            final PasswordEncoder passwordEncoder
+//    ) {
+//        this.password = passwordEncoder.encode(updatePassword);
+//    }
 
 }
