@@ -17,10 +17,15 @@ import com.coverflow.question.infrastructure.AnswerRepository;
 import com.coverflow.question.infrastructure.QuestionRepository;
 import com.coverflow.report.infrastructure.ReportRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,6 +47,10 @@ public class MemberService {
     private final NotificationRepository notificationRepository;
     private final EmitterRepository emitterRepository;
     private final NicknameUtil nicknameUtil;
+    private final WebClient webClient;
+
+    @Value("${kakao.admin-key}")
+    private String adminKey;
 
 //    private final PasswordEncoder passwordEncoder;
 //
@@ -197,9 +206,31 @@ public class MemberService {
             emitterRepository.deleteAllStartWithId(String.valueOf(member.getId()));
             emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(member.getId()));
             notificationRepository.deleteByMemberId(member.getId());
+
+            if (unlinkKakaoUser(adminKey, member.getSocialId()).block() == null) {
+                throw new RuntimeException();
+            }
         }
 
         // 탈퇴 회원 데이터 물리 삭제
         memberRepository.deleteMembersWithStatus(date);
+    }
+
+    /**
+     * [카카오 연결 끊기]
+     */
+    private Mono<String> unlinkKakaoUser(
+            final String adminKey,
+            final String userId
+    ) {
+        String url = "https://kapi.kakao.com/v1/user/unlink";
+
+        return webClient.post()
+                .uri(url)
+                .header(HttpHeaders.AUTHORIZATION, "KakaoAK " + adminKey)
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .bodyValue("target_id_type=user_id&target_id=" + userId)
+                .retrieve() // 실제 요청을 실행합니다.
+                .bodyToMono(String.class); // 응답 바디를 String으로 변환합니다.
     }
 }
