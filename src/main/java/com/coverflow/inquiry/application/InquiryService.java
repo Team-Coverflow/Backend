@@ -3,6 +3,7 @@ package com.coverflow.inquiry.application;
 import com.coverflow.inquiry.domain.Inquiry;
 import com.coverflow.inquiry.domain.InquiryStatus;
 import com.coverflow.inquiry.dto.InquiryCountDTO;
+import com.coverflow.inquiry.dto.InquiryDTO;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
 import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
@@ -32,7 +33,7 @@ public class InquiryService {
      * [특정 회원의 문의 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<FindInquiryResponse> findInquiryByMemberId(
+    public FindInquiryResponse findInquiryByMemberId(
             final int pageNo,
             final String criterion,
             final String memberId
@@ -45,11 +46,13 @@ public class InquiryService {
 
         InquiryCountDTO inquiryCountDTO = new InquiryCountDTO(allInquiryCount, waitInquiryCount, completeInquiryCount);
 
-        System.out.println("allInquiryCount = " + allInquiryCount);
-
-        return inquiries.getContent().stream()
-                .map(inquiry -> FindInquiryResponse.of(inquiry, inquiryCountDTO))
-                .toList();
+        return new FindInquiryResponse(
+                inquiries.getTotalPages(),
+                inquiries.getContent()
+                        .stream()
+                        .map(inquiry -> InquiryDTO.of(inquiry, inquiryCountDTO))
+                        .toList()
+        );
     }
 
     /**

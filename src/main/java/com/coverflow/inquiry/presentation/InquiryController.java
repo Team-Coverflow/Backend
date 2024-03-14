@@ -31,13 +31,13 @@ public class InquiryController {
 
     @GetMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<List<FindInquiryResponse>>> findInquiryByMemberId(
+    public ResponseEntity<ResponseHandler<FindInquiryResponse>> findInquiryByMemberId(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindInquiryResponse>>builder()
+                .body(ResponseHandler.<FindInquiryResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(inquiryService.findInquiryByMemberId(pageNo, criterion, userDetails.getUsername()))
                         .build());
