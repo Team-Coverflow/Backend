@@ -46,6 +46,8 @@ public class Member extends BaseTimeEntity {
     @Column
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
     @Column
+    private String socialAccessToken; // 소셜 액세스 토큰
+    @Column
     private String refreshToken; // 리프레쉬 토큰
 
     @Enumerated(EnumType.STRING)
@@ -121,6 +123,10 @@ public class Member extends BaseTimeEntity {
 
     public void updateFishShapedBun(final int fishShapedBun) {
         this.fishShapedBun = fishShapedBun;
+    }
+
+    public void updateSocialAccessToken(final String socialAccessToken) {
+        this.socialAccessToken = socialAccessToken;
     }
 
     public void updateMemberStatus(final MemberStatus memberStatus) {

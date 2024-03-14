@@ -67,6 +67,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // getMember() 메소드로 Member 객체 생성 후 반환
         Member createdMember = getMember(extractAttributes, socialType);
 
+        // 소셜 액세스 토큰을 저장합니다.
+        createdMember.updateSocialAccessToken(userRequest.getAccessToken().getTokenValue());
+
         // DefaultOAuth2User를 구현한 CustomOAuth2User 객체를 생성해서 반환
         return new CustomOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(createdMember.getRole().getKey())),

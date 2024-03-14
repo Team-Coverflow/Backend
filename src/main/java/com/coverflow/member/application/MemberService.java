@@ -2,10 +2,7 @@ package com.coverflow.member.application;
 
 import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.inquiry.infrastructure.InquiryRepository;
-import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.MemberStatus;
-import com.coverflow.member.domain.RefreshTokenStatus;
-import com.coverflow.member.domain.Role;
+import com.coverflow.member.domain.*;
 import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
@@ -49,8 +46,10 @@ public class MemberService {
     private final NicknameUtil nicknameUtil;
     private final WebClient webClient;
 
-    @Value("${kakao.admin-key}")
-    private String adminKey;
+    @Value("${spring.security.oauth2.client.registration.naver.client-id}")
+    private String naverClientId;
+    @Value("${spring.security.oauth2.client.registration.naver.client-secret}")
+    private String naverClientSecret;
 
 //    private final PasswordEncoder passwordEncoder;
 //
@@ -187,7 +186,8 @@ public class MemberService {
 
     /**
      * [30일 후 유예 회원들 탈퇴로 진행하는 메서드]
-     * 회원과 연관된 모든 엔티티의 인스턴스들을 지워야 한다.
+     * 매일 자정에
+     * 유예 기간이 30일이 지난 회원들의 데이터를 삭제합니다.
      */
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
@@ -196,20 +196,12 @@ public class MemberService {
         List<Member> members = memberRepository.findByStatus(date)
                 .orElseThrow(MemberNotFoundException::new);
 
-        // 회원이 작성한 질문, 답변, 문의, 신고, 알림 데이터 삭제
         for (Member member : members) {
-            answerRepository.deleteByMemberId(member.getId());
-            questionRepository.deleteByMemberId(member.getId());
-            inquiryRepository.deleteByMemberId(member.getId());
-            reportRepository.deleteByMemberId(member.getId());
+            // 회원이 작성한 질문, 답변, 문의, 신고, 알림 데이터 삭제
+            deleteData(member.getId());
 
-            emitterRepository.deleteAllStartWithId(String.valueOf(member.getId()));
-            emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(member.getId()));
-            notificationRepository.deleteByMemberId(member.getId());
-
-            if (unlinkKakaoUser(adminKey, member.getSocialId()).block() == null) {
-                throw new RuntimeException();
-            }
+            // 소셜 연결 끊기
+            unlink(member.getSocialType(), member.getSocialId(), member.getSocialAccessToken());
         }
 
         // 탈퇴 회원 데이터 물리 삭제
@@ -217,20 +209,89 @@ public class MemberService {
     }
 
     /**
+     * [탈퇴에 따른 데이터 삭제 메서드]
+     */
+    private void deleteData(final UUID memberId) {
+        answerRepository.deleteByMemberId(memberId);
+        questionRepository.deleteByMemberId(memberId);
+        inquiryRepository.deleteByMemberId(memberId);
+        reportRepository.deleteByMemberId(memberId);
+
+        emitterRepository.deleteAllStartWithId(String.valueOf(memberId));
+        emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(memberId));
+        notificationRepository.deleteByMemberId(memberId);
+    }
+
+    /**
+     * [연결 끊기 메서드]
+     */
+    private void unlink(
+            final SocialType socialType,
+            final String memberId,
+            final String socialAccessToken) {
+        if (("KAKAO").equals(String.valueOf(socialType))) {
+            unlinkKakao(memberId, socialAccessToken).block();
+        }
+        if (("NAVER").equals(String.valueOf(socialType))) {
+            unlinkNaver(socialAccessToken).block();
+        }
+        if (("GOOGLE").equals(String.valueOf(socialType))) {
+            unlinkGoogle(socialAccessToken).block();
+        }
+        throw new RuntimeException();
+    }
+
+    /**
      * [카카오 연결 끊기]
      */
-    private Mono<String> unlinkKakaoUser(
-            final String adminKey,
-            final String userId
+    private Mono<String> unlinkKakao(
+            final String memberId,
+            final String accessToken
     ) {
         String url = "https://kapi.kakao.com/v1/user/unlink";
 
         return webClient.post()
                 .uri(url)
-                .header(HttpHeaders.AUTHORIZATION, "KakaoAK " + adminKey)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .bodyValue("target_id_type=user_id&target_id=" + userId)
+                .bodyValue("target_id_type=user_id&target_id=" + memberId)
                 .retrieve() // 실제 요청을 실행합니다.
                 .bodyToMono(String.class); // 응답 바디를 String으로 변환합니다.
+    }
+
+    /**
+     * [네이버 연결 끊기]
+     */
+    private Mono<String> unlinkNaver(final String accessToken) {
+        String url = "https://nid.naver.com/oauth2.0/token";
+
+        return webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path(url)
+                        .queryParam("grant_type", "delete")
+                        .queryParam("client_id", naverClientId)
+                        .queryParam("client_secret", naverClientSecret)
+                        .queryParam("access_token", accessToken)
+                        .queryParam("service_provider", "NAVER")
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class);
+    }
+
+    /**
+     * [구글 연결 끊기]
+     */
+    private Mono<String> unlinkGoogle(final String accessToken) {
+        String url = "https://accounts.google.com/o/oauth2/revoke";
+
+        return webClient
+                .post()
+                .uri(uriBuilder -> uriBuilder
+                        .path(url)
+                        .queryParam("token", accessToken)
+                        .build())
+                .retrieve()
+                .bodyToMono(String.class);
     }
 }
