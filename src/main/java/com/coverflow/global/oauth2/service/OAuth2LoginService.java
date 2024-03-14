@@ -41,14 +41,19 @@ public class OAuth2LoginService {
 
         // 회원 정보 가져오기
         Member findMember = memberRepository.findById(UUID.fromString(decodingCode))
-                .orElseThrow(() -> new MemberException.MemberNotFoundException("일치하는 회원이 없습니다."));
-        
+                .orElseThrow(MemberException.MemberNotFoundException::new);
+
         // 신규 회원이라면 회원 상태 (대기 -> 등록), 회원 권한 (GUEST -> MEMBER)로 수정
         // =====> 회원가입
         if (MemberStatus.WAIT.equals(findMember.getMemberStatus())) {
             findMember.updateMemberStatus(MemberStatus.REGISTRATION);
             findMember.updateAuthorization(Role.MEMBER);
             log.info("회원가입 성공!");
+        }
+
+        // 유예 상태 회원이면 로그인 및 가입 예외 발생
+        if (MemberStatus.LEAVE.equals(findMember.getMemberStatus())) {
+            throw new MemberException.SuspendedMembershipException(findMember.getId());
         }
 
         // 액세스 토큰 + 리프레쉬 토큰 발급

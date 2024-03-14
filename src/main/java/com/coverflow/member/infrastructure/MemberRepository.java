@@ -6,9 +6,12 @@ import com.coverflow.member.domain.SocialType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -53,11 +56,25 @@ public interface MemberRepository extends JpaRepository<Member, UUID> {
             FROM Member m
             WHERE m.socialType = :socialType
             AND m.socialId = :socialId
-            AND m.memberStatus != :memberStatus
             """)
-    Optional<Member> findBySocialTypeAndSocialIdAndMemberStatus(
+    Optional<Member> findBySocialTypeAndSocialId(
             @Param("socialType") final SocialType socialType,
-            @Param("socialId") final String socialId,
-            @Param("memberStatus") final MemberStatus memberStatus
+            @Param("socialId") final String socialId
     );
+
+    @Query("""
+            SELECT m
+            FROM Member m
+            WHERE m.memberStatus= 'LEAVE'
+            AND m.updatedAt <= :date
+            """)
+    Optional<List<Member>> findByStatus(final LocalDateTime date);
+
+    @Modifying
+    @Query("""
+            DELETE FROM Member m
+            WHERE  m.updatedAt< :date
+            AND m.memberStatus = 'LEAVE'
+            """)
+    void deleteMembersWithStatus(@Param("date") final LocalDateTime date);
 }

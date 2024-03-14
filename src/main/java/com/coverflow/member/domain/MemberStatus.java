@@ -2,7 +2,8 @@ package com.coverflow.member.domain;
 
 public enum MemberStatus {
 
-    LEAVE,
+    WAIT,
     REGISTRATION,
-    WAIT
+    RESPITE,
+    LEAVE
 }

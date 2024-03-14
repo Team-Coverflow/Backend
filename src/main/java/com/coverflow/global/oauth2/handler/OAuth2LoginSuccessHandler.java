@@ -41,16 +41,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
         // 인가 코드 발행
         String code;
-        String role = String.valueOf(oAuth2User.getRole());
         try {
             code = AesUtil.encrypt(String.valueOf(oAuth2User.getMemberId()));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
-        System.out.println("code = " + code);
-
-        String targetUrl = createURI(code, role).toString();
+        // 인가 코드 및 회원 권한 URL에 담기
+        String targetUrl = createURI(code, String.valueOf(oAuth2User.getRole())).toString();
 
         // 프론트의 토큰 관리 페이지로 리다이렉트
         response.sendRedirect(targetUrl);

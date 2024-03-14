@@ -6,6 +6,7 @@ import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.SocialType;
+import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +67,9 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // getMember() 메소드로 Member 객체 생성 후 반환
         Member createdMember = getMember(extractAttributes, socialType);
 
+        // 소셜 액세스 토큰을 저장합니다.
+        createdMember.updateSocialAccessToken(userRequest.getAccessToken().getTokenValue());
+
         // DefaultOAuth2User를 구현한 CustomOAuth2User 객체를 생성해서 반환
         return new CustomOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(createdMember.getRole().getKey())),
@@ -88,23 +92,28 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     /**
      * SocialType과 attributes에 들어있는 소셜 로그인의 식별값 id를 통해 DB에서 회원을 찾아 리턴하는 메소드
-     * 만약 WAIT/REGISTRATION 상태인 회원이 존재하면 그대로 리턴하고
+     * RESPITE 상태인 회원은 예외 발생시킨다.
+     * WAIT/REGISTRATION 상태인 회원이 존재하면 그대로 리턴하고
      * 없으면 saveMember()를 호출하여 회원을 저장하고 리턴한다.
      */
     private Member getMember(
             final OAuthAttributes attributes,
             final SocialType socialType
     ) {
-        Member findMember = memberRepository.findBySocialTypeAndSocialIdAndMemberStatus(
-                        socialType,
-                        attributes.getOauth2UserInfo().getId(),
-                        MemberStatus.LEAVE
-                )
+        Member findMember = memberRepository.findBySocialTypeAndSocialId(socialType, attributes.getOauth2UserInfo().getId())
                 .orElse(null);
 
+        // 회원 데이터 없으면 데이터 생성
         if (findMember == null) {
             return saveMember(attributes, socialType);
         }
+
+        // 유예 상태 회원이면 로그인 및 가입 예외 발생
+        if (MemberStatus.LEAVE.equals(findMember.getMemberStatus())) {
+            throw new MemberException.SuspendedMembershipException(attributes.getOauth2UserInfo().getId());
+        }
+
+        // 기존 회원이면 그대로 리턴
         return findMember;
     }
 
