@@ -6,6 +6,7 @@ import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.CurrencyService;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.domain.QuestionStatus;
+import com.coverflow.question.dto.AnswerListDTO;
 import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.QuestionListDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
@@ -69,7 +70,10 @@ public class QuestionService {
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
         question.updateViewCount(question.getViewCount() + 1);
-        return FindQuestionResponse.of(question, answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId));
+
+        AnswerListDTO answerList = answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId);
+
+        return FindQuestionResponse.of(question, answerList.getTotalPages(), answerList.getAnswers());
     }
 
     /**

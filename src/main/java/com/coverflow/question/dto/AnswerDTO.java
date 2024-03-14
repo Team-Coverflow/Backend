@@ -1,5 +1,6 @@
 package com.coverflow.question.dto;
 
+import com.coverflow.question.domain.Answer;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,4 +19,14 @@ public class AnswerDTO {
     private String answererTag;
     private String answerContent;
     private LocalDateTime createAt;
+
+    public static AnswerDTO from(final Answer answer) {
+        return new AnswerDTO(
+                answer.getId(),
+                answer.getMember().getNickname(),
+                answer.getMember().getTag(),
+                answer.getContent(),
+                answer.getCreatedAt()
+        );
+    }
 }
