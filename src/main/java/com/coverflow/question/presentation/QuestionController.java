@@ -5,7 +5,6 @@ import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.question.application.QuestionService;
 import com.coverflow.question.domain.QuestionStatus;
-import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
@@ -33,20 +32,19 @@ public class QuestionController {
     /**
      * 일단 보류
      */
-    @GetMapping("/questions/{companyId}")
-    public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
-            @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @PathVariable @Positive final long companyId
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<List<QuestionDTO>>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId))
-                        .build()
-                );
-    }
-
+//    @GetMapping("/questions/{companyId}")
+//    public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
+//            @RequestParam @PositiveOrZero final int pageNo,
+//            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+//            @PathVariable @Positive final long companyId
+//    ) {
+//        return ResponseEntity.ok()
+//                .body(ResponseHandler.<List<QuestionDTO>>builder()
+//                        .statusCode(HttpStatus.OK)
+//                        .data(questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId))
+//                        .build()
+//                );
+//    }
     @GetMapping("/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(

@@ -11,6 +11,7 @@ import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.question.application.QuestionService;
+import com.coverflow.question.dto.QuestionListDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -66,7 +67,9 @@ public class CompanyService {
         Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
-        return FindCompanyResponse.of(company, questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId));
+        QuestionListDTO questionList = questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId);
+
+        return FindCompanyResponse.of(company, questionList.getTotalPages(), questionList.getQuestions());
     }
 
     /**

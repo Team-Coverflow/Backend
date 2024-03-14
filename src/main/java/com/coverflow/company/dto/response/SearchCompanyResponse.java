@@ -9,7 +9,7 @@ public record SearchCompanyResponse(
         List<CompanyDTO> companyList
 ) {
 
-    public static SearchCompanyResponse from(
+    public static SearchCompanyResponse of(
             final int totalPages,
             final List<CompanyDTO> companyList
     ) {

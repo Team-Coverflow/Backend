@@ -12,12 +12,15 @@ public record FindCompanyResponse(
         String companyAddress,
         String companyEstablishment,
         int questionCount,
+        int totalPages,
         List<QuestionDTO> questions
 ) {
 
     public static FindCompanyResponse of(
             final Company company,
-            final List<QuestionDTO> questions) {
+            final int totalPages,
+            final List<QuestionDTO> questions
+    ) {
         return new FindCompanyResponse(
                 company.getId(),
                 company.getName(),
@@ -25,6 +28,7 @@ public record FindCompanyResponse(
                 company.getCity() + " " + company.getDistrict(),
                 company.getEstablishment(),
                 company.getQuestionCount(),
+                totalPages,
                 questions
         );
     }
