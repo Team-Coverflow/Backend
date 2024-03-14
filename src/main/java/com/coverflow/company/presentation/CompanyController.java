@@ -28,12 +28,12 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping
-    public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
+    public ResponseEntity<ResponseHandler<SearchCompanyResponse>> searchCompanies(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "name") @NotBlank final String name
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
+                .body(ResponseHandler.<SearchCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(companyService.searchCompanies(pageNo, name))
                         .build()

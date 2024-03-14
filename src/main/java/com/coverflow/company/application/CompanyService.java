@@ -2,6 +2,7 @@ package com.coverflow.company.application;
 
 import com.coverflow.company.domain.Company;
 import com.coverflow.company.domain.CompanyStatus;
+import com.coverflow.company.dto.CompanyDTO;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
@@ -36,16 +37,20 @@ public class CompanyService {
      * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<SearchCompanyResponse> searchCompanies(
+    public SearchCompanyResponse searchCompanies(
             final int pageNo,
             final String name
     ) {
         Page<Company> companies = companyRepository.findAllByNameStartingWithAndCompanyStatus(generatePageAsc(pageNo, NORMAL_PAGE_SIZE, "name"), name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
 
-        return companies.getContent().stream()
-                .map(SearchCompanyResponse::from)
-                .toList();
+        return new SearchCompanyResponse(
+                companies.getTotalPages(),
+                companies.getContent()
+                        .stream()
+                        .map(CompanyDTO::from)
+                        .toList()
+        );
     }
 
     /**
