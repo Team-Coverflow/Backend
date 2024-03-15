@@ -18,8 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RequestMapping("/api/report")
 @RestController
@@ -29,13 +27,13 @@ public class ReportController {
 
     @GetMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportByMemberId(
+    public ResponseEntity<ResponseHandler<FindReportResponse>> findReportByMemberId(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindReportResponse>>builder()
+                .body(ResponseHandler.<FindReportResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(reportService.findReportsByMemberId(userDetails.getUsername(), pageNo, criterion))
                         .build());
@@ -43,12 +41,12 @@ public class ReportController {
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReports(
+    public ResponseEntity<ResponseHandler<FindReportResponse>> findReports(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindReportResponse>>builder()
+                .body(ResponseHandler.<FindReportResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(reportService.findReports(pageNo, criterion))
                         .build());
@@ -56,13 +54,13 @@ public class ReportController {
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindReportResponse>>> findReportsByStatus(
+    public ResponseEntity<ResponseHandler<FindReportResponse>> findReportsByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final ReportStatus reportStatus
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindReportResponse>>builder()
+                .body(ResponseHandler.<FindReportResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(reportService.findReportsByStatus(pageNo, criterion, reportStatus))
                         .build()
