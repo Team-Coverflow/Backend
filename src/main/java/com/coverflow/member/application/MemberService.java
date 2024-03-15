@@ -3,6 +3,7 @@ package com.coverflow.member.application;
 import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.inquiry.infrastructure.InquiryRepository;
 import com.coverflow.member.domain.*;
+import com.coverflow.member.dto.MembersDTO;
 import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberInfoResponse;
@@ -91,16 +92,19 @@ public class MemberService {
      * [관리자 전용: 전체 회원 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<FindAllMembersResponse> findAllMembers(
+    public FindAllMembersResponse findAllMembers(
             final int pageNo,
             final String criterion
     ) {
         Page<Member> members = memberRepository.findAllMembers(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(AllMemberNotFoundException::new);
 
-        return members.getContent().stream()
-                .map(FindAllMembersResponse::from)
-                .toList();
+        return FindAllMembersResponse.of(
+                members.getTotalPages(),
+                members.getContent().stream()
+                        .map(MembersDTO::from)
+                        .toList()
+        );
     }
 
     /**
@@ -108,7 +112,7 @@ public class MemberService {
      * 특정 상태(등록/탈퇴)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<FindAllMembersResponse> findMembersByStatus(
+    public FindAllMembersResponse findMembersByStatus(
             final int pageNo,
             final String criterion,
             final MemberStatus memberStatus
@@ -116,9 +120,12 @@ public class MemberService {
         Page<Member> members = memberRepository.findAllByMemberStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), memberStatus)
                 .orElseThrow(() -> new MemberNotFoundException(memberStatus));
 
-        return members.getContent().stream()
-                .map(FindAllMembersResponse::from)
-                .toList();
+        return FindAllMembersResponse.of(
+                members.getTotalPages(),
+                members.getContent().stream()
+                        .map(MembersDTO::from)
+                        .toList()
+        );
     }
 
     /**

@@ -18,8 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
 @RestController
@@ -41,12 +39,12 @@ public class MemberController {
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findAllMemberById(
+    public ResponseEntity<ResponseHandler<FindAllMembersResponse>> findAllMemberById(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
+                .body(ResponseHandler.<FindAllMembersResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(memberService.findAllMembers(pageNo, criterion))
                         .build());
@@ -54,13 +52,13 @@ public class MemberController {
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findMembersByStatus(
+    public ResponseEntity<ResponseHandler<FindAllMembersResponse>> findMembersByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final MemberStatus memberStatus
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
+                .body(ResponseHandler.<FindAllMembersResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(memberService.findMembersByStatus(pageNo, criterion, memberStatus))
                         .build()
