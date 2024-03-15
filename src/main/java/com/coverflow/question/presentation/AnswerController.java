@@ -20,8 +20,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RequestMapping("/api/answer")
 @RestController
@@ -48,12 +46,12 @@ public class AnswerController {
 //    }
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAllAnswers(
+    public ResponseEntity<ResponseHandler<FindAnswerResponse>> findAllAnswers(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAnswerResponse>>builder()
+                .body(ResponseHandler.<FindAnswerResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(answerService.findAllAnswers(pageNo, criterion))
                         .build()
@@ -62,13 +60,13 @@ public class AnswerController {
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAnswerResponse>>> findAnswersByStatus(
+    public ResponseEntity<ResponseHandler<FindAnswerResponse>> findAnswersByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final AnswerStatus answerStatus
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAnswerResponse>>builder()
+                .body(ResponseHandler.<FindAnswerResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(answerService.findAnswersByStatus(pageNo, criterion, answerStatus))
                         .build()

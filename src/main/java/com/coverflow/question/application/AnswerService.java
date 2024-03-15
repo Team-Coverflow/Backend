@@ -10,6 +10,7 @@ import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.AnswerDTO;
 import com.coverflow.question.dto.AnswerListDTO;
+import com.coverflow.question.dto.AnswersDTO;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.request.UpdateSelectionRequest;
@@ -24,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
@@ -62,16 +62,19 @@ public class AnswerService {
      * [관리자 전용: 전체 답변 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<FindAnswerResponse> findAllAnswers(
+    public FindAnswerResponse findAllAnswers(
             final int pageNo,
             final String criterion
     ) {
         Page<Answer> answers = answerRepository.findAllAnswers(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(AnswerException.AnswerNotFoundException::new);
 
-        return answers.getContent().stream()
-                .map(FindAnswerResponse::from)
-                .toList();
+        return FindAnswerResponse.of(
+                answers.getTotalPages(),
+                answers.getContent().stream()
+                        .map(AnswersDTO::from)
+                        .toList()
+        );
     }
 
     /**
@@ -79,7 +82,7 @@ public class AnswerService {
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<FindAnswerResponse> findAnswersByStatus(
+    public FindAnswerResponse findAnswersByStatus(
             final int pageNo,
             final String criterion,
             final AnswerStatus answerStatus
@@ -87,9 +90,12 @@ public class AnswerService {
         Page<Answer> answers = answerRepository.findAllByAnswerStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), answerStatus)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerStatus));
 
-        return answers.getContent().stream()
-                .map(FindAnswerResponse::from)
-                .toList();
+        return FindAnswerResponse.of(
+                answers.getTotalPages(),
+                answers.getContent().stream()
+                        .map(AnswersDTO::from)
+                        .toList()
+        );
     }
 
     /**
