@@ -1,7 +1,6 @@
 package com.coverflow.question.dto.response;
 
 import com.coverflow.question.domain.Question;
-import com.coverflow.question.domain.QuestionCategory;
 import com.coverflow.question.domain.QuestionTag;
 import com.coverflow.question.dto.AnswerDTO;
 
@@ -14,7 +13,7 @@ public record FindQuestionResponse(
         String questionTitle,
         String questionContent,
         QuestionTag questionTag,
-        QuestionCategory questionCategory,
+        String questionCategory,
         int viewCount,
         int answerCount,
         int reward,

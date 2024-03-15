@@ -1,7 +1,6 @@
 package com.coverflow.question.dto;
 
 import com.coverflow.question.domain.Question;
-import com.coverflow.question.domain.QuestionCategory;
 import com.coverflow.question.domain.QuestionTag;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +19,7 @@ public class QuestionDTO {
     private String questionTitle;
     private String questionContent;
     private QuestionTag questionTag;
-    private QuestionCategory questionCategory;
+    private String questionCategory;
     private int questionViewCount;
     private int answerCount;
     private int reward;
