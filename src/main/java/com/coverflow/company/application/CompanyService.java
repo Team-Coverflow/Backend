@@ -2,6 +2,8 @@ package com.coverflow.company.application;
 
 import com.coverflow.company.domain.Company;
 import com.coverflow.company.domain.CompanyStatus;
+import com.coverflow.company.dto.CompaniesDTO;
+import com.coverflow.company.dto.CompanyDTO;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
@@ -10,6 +12,7 @@ import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.question.application.QuestionService;
+import com.coverflow.question.dto.QuestionListDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
@@ -32,25 +34,29 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
 
     /**
-     * [회사 검색 메서드]
-     * 특정 이름으로 시작하는 회사 5개를 조회하는 메서드
+     * [기업 검색 메서드]
+     * 특정 이름으로 시작하는 기업 5개를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<SearchCompanyResponse> searchCompanies(
+    public SearchCompanyResponse searchCompanies(
             final int pageNo,
             final String name
     ) {
         Page<Company> companies = companyRepository.findAllByNameStartingWithAndCompanyStatus(generatePageAsc(pageNo, NORMAL_PAGE_SIZE, "name"), name)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
 
-        return companies.getContent().stream()
-                .map(SearchCompanyResponse::from)
-                .toList();
+        return SearchCompanyResponse.of(
+                companies.getTotalPages(),
+                companies.getContent()
+                        .stream()
+                        .map(CompanyDTO::from)
+                        .toList()
+        );
     }
 
     /**
-     * [특정 회사와 질문 조회 메서드]
-     * 특정 회사와 질문 리스트를 조회하는 메서드
+     * [기업 회사와 질문 조회 메서드]
+     * 특정 기업과 질문 리스트를 조회하는 메서드
      */
     @Transactional(readOnly = true)
     public FindCompanyResponse findCompanyById(
@@ -61,32 +67,38 @@ public class CompanyService {
         Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
-        return FindCompanyResponse.of(company, questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId));
+        QuestionListDTO questionList = questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId);
+
+        return FindCompanyResponse.of(company, questionList.getTotalPages(), questionList.getQuestions());
     }
 
     /**
-     * [관리자 전용: 전체 회사 조회 메서드]
-     * 전체 회사를 조회하는 메서드
+     * [관리자 전용: 전체 기업 조회 메서드]
+     * 전체 기업을 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<FindAllCompaniesResponse> findAllCompanies(
+    public FindAllCompaniesResponse findAllCompanies(
             final int pageNo,
             final String criterion
     ) {
         Page<Company> companies = companyRepository.findAllCompanies(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(CompanyException.CompanyNotFoundException::new);
 
-        return companies.getContent().stream()
-                .map(FindAllCompaniesResponse::from)
-                .toList();
+        return FindAllCompaniesResponse.of(
+                companies.getTotalPages(),
+                companies.getContent()
+                        .stream()
+                        .map(CompaniesDTO::from)
+                        .toList()
+        );
     }
 
     /**
-     * [관리자 전용: 특정 상태 회사 조회 메서드]
-     * 특정 상태(검토/등록/삭제)의 회사를 조회하는 메서드
+     * [관리자 전용: 특정 상태 기업 조회 메서드]
+     * 특정 상태(검토/등록/삭제)의 기업을 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<FindAllCompaniesResponse> findPending(
+    public FindAllCompaniesResponse findPending(
             final int pageNo,
             final String criterion,
             final CompanyStatus companyStatus
@@ -94,13 +106,17 @@ public class CompanyService {
         Page<Company> companies = companyRepository.findAllByCompanyStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), companyStatus)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyStatus));
 
-        return companies.getContent().stream()
-                .map(FindAllCompaniesResponse::from)
-                .toList();
+        return FindAllCompaniesResponse.of(
+                companies.getTotalPages(),
+                companies.getContent()
+                        .stream()
+                        .map(CompaniesDTO::from)
+                        .toList()
+        );
     }
 
     /**
-     * [회사 등록 메서드]
+     * [기업 등록 메서드]
      */
     @Transactional
     public void saveCompany(final SaveCompanyRequest request) {
@@ -112,7 +128,7 @@ public class CompanyService {
     }
 
     /**
-     * [관리자 전용: 회사 상태 변경 메서드]
+     * [관리자 전용: 기업 상태 변경 메서드]
      */
     @Transactional
     public void updateCompanyStatus(final long companyId) {
@@ -123,7 +139,7 @@ public class CompanyService {
     }
 
     /**
-     * [관리자 전용: 회사 수정 메서드]
+     * [관리자 전용: 기업 수정 메서드]
      */
     @Transactional
     public void updateCompany(final UpdateCompanyRequest request) {
@@ -134,7 +150,7 @@ public class CompanyService {
     }
 
     /**
-     * [관리자 전용: 회사 삭제 메서드]
+     * [관리자 전용: 기업 삭제 메서드]
      */
     @Transactional
     public void deleteCompany(final long companyId) {
@@ -145,7 +161,7 @@ public class CompanyService {
     }
 
     /**
-     * [관리자 전용: 회사 물리 삭제 메서드]
+     * [관리자 전용: 기업 물리 삭제 메서드]
      */
     @Transactional
     public void deleteCompanyReal(final long companyId) {

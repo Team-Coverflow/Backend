@@ -16,11 +16,13 @@ public record FindQuestionResponse(
         String questionerNickname,
         String questionerTag,
         LocalDateTime createAt,
+        int totalPages,
         List<AnswerDTO> answers
 ) {
 
     public static FindQuestionResponse of(
             final Question question,
+            final int totalPages,
             final List<AnswerDTO> answers) {
         return new FindQuestionResponse(
                 question.getId(),
@@ -32,6 +34,7 @@ public record FindQuestionResponse(
                 question.getMember().getNickname(),
                 question.getMember().getTag(),
                 question.getCreatedAt(),
+                totalPages,
                 answers
         );
     }

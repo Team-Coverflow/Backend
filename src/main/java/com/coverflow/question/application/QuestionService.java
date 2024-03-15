@@ -6,7 +6,10 @@ import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.CurrencyService;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.domain.QuestionStatus;
+import com.coverflow.question.dto.AnswerListDTO;
 import com.coverflow.question.dto.QuestionDTO;
+import com.coverflow.question.dto.QuestionListDTO;
+import com.coverflow.question.dto.QuestionsDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
@@ -19,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
@@ -36,34 +38,22 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     /**
-     * [특정 회사의 질문 조회 메서드]
-     * 회사 id로 조회
+     * [특정 기업의 질문 조회 메서드]
+     * 기업 id로 조회
      */
     @Transactional(readOnly = true)
-    public List<QuestionDTO> findAllQuestionsByCompanyId(
+    public QuestionListDTO findAllQuestionsByCompanyId(
             final int pageNo,
             final String criterion,
             final long companyId
     ) {
-        Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), companyId);
-        List<QuestionDTO> questions = new ArrayList<>();
+        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), companyId);
 
-        if (optionalQuestions.isPresent()) {
-            Page<Question> questionList = optionalQuestions.get();
-            for (int i = 0; i < questionList.getContent().size(); i++) {
-                questions.add(i, new QuestionDTO(
-                        questionList.getContent().get(i).getId(),
-                        questionList.getContent().get(i).getMember().getNickname(),
-                        questionList.getContent().get(i).getMember().getTag(),
-                        questionList.getContent().get(i).getTitle(),
-                        questionList.getContent().get(i).getContent(),
-                        questionList.getContent().get(i).getViewCount(),
-                        questionList.getContent().get(i).getAnswerCount(),
-                        questionList.getContent().get(i).getReward(),
-                        questionList.getContent().get(i).getCreatedAt()));
-            }
-        }
-        return questions;
+        return questionList
+                .map(questionPage ->
+                        new QuestionListDTO(questionPage.getTotalPages(), questionPage.getContent().stream().map(QuestionDTO::from).toList())
+                )
+                .orElseGet(() -> new QuestionListDTO(0, new ArrayList<>()));
     }
 
     /**
@@ -80,23 +70,29 @@ public class QuestionService {
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
         question.updateViewCount(question.getViewCount() + 1);
-        return FindQuestionResponse.of(question, answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId));
+
+        AnswerListDTO answerList = answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId);
+
+        return FindQuestionResponse.of(question, answerList.getTotalPages(), answerList.getAnswers());
     }
 
     /**
      * [관리자 전용: 전체 질문 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<FindAllQuestionsResponse> findAllQuestions(
+    public FindAllQuestionsResponse findAllQuestions(
             final int pageNo,
             final String criterion
     ) {
         Page<Question> questions = questionRepository.findAllQuestions(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(QuestionException.QuestionNotFoundException::new);
 
-        return questions.getContent().stream()
-                .map(FindAllQuestionsResponse::from)
-                .toList();
+        return FindAllQuestionsResponse.of(
+                questions.getTotalPages(),
+                questions.getContent().stream()
+                        .map(QuestionsDTO::from)
+                        .toList()
+        );
     }
 
     /**
@@ -104,7 +100,7 @@ public class QuestionService {
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<FindAllQuestionsResponse> findQuestionsByStatus(
+    public FindAllQuestionsResponse findQuestionsByStatus(
             final int pageNo,
             final String criterion,
             final QuestionStatus questionStatus
@@ -112,9 +108,12 @@ public class QuestionService {
         Page<Question> questions = questionRepository.findAllByQuestionStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), questionStatus)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionStatus));
 
-        return questions.getContent().stream()
-                .map(FindAllQuestionsResponse::from)
-                .toList();
+        return FindAllQuestionsResponse.of(
+                questions.getTotalPages(),
+                questions.getContent().stream()
+                        .map(QuestionsDTO::from)
+                        .toList()
+        );
     }
 
     /**

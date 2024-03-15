@@ -1,31 +1,33 @@
 package com.coverflow.question.dto;
 
 import com.coverflow.question.domain.Answer;
+import com.coverflow.question.domain.AnswerStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AnswerDTO {
-
+public class AnswersDTO {
     private long answerId;
+    private String answerContent;
+    private boolean selection;
     private String answererNickname;
     private String answererTag;
-    private String answerContent;
+    private AnswerStatus answerStatus;
     private LocalDateTime createAt;
 
-    public static AnswerDTO from(final Answer answer) {
-        return new AnswerDTO(
+    public static AnswersDTO from(final Answer answer) {
+        return new AnswersDTO(
                 answer.getId(),
+                answer.getContent(),
+                answer.isSelection(),
                 answer.getMember().getNickname(),
                 answer.getMember().getTag(),
-                answer.getContent(),
+                answer.getAnswerStatus(),
                 answer.getCreatedAt()
         );
     }

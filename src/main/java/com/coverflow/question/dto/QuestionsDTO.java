@@ -1,6 +1,7 @@
 package com.coverflow.question.dto;
 
 import com.coverflow.question.domain.Question;
+import com.coverflow.question.domain.QuestionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,28 +11,30 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionDTO {
+public class QuestionsDTO {
 
     private long questionId;
+    private String companyName;
     private String questionerNickname;
     private String questionerTag;
     private String questionTitle;
-    private String questionContent;
     private int questionViewCount;
     private int answerCount;
     private int reward;
+    private QuestionStatus questionStatus;
     private LocalDateTime createAt;
 
-    public static QuestionDTO from(final Question question) {
-        return new QuestionDTO(
+    public static QuestionsDTO from(final Question question) {
+        return new QuestionsDTO(
                 question.getId(),
+                question.getCompany().getName(),
                 question.getMember().getNickname(),
                 question.getMember().getTag(),
                 question.getTitle(),
-                question.getContent(),
                 question.getViewCount(),
                 question.getAnswerCount(),
                 question.getReward(),
+                question.getQuestionStatus(),
                 question.getCreatedAt()
         );
     }

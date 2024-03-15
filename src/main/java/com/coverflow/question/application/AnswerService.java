@@ -9,6 +9,8 @@ import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.AnswerDTO;
+import com.coverflow.question.dto.AnswerListDTO;
+import com.coverflow.question.dto.AnswersDTO;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.request.UpdateSelectionRequest;
@@ -23,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
@@ -43,42 +44,37 @@ public class AnswerService {
      * [특정 질문에 대한 답변 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<AnswerDTO> findAllAnswersByQuestionId(
+    public AnswerListDTO findAllAnswersByQuestionId(
             final int pageNo,
             final String criterion,
             final long questionId
     ) {
-        Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndAnswerStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), questionId);
-        List<AnswerDTO> answers = new ArrayList<>();
+        Optional<Page<Answer>> answerList = answerRepository.findAllAnswersByQuestionIdAndAnswerStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), questionId);
 
-        if (optionalAnswers.isPresent()) {
-            Page<Answer> answerList = optionalAnswers.get();
-            for (int i = 0; i < answerList.getContent().size(); i++) {
-                answers.add(i, new AnswerDTO(
-                        answerList.getContent().get(i).getId(),
-                        answerList.getContent().get(i).getMember().getNickname(),
-                        answerList.getContent().get(i).getMember().getTag(),
-                        answerList.getContent().get(i).getContent(),
-                        answerList.getContent().get(i).getCreatedAt()));
-            }
-        }
-        return answers;
+        return answerList
+                .map(answerPage ->
+                        new AnswerListDTO(answerPage.getTotalPages(), answerPage.getContent().stream().map(AnswerDTO::from).toList())
+                )
+                .orElseGet(() -> new AnswerListDTO(0, new ArrayList<>()));
     }
 
     /**
      * [관리자 전용: 전체 답변 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<FindAnswerResponse> findAllAnswers(
+    public FindAnswerResponse findAllAnswers(
             final int pageNo,
             final String criterion
     ) {
         Page<Answer> answers = answerRepository.findAllAnswers(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(AnswerException.AnswerNotFoundException::new);
 
-        return answers.getContent().stream()
-                .map(FindAnswerResponse::from)
-                .toList();
+        return FindAnswerResponse.of(
+                answers.getTotalPages(),
+                answers.getContent().stream()
+                        .map(AnswersDTO::from)
+                        .toList()
+        );
     }
 
     /**
@@ -86,7 +82,7 @@ public class AnswerService {
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<FindAnswerResponse> findAnswersByStatus(
+    public FindAnswerResponse findAnswersByStatus(
             final int pageNo,
             final String criterion,
             final AnswerStatus answerStatus
@@ -94,9 +90,12 @@ public class AnswerService {
         Page<Answer> answers = answerRepository.findAllByAnswerStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), answerStatus)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerStatus));
 
-        return answers.getContent().stream()
-                .map(FindAnswerResponse::from)
-                .toList();
+        return FindAnswerResponse.of(
+                answers.getTotalPages(),
+                answers.getContent().stream()
+                        .map(AnswersDTO::from)
+                        .toList()
+        );
     }
 
     /**

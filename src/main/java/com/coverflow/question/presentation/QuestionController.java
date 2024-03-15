@@ -5,7 +5,6 @@ import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.question.application.QuestionService;
 import com.coverflow.question.domain.QuestionStatus;
-import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
@@ -21,8 +20,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RequestMapping("/api/question")
 @RestController
@@ -33,20 +30,19 @@ public class QuestionController {
     /**
      * 일단 보류
      */
-    @GetMapping("/questions/{companyId}")
-    public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
-            @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @PathVariable @Positive final long companyId
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<List<QuestionDTO>>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId))
-                        .build()
-                );
-    }
-
+//    @GetMapping("/questions/{companyId}")
+//    public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
+//            @RequestParam @PositiveOrZero final int pageNo,
+//            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+//            @PathVariable @Positive final long companyId
+//    ) {
+//        return ResponseEntity.ok()
+//                .body(ResponseHandler.<List<QuestionDTO>>builder()
+//                        .statusCode(HttpStatus.OK)
+//                        .data(questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId))
+//                        .build()
+//                );
+//    }
     @GetMapping("/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
@@ -64,12 +60,12 @@ public class QuestionController {
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findAllQuestions(
+    public ResponseEntity<ResponseHandler<FindAllQuestionsResponse>> findAllQuestions(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
+                .body(ResponseHandler.<FindAllQuestionsResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(questionService.findAllQuestions(pageNo, criterion))
                         .build()
@@ -78,13 +74,13 @@ public class QuestionController {
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findQuestionsByStatus(
+    public ResponseEntity<ResponseHandler<FindAllQuestionsResponse>> findQuestionsByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final QuestionStatus questionStatus
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
+                .body(ResponseHandler.<FindAllQuestionsResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(questionService.findQuestionsByStatus(pageNo, criterion, questionStatus))
                         .build()

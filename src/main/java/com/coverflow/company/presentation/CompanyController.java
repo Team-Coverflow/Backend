@@ -18,8 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequestMapping("/api/company")
 @RequiredArgsConstructor
 @RestController
@@ -28,12 +26,12 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping
-    public ResponseEntity<ResponseHandler<List<SearchCompanyResponse>>> searchCompanies(
+    public ResponseEntity<ResponseHandler<SearchCompanyResponse>> searchCompanies(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "name") @NotBlank final String name
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<SearchCompanyResponse>>builder()
+                .body(ResponseHandler.<SearchCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(companyService.searchCompanies(pageNo, name))
                         .build()
@@ -56,12 +54,12 @@ public class CompanyController {
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findAllCompanies(
+    public ResponseEntity<ResponseHandler<FindAllCompaniesResponse>> findAllCompanies(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
+                .body(ResponseHandler.<FindAllCompaniesResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(companyService.findAllCompanies(pageNo, criterion))
                         .build()
@@ -70,13 +68,13 @@ public class CompanyController {
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllCompaniesResponse>>> findPending(
+    public ResponseEntity<ResponseHandler<FindAllCompaniesResponse>> findPending(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final CompanyStatus companyStatus
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllCompaniesResponse>>builder()
+                .body(ResponseHandler.<FindAllCompaniesResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(companyService.findPending(pageNo, criterion, companyStatus))
                         .build()

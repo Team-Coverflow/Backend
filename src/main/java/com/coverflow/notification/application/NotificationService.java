@@ -2,7 +2,6 @@ package com.coverflow.notification.application;
 
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.notification.dto.request.UpdateNotificationRequest;
-import com.coverflow.notification.dto.response.FindNotificationResponse;
 import com.coverflow.notification.exception.NotificationException;
 import com.coverflow.notification.infrastructure.EmitterRepository;
 import com.coverflow.notification.infrastructure.NotificationRepository;
@@ -15,10 +14,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -114,19 +111,19 @@ public class NotificationService {
      * [알림 조회 메서드]
      * 현재 사용 x
      */
-    @Transactional(readOnly = true)
-    public List<FindNotificationResponse> findNotification(String memberId) {
-        List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId))
-                .orElseThrow(() -> new NotificationException.NotificationNotFoundException(memberId));
-        List<FindNotificationResponse> findNotifications = new ArrayList<>();
-
-        for (int i = 0; i < notifications.size(); i++) {
-            if (notifications.get(i).getCreatedAt().isAfter(LocalDateTime.now().minusDays(31))) {
-                findNotifications.add(i, FindNotificationResponse.from(notifications.get(i)));
-            }
-        }
-        return findNotifications;
-    }
+//    @Transactional(readOnly = true)
+//    public List<FindNotificationResponse> findNotification(String memberId) {
+//        List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId))
+//                .orElseThrow(() -> new NotificationException.NotificationNotFoundException(memberId));
+//        List<FindNotificationResponse> findNotifications = new ArrayList<>();
+//
+//        for (int i = 0; i < notifications.size(); i++) {
+//            if (notifications.get(i).getCreatedAt().isAfter(LocalDateTime.now().minusDays(31))) {
+//                findNotifications.add(i, FindNotificationResponse.from(notifications.get(i)));
+//            }
+//        }
+//        return findNotifications;
+//    }
 
     /**
      * [알림 수정 메서드]
