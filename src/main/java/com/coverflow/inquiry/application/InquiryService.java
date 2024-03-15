@@ -2,6 +2,7 @@ package com.coverflow.inquiry.application;
 
 import com.coverflow.inquiry.domain.Inquiry;
 import com.coverflow.inquiry.domain.InquiryStatus;
+import com.coverflow.inquiry.dto.InquiriesDTO;
 import com.coverflow.inquiry.dto.InquiryCountDTO;
 import com.coverflow.inquiry.dto.InquiryDTO;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
@@ -15,7 +16,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
@@ -46,7 +46,7 @@ public class InquiryService {
 
         InquiryCountDTO inquiryCountDTO = new InquiryCountDTO(allInquiryCount, waitInquiryCount, completeInquiryCount);
 
-        return new FindInquiryResponse(
+        return FindInquiryResponse.of(
                 inquiries.getTotalPages(),
                 inquiries.getContent()
                         .stream()
@@ -59,16 +59,19 @@ public class InquiryService {
      * [관리자 전용: 전체 문의 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<FindAllInquiriesResponse> findInquiries(
+    public FindAllInquiriesResponse findInquiries(
             final int pageNo,
             final String criterion
     ) {
         Page<Inquiry> inquiries = inquiryRepository.findInquiries(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(InquiryException.InquiryNotFoundException::new);
 
-        return inquiries.getContent().stream()
-                .map(FindAllInquiriesResponse::from)
-                .toList();
+        return FindAllInquiriesResponse.of(
+                inquiries.getTotalPages(),
+                inquiries.getContent().stream()
+                        .map(InquiriesDTO::from)
+                        .toList()
+        );
     }
 
     /**
@@ -76,7 +79,7 @@ public class InquiryService {
      * 특정 상태(답변대기/답변완료/삭제)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<FindAllInquiriesResponse> findInquiriesByStatus(
+    public FindAllInquiriesResponse findInquiriesByStatus(
             final int pageNo,
             final String criterion,
             final InquiryStatus inquiryStatus
@@ -84,9 +87,12 @@ public class InquiryService {
         Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), inquiryStatus)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryStatus));
 
-        return inquiries.getContent().stream()
-                .map(FindAllInquiriesResponse::from)
-                .toList();
+        return FindAllInquiriesResponse.of(
+                inquiries.getTotalPages(),
+                inquiries.getContent().stream()
+                        .map(InquiriesDTO::from)
+                        .toList()
+        );
     }
 
     /**

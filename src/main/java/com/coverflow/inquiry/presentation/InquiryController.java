@@ -20,8 +20,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RequestMapping("/api/inquiry")
 @RestController
@@ -45,12 +43,12 @@ public class InquiryController {
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiries(
+    public ResponseEntity<ResponseHandler<FindAllInquiriesResponse>> findInquiries(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
+                .body(ResponseHandler.<FindAllInquiriesResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(inquiryService.findInquiries(pageNo, criterion))
                         .build());
@@ -58,13 +56,13 @@ public class InquiryController {
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllInquiriesResponse>>> findInquiriesByStatus(
+    public ResponseEntity<ResponseHandler<FindAllInquiriesResponse>> findInquiriesByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @Valid final InquiryStatus inquiryStatus
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllInquiriesResponse>>builder()
+                .body(ResponseHandler.<FindAllInquiriesResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(inquiryService.findInquiriesByStatus(pageNo, criterion, inquiryStatus))
                         .build()
