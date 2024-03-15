@@ -1,15 +1,20 @@
 package com.coverflow.question.dto.response;
 
 import com.coverflow.question.domain.Question;
+import com.coverflow.question.domain.QuestionCategory;
+import com.coverflow.question.domain.QuestionTag;
 import com.coverflow.question.dto.AnswerDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public record FindQuestionResponse(
+        String companyName,
         long questionId,
         String questionTitle,
         String questionContent,
+        QuestionTag questionTag,
+        QuestionCategory questionCategory,
         int viewCount,
         int answerCount,
         int reward,
@@ -25,9 +30,12 @@ public record FindQuestionResponse(
             final int totalPages,
             final List<AnswerDTO> answers) {
         return new FindQuestionResponse(
+                question.getCompany().getName(),
                 question.getId(),
                 question.getTitle(),
                 question.getContent(),
+                question.getQuestionTag(),
+                question.getQuestionCategory(),
                 question.getViewCount(),
                 question.getAnswerCount(),
                 question.getReward(),
