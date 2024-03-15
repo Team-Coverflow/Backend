@@ -4,7 +4,6 @@ import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.dto.request.UpdateNotificationRequest;
-import com.coverflow.notification.dto.response.FindNotificationResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -38,17 +37,17 @@ public class NotificationController {
                 );
     }
 
-    @GetMapping
-    public ResponseEntity<ResponseHandler<List<FindNotificationResponse>>> findNotification(
-            @AuthenticationPrincipal final UserDetails userDetails
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindNotificationResponse>>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(notificationService.findNotification(userDetails.getUsername()))
-                        .build()
-                );
-    }
+//    @GetMapping
+//    public ResponseEntity<ResponseHandler<List<FindNotificationResponse>>> findNotification(
+//            @AuthenticationPrincipal final UserDetails userDetails
+//    ) {
+//        return ResponseEntity.ok()
+//                .body(ResponseHandler.<List<FindNotificationResponse>>builder()
+//                        .statusCode(HttpStatus.OK)
+//                        .data(notificationService.findNotification(userDetails.getUsername()))
+//                        .build()
+//                );
+//    }
 
     @PutMapping
     public ResponseEntity<ResponseHandler<Void>> updateNotification(
