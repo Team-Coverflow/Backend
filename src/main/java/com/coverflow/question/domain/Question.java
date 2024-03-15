@@ -36,6 +36,12 @@ public class Question extends BaseTimeEntity {
     private int reward; // 채택 시 보상
 
     @Enumerated(EnumType.STRING)
+    private QuestionTag questionTag; // 질문 태그 (문화/급여/업무/커리어/워라밸)
+
+    @Enumerated(EnumType.STRING)
+    private QuestionCategory questionCategory; // 질문 카테고리 (개발/디자인/마케팅)
+
+    @Enumerated(EnumType.STRING)
     private QuestionStatus questionStatus; // 질문 상태 (등록/삭제)
 
     @ManyToOne
@@ -82,15 +88,23 @@ public class Question extends BaseTimeEntity {
         this.content = question.getContent();
     }
 
-    public void updateQuestionStatus(final QuestionStatus questionStatus) {
-        this.questionStatus = questionStatus;
-    }
-
     public void updateViewCount(int viewCount) {
         this.viewCount = viewCount;
     }
 
     public void updateAnswerCount(int answerCount) {
         this.answerCount = answerCount;
+    }
+
+    public void updateQuestionTag(final QuestionTag questionTag) {
+        this.questionTag = questionTag;
+    }
+
+    public void updateQuestionCategory(final QuestionCategory questionCategory) {
+        this.questionCategory = questionCategory;
+    }
+
+    public void updateQuestionStatus(final QuestionStatus questionStatus) {
+        this.questionStatus = questionStatus;
     }
 }
