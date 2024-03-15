@@ -9,6 +9,7 @@ import com.coverflow.question.domain.QuestionStatus;
 import com.coverflow.question.dto.AnswerListDTO;
 import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.QuestionListDTO;
+import com.coverflow.question.dto.QuestionsDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
@@ -21,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
@@ -80,16 +80,19 @@ public class QuestionService {
      * [관리자 전용: 전체 질문 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<FindAllQuestionsResponse> findAllQuestions(
+    public FindAllQuestionsResponse findAllQuestions(
             final int pageNo,
             final String criterion
     ) {
         Page<Question> questions = questionRepository.findAllQuestions(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(QuestionException.QuestionNotFoundException::new);
 
-        return questions.getContent().stream()
-                .map(FindAllQuestionsResponse::from)
-                .toList();
+        return FindAllQuestionsResponse.of(
+                questions.getTotalPages(),
+                questions.getContent().stream()
+                        .map(QuestionsDTO::from)
+                        .toList()
+        );
     }
 
     /**
@@ -97,7 +100,7 @@ public class QuestionService {
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<FindAllQuestionsResponse> findQuestionsByStatus(
+    public FindAllQuestionsResponse findQuestionsByStatus(
             final int pageNo,
             final String criterion,
             final QuestionStatus questionStatus
@@ -105,9 +108,12 @@ public class QuestionService {
         Page<Question> questions = questionRepository.findAllByQuestionStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), questionStatus)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionStatus));
 
-        return questions.getContent().stream()
-                .map(FindAllQuestionsResponse::from)
-                .toList();
+        return FindAllQuestionsResponse.of(
+                questions.getTotalPages(),
+                questions.getContent().stream()
+                        .map(QuestionsDTO::from)
+                        .toList()
+        );
     }
 
     /**
