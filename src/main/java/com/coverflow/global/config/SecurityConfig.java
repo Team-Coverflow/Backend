@@ -41,7 +41,8 @@ public class SecurityConfig {
             "/api/auth/token",
             "/api/company",
             "/api/company/{companyId}",
-            "/api/question/{questionId}"
+            "/api/question/{questionId}",
+            "/api/feedback"
     };
     private final LoginService loginService;
     private final JwtService jwtService;

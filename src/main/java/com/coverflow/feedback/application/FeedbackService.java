@@ -2,6 +2,7 @@ package com.coverflow.feedback.application;
 
 import com.coverflow.feedback.domain.Feedback;
 import com.coverflow.feedback.dto.FeedbackDTO;
+import com.coverflow.feedback.dto.request.SaveFeedbackRequest;
 import com.coverflow.feedback.dto.response.FeedbackResponse;
 import com.coverflow.feedback.exception.FeedbackException;
 import com.coverflow.feedback.infrastructure.FeedbackRepository;
@@ -21,7 +22,7 @@ public class FeedbackService {
             final int pageNo,
             final String criterion
     ) {
-        Page<Feedback> feedbacks = feedbackRepository.findAll(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
+        Page<Feedback> feedbacks = feedbackRepository.findAllFeedbacks(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(FeedbackException.FeedbackNotFoundException::new);
 
         return FeedbackResponse.of(
@@ -31,5 +32,12 @@ public class FeedbackService {
                         .map(FeedbackDTO::from)
                         .toList()
         );
+    }
+
+    public void saveFeedback(final SaveFeedbackRequest request) {
+        feedbackRepository.save(new Feedback(request));
+    }
+
+    public void deleteFeedback(final long feedbackId) {
     }
 }
