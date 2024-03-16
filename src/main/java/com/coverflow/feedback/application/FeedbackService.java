@@ -17,7 +17,7 @@ public class FeedbackService {
     private FeedbackRepository feedbackRepository;
 
     /**
-     * [전체 피드백 조회 메서드]
+     * [관리자: 전체 피드백 조회 메서드]
      */
     @Transactional(readOnly = true)
     public FeedbackResponse findFeedback(
@@ -45,7 +45,7 @@ public class FeedbackService {
     }
 
     /**
-     * [피드백 삭제 메서드]
+     * [관리자: 특정 피드백 삭제 메서드]
      */
     @Transactional
     public void deleteFeedback(final long feedbackId) {
