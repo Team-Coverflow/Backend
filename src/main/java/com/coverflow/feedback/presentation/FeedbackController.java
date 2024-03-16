@@ -53,7 +53,7 @@ public class FeedbackController {
         feedbackService.deleteFeedback(feedbackId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.CREATED)
+                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 }
