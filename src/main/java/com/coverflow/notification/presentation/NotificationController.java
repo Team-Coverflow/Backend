@@ -25,16 +25,19 @@ public class NotificationController {
 
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<SseEmitter>> connect(
+    public ResponseEntity<SseEmitter> connect(
             @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") final String lastEventId,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<SseEmitter>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(notificationService.connect(userDetails.getUsername(), lastEventId))
-                        .build()
-                );
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        return ResponseEntity.ok()
+//                .body(ResponseHandler.<SseEmitter>builder()
+//                        .statusCode(HttpStatus.OK)
+//                        .data(notificationService.connect(userDetails.getUsername(), lastEventId))
+//                        .build()
+//                );
+        return ResponseEntity.ok(notificationService.connect(userDetails.getUsername(), lastEventId));
     }
 
 //    @GetMapping
