@@ -103,6 +103,7 @@ public class NotificationService {
                     .data(object)
             );
         } catch (IOException e) {
+            emitterRepository.delete(eventId);
             throw new RuntimeException("알림 서버 연결 오류");
         }
     }
@@ -147,5 +148,4 @@ public class NotificationService {
         LocalDateTime date = LocalDateTime.now().minusDays(30);
         notificationRepository.deleteByCreatedAt(date);
     }
-
 }
