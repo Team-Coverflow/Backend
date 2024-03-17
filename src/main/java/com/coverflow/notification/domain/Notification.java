@@ -33,6 +33,12 @@ public class Notification extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     private Member member; // 회원 정보
 
+    public Notification(final Member member) {
+        this.type = NotificationType.DAILY;
+        this.notificationStatus = NotificationStatus.NO;
+        this.member = member;
+    }
+
     public Notification(final Question question) {
         this.content = question.getCompany().getName();
         this.url = "/company-info/" +
