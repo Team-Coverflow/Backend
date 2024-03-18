@@ -76,7 +76,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.UNAUTHORIZED.value())
-                .body(new ErrorResponse(HttpStatus.UNAUTHORIZED.getReasonPhrase()));
+                .body(new ErrorResponse("액세스 토큰이 유효하지 않습니다."));
     }
 
 
