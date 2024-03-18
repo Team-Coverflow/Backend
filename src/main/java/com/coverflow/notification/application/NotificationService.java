@@ -1,5 +1,6 @@
 package com.coverflow.notification.application;
 
+import com.coverflow.member.application.CurrencyService;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.notification.dto.request.UpdateNotificationRequest;
 import com.coverflow.notification.exception.NotificationException;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -23,6 +25,7 @@ import java.util.Map;
 public class NotificationService {
 
     private static final long DEFAULT_TIMEOUT = 60L * 1000 * 60;
+    private final CurrencyService currencyService;
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
 
@@ -56,6 +59,9 @@ public class NotificationService {
 
         // 첫 연결 시 503 Service Unavailable 방지용 더미 Event 전송
         sendToClient(eventId, emitter, "알림 서버 연결 성공. [memberId = " + memberId + "]");
+
+        // 출석 체크
+        currencyService.dailyCheck(UUID.fromString(memberId));
 
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 모두 전송
         if (!lastEventId.isEmpty()) {
