@@ -2,7 +2,6 @@ package com.coverflow.global.oauth2.service;
 
 import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.util.AesUtil;
-import com.coverflow.member.application.CurrencyService;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.RefreshTokenStatus;
@@ -23,7 +22,6 @@ import java.util.UUID;
 public class OAuth2LoginService {
 
     private final JwtService jwtService;
-    private final CurrencyService currencyService;
     private final VisitorService visitorService;
     private final MemberRepository memberRepository;
 
@@ -65,9 +63,6 @@ public class OAuth2LoginService {
         // 리프레쉬 토큰 상태 로그인으로 변경
         findMember.updateRefreshToken(refreshToken);
         findMember.updateTokenStatus(RefreshTokenStatus.LOGIN);
-
-        // 출석 체크
-        currencyService.dailyCheck(findMember.getId());
 
         // 접속 시간 업데이트
         findMember.updateConnectedAt();

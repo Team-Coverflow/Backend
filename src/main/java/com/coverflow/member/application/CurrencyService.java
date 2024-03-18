@@ -5,8 +5,6 @@ import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
-import com.coverflow.notification.domain.NotificationStatus;
-import com.coverflow.notification.domain.NotificationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +27,6 @@ public class CurrencyService {
     public void dailyCheck(final UUID username) {
         Member member = memberRepository.findById(username)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
-        Notification notification = Notification.builder()
-                .type(NotificationType.DAILY)
-                .notificationStatus(NotificationStatus.NO)
-                .member(member)
-                .build();
 
         // 오늘 첫 로그인 시 = 출석
         if (null == member.getConnectedAt() ||
@@ -42,7 +35,7 @@ public class CurrencyService {
             member.updateFishShapedBun(member.getFishShapedBun() + 5);
 
             // 출석 체크 알림
-            notificationService.sendNotification(notification);
+            notificationService.sendNotification(new Notification(member));
         }
     }
 
