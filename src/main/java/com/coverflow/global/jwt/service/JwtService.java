@@ -2,8 +2,6 @@ package com.coverflow.global.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.coverflow.member.domain.Member;
-import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.infrastructure.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -13,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.Optional;
@@ -143,17 +140,12 @@ public class JwtService {
     public Optional<UUID> extractMemberId(
             final String accessToken
     ) {
-        try {
-            // 토큰 유효성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
-            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
-                    .build() // 반환된 빌더로 JWT verifier 생성
-                    .verify(accessToken) // accessToken을 검증하고 유효하지 않다면 예외 발생
-                    .getClaim(MEMBER_ID_CLAIM) // claim(MemberId) 가져오기
-                    .as(UUID.class));
-        } catch (Exception e) {
-            log.error("액세스 토큰이 유효하지 않습니다.");
-            return Optional.empty();
-        }
+        // 토큰 유효성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
+        return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
+                .build() // 반환된 빌더로 JWT verifier 생성
+                .verify(accessToken) // accessToken을 검증하고 유효하지 않다면 예외 발생
+                .getClaim(MEMBER_ID_CLAIM) // claim(MemberId) 가져오기
+                .as(UUID.class));
     }
 
     /**
@@ -176,29 +168,28 @@ public class JwtService {
         response.setHeader(refreshHeader, refreshToken);
     }
 
-    /**
-     * RefreshToken DB 저장(업데이트)
+    /*
+      RefreshToken DB 저장(업데이트)
+      사용 x
      */
-    @Transactional
-    public void updateRefreshToken(
-            final UUID memberId,
-            final String refreshToken
-    ) {
-        Member member = memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION)
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+//    @Transactional
+//    public void updateRefreshToken(
+//            final UUID memberId,
+//            final String refreshToken
+//    ) {
+//        Member member = memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION)
+//                .orElseThrow(() -> new IllegalArgumentException("일치하는 회원이 없습니다."));
+//
+//        member.updateRefreshToken(refreshToken);
+//    }
 
-        member.updateRefreshToken(refreshToken);
-    }
-
+    /**
+     * [토큰 유효성 검사 메서드]
+     */
     public boolean isTokenValid(
             final String token
     ) {
-        try {
-            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
-            return true;
-        } catch (Exception e) {
-            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
-            return false;
-        }
+        JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+        return true;
     }
 }

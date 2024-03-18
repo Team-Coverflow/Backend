@@ -1,5 +1,6 @@
 package com.coverflow.global.handler;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,6 +67,18 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(new ErrorResponse(DEFAULT_FORMAT_ERROR_MESSAGE));
     }
+
+    @ExceptionHandler(value = {
+            JWTVerificationException.class
+    })
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(final MethodArgumentTypeMismatchException exception) {
+        log.warn(exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED.value())
+                .body(new ErrorResponse("액세스 토큰이 유효하지 않습니다."));
+    }
+
 
     @ExceptionHandler(value = {
             CompanyNotFoundException.class,

@@ -2,7 +2,6 @@ package com.coverflow.global.oauth2.handler;
 
 import com.coverflow.global.oauth2.CustomOAuth2User;
 import com.coverflow.global.util.AesUtil;
-import com.coverflow.member.infrastructure.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +25,6 @@ import java.net.URI;
 @RequiredArgsConstructor
 @Component
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
-
-    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
