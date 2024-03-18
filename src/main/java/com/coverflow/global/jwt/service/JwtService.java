@@ -190,15 +190,13 @@ public class JwtService {
         member.updateRefreshToken(refreshToken);
     }
 
+    /**
+     * [토큰 유효성 검사 메서드]
+     */
     public boolean isTokenValid(
             final String token
     ) {
-        try {
-            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
-            return true;
-        } catch (Exception e) {
-            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
-            return false;
-        }
+        JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+        return true;
     }
 }
