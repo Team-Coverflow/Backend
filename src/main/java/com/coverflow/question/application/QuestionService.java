@@ -6,13 +6,11 @@ import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.CurrencyService;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.domain.QuestionStatus;
-import com.coverflow.question.dto.AnswerListDTO;
-import com.coverflow.question.dto.QuestionDTO;
-import com.coverflow.question.dto.QuestionListDTO;
-import com.coverflow.question.dto.QuestionsDTO;
+import com.coverflow.question.dto.*;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
+import com.coverflow.question.dto.response.FindMyQuestionsResponse;
 import com.coverflow.question.dto.response.FindQuestionResponse;
 import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.QuestionRepository;
@@ -25,8 +23,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
-import static com.coverflow.global.constant.Constant.SMALL_PAGE_SIZE;
+import static com.coverflow.global.constant.Constant.*;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
 
 @RequiredArgsConstructor
@@ -43,18 +40,18 @@ public class QuestionService {
      * 회원 id로 조회
      */
     @Transactional(readOnly = true)
-    public QuestionListDTO findByMemberId(
+    public FindMyQuestionsResponse findByMemberId(
             final int pageNo,
             final String criterion,
             final UUID memberId
     ) {
-        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), companyId);
+        Page<Question> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), memberId)
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(memberId));
 
-        return questionList
-                .map(questionPage ->
-                        new QuestionListDTO(questionPage.getTotalPages(), questionPage.getContent().stream().map(QuestionDTO::from).toList())
-                )
-                .orElseGet(() -> new QuestionListDTO(0, new ArrayList<>()));
+        return FindMyQuestionsResponse.of(
+                questionList.getTotalPages(),
+                questionList.getContent().stream().map(MyQuestionDTO::from).toList()
+        );
     }
 
     /**
@@ -67,7 +64,7 @@ public class QuestionService {
             final String criterion,
             final long companyId
     ) {
-        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), companyId);
+        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId);
 
         return questionList
                 .map(questionPage ->

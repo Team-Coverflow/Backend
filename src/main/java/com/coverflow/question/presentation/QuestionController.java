@@ -8,6 +8,7 @@ import com.coverflow.question.domain.QuestionStatus;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
+import com.coverflow.question.dto.response.FindMyQuestionsResponse;
 import com.coverflow.question.dto.response.FindQuestionResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -20,6 +21,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @RequestMapping("/api/question")
 @RestController
@@ -27,31 +30,17 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
-    /**
-     * 일단 보류
-     */
-//    @GetMapping("/questions/{companyId}")
-//    public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
-//            @RequestParam @PositiveOrZero final int pageNo,
-//            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-//            @PathVariable @Positive final long companyId
-//    ) {
-//        return ResponseEntity.ok()
-//                .body(ResponseHandler.<List<QuestionDTO>>builder()
-//                        .statusCode(HttpStatus.OK)
-//                        .data(questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId))
-//                        .build()
-//                );
-//    }
     @GetMapping("/me")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> findMyQuestions(
+    public ResponseEntity<ResponseHandler<FindMyQuestionsResponse>> findMyQuestions(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<Void>builder()
+                .body(ResponseHandler.<FindMyQuestionsResponse>builder()
+                        .statusCode(HttpStatus.OK)
+                        .data(questionService.findByMemberId(pageNo, criterion, UUID.fromString(userDetails.getUsername())))
                         .build()
                 );
     }

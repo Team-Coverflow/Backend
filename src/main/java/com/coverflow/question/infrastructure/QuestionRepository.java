@@ -16,6 +16,18 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
     @Query("""
             SELECT q
             FROM Question q
+            WHERE q.member.id = :memberId
+            AND q.questionStatus = 'REGISTRATION'
+            ORDER BY q.createdAt DESC
+            """)
+    Optional<Page<Question>> findRegisteredQuestions(
+            final Pageable pageable,
+            @Param("memberId") final UUID memberId
+    );
+
+    @Query("""
+            SELECT q
+            FROM Question q
             WHERE q.company.id = :companyId
             AND q.questionStatus = 'REGISTRATION'
             ORDER BY q.createdAt DESC
@@ -48,6 +60,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             final Pageable pageable,
             @Param("questionStatus") final QuestionStatus questionStatus
     );
-    
+
     void deleteByMemberId(UUID id);
 }
