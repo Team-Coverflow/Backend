@@ -6,13 +6,13 @@ import java.util.List;
 
 public record FindInquiryResponse(
         int totalPages,
-        List<InquiryDTO> inquiryList
+        List<InquiryDTO> inquiries
 ) {
 
     public static FindInquiryResponse of(
             final int totalPages,
-            final List<InquiryDTO> inquiryList
+            final List<InquiryDTO> inquiries
     ) {
-        return new FindInquiryResponse(totalPages, inquiryList);
+        return new FindInquiryResponse(totalPages, inquiries);
     }
 }

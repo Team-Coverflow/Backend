@@ -11,8 +11,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FeedbackDTO {
-    private long id;
-    private String content;
+    private long feedbackId;
+    private String feedbackContent;
     private LocalDate createdAt;
 
     public static FeedbackDTO from(final Feedback feedback) {
