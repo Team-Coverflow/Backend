@@ -11,8 +11,8 @@ public record FindMyQuestionsResponse(
 
     public static FindMyQuestionsResponse of(
             final int totalPages,
-            final List<MyQuestionDTO> myQuestion
+            final List<MyQuestionDTO> questions
     ) {
-        return new FindMyQuestionsResponse(totalPages, myQuestion);
+        return new FindMyQuestionsResponse(totalPages, questions);
     }
 }
