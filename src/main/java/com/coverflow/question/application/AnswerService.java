@@ -64,6 +64,7 @@ public class AnswerService {
     /**
      * [내 답변 목록 조회 메서드]
      */
+    @Transactional(readOnly = true)
     public FindMyAnswersResponse findByMemberId(
             final int pageNo,
             final String criterion,
