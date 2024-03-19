@@ -27,9 +27,9 @@ public class InquiryController {
 
     private final InquiryService inquiryService;
 
-    @GetMapping
+    @GetMapping("/me")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<FindInquiryResponse>> findInquiryByMemberId(
+    public ResponseEntity<ResponseHandler<FindInquiryResponse>> findMyInquiries(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @AuthenticationPrincipal final UserDetails userDetails
@@ -37,26 +37,26 @@ public class InquiryController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindInquiryResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(inquiryService.findInquiryByMemberId(pageNo, criterion, userDetails.getUsername()))
+                        .data(inquiryService.findMyInquiries(pageNo, criterion, userDetails.getUsername()))
                         .build());
     }
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllInquiriesResponse>> findInquiries(
+    public ResponseEntity<ResponseHandler<FindAllInquiriesResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllInquiriesResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(inquiryService.findInquiries(pageNo, criterion))
+                        .data(inquiryService.find(pageNo, criterion))
                         .build());
     }
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllInquiriesResponse>> findInquiriesByStatus(
+    public ResponseEntity<ResponseHandler<FindAllInquiriesResponse>> findByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @Valid final InquiryStatus inquiryStatus
@@ -64,18 +64,18 @@ public class InquiryController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllInquiriesResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(inquiryService.findInquiriesByStatus(pageNo, criterion, inquiryStatus))
+                        .data(inquiryService.findByStatus(pageNo, criterion, inquiryStatus))
                         .build()
                 );
     }
 
     @PostMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> saveInquiry(
+    public ResponseEntity<ResponseHandler<Void>> save(
             @RequestBody @Valid final SaveInquiryRequest saveInquiryRequest,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        inquiryService.saveInquiry(saveInquiryRequest, userDetails.getUsername());
+        inquiryService.save(saveInquiryRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
@@ -84,10 +84,10 @@ public class InquiryController {
 
     @PutMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> updateInquiry(
+    public ResponseEntity<ResponseHandler<Void>> update(
             @RequestBody @Valid final UpdateInquiryRequest updateInquiryRequest
     ) {
-        inquiryService.updateInquiry(updateInquiryRequest);
+        inquiryService.update(updateInquiryRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
@@ -96,10 +96,10 @@ public class InquiryController {
 
     @DeleteMapping("/admin/{inquiryId}")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteInquiry(
+    public ResponseEntity<ResponseHandler<Void>> delete(
             @PathVariable @Positive final long inquiryId
     ) {
-        inquiryService.deleteInquiry(inquiryId);
+        inquiryService.delete(inquiryId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
