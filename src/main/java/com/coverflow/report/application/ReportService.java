@@ -32,12 +32,12 @@ public class ReportService {
      * [특정 회원의 신고 리스트 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public FindReportResponse findReportsByMemberId(
+    public FindReportResponse findMyReport(
             final String memberId,
             final int pageNo,
             final String criterion
     ) {
-        Page<Report> reports = reportRepository.findReportsByMemberId(memberId, generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
+        Page<Report> reports = reportRepository.findByMemberId(memberId, generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(memberId));
 
         return FindReportResponse.of(
@@ -52,11 +52,11 @@ public class ReportService {
      * [관리자 전용: 전체 신고 리스트 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public FindReportResponse findReports(
+    public FindReportResponse find(
             final int pageNo,
             final String criterion
     ) {
-        Page<Report> reports = reportRepository.findAllReports(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
+        Page<Report> reports = reportRepository.find(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(ReportException.ReportNotFoundException::new);
 
         return FindReportResponse.of(
@@ -72,12 +72,12 @@ public class ReportService {
      * 특정 상태(등록/삭제)의 신고를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public FindReportResponse findReportsByStatus(
+    public FindReportResponse findByStatus(
             final int pageNo,
             final String criterion,
             final ReportStatus reportStatus
     ) {
-        Page<Report> reports = reportRepository.findAllByReportStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), reportStatus)
+        Page<Report> reports = reportRepository.findByReportStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), reportStatus)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(reportStatus));
 
         return FindReportResponse.of(
@@ -92,7 +92,7 @@ public class ReportService {
      * [신고 등록 메서드]
      */
     @Transactional
-    public void saveReport(
+    public void save(
             final SaveReportRequest request,
             final String memberId
     ) {
@@ -115,7 +115,7 @@ public class ReportService {
      * [관리자 전용: 신고 삭제 메서드]
      */
     @Transactional
-    public void deleteReport(final long reportId) {
+    public void delete(final long reportId) {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(reportId));
 

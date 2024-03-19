@@ -27,7 +27,7 @@ public class ReportController {
 
     @GetMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<FindReportResponse>> findReportByMemberId(
+    public ResponseEntity<ResponseHandler<FindReportResponse>> findMyReport(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @AuthenticationPrincipal final UserDetails userDetails
@@ -35,26 +35,26 @@ public class ReportController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindReportResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(reportService.findReportsByMemberId(userDetails.getUsername(), pageNo, criterion))
+                        .data(reportService.findMyReport(userDetails.getUsername(), pageNo, criterion))
                         .build());
     }
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindReportResponse>> findReports(
+    public ResponseEntity<ResponseHandler<FindReportResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindReportResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(reportService.findReports(pageNo, criterion))
+                        .data(reportService.find(pageNo, criterion))
                         .build());
     }
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindReportResponse>> findReportsByStatus(
+    public ResponseEntity<ResponseHandler<FindReportResponse>> findByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final ReportStatus reportStatus
@@ -62,18 +62,18 @@ public class ReportController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindReportResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(reportService.findReportsByStatus(pageNo, criterion, reportStatus))
+                        .data(reportService.findByStatus(pageNo, criterion, reportStatus))
                         .build()
                 );
     }
 
     @PostMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> saveReport(
+    public ResponseEntity<ResponseHandler<Void>> save(
             @RequestBody @Valid final SaveReportRequest saveReportRequest,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        reportService.saveReport(saveReportRequest, userDetails.getUsername());
+        reportService.save(saveReportRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
@@ -82,10 +82,10 @@ public class ReportController {
 
     @DeleteMapping("/admin/{reportId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
+    public ResponseEntity<ResponseHandler<Void>> delete(
             @PathVariable @Positive final long reportId
     ) {
-        reportService.deleteReport(reportId);
+        reportService.delete(reportId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

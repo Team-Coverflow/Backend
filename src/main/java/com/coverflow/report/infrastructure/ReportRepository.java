@@ -19,7 +19,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             WHERE r.member.id = :memberId
             AND r.reportStatus = 'REGISTRATION'
             """)
-    Optional<Page<Report>> findReportsByMemberId(
+    Optional<Page<Report>> findByMemberId(
             @Param("memberId") final String memberId,
             final Pageable pageable
     );
@@ -28,14 +28,14 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             SELECT r
             FROM Report r
             """)
-    Optional<Page<Report>> findAllReports(final Pageable pageable);
+    Optional<Page<Report>> find(final Pageable pageable);
 
     @Query("""
             SELECT r
             FROM Report r
             WHERE r.reportStatus = :reportStatus
             """)
-    Optional<Page<Report>> findAllByReportStatus(
+    Optional<Page<Report>> findByReportStatus(
             final Pageable pageable,
             @Param("reportStatus") final ReportStatus reportStatus
     );
