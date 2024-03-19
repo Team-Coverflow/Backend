@@ -19,26 +19,26 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class FeedbackController {
 
-    private FeedbackService feedbackService;
+    private final FeedbackService feedbackService;
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FeedbackResponse>> findFeedback(
+    public ResponseEntity<ResponseHandler<FeedbackResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FeedbackResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(feedbackService.findFeedback(pageNo, criterion))
+                        .data(feedbackService.find(pageNo, criterion))
                         .build());
     }
 
     @PostMapping
-    public ResponseEntity<ResponseHandler<Void>> saveFeedback(
+    public ResponseEntity<ResponseHandler<Void>> save(
             @RequestBody @Valid final SaveFeedbackRequest request
     ) {
-        feedbackService.saveFeedback(request);
+        feedbackService.save(request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
@@ -47,10 +47,10 @@ public class FeedbackController {
 
     @DeleteMapping("/admin/{feedbackId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteFeedback(
+    public ResponseEntity<ResponseHandler<Void>> delete(
             @PathVariable @Positive final long feedbackId
     ) {
-        feedbackService.deleteFeedback(feedbackId);
+        feedbackService.delete(feedbackId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

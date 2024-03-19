@@ -68,7 +68,7 @@ public class OAuth2LoginService {
         findMember.updateConnectedAt();
 
         // 일일 방문자 수 증가
-        visitorService.updateDailyVisitor();
+        visitorService.update();
 
         return accessToken + "/" + refreshToken;
     }

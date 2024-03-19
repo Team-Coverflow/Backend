@@ -130,7 +130,7 @@ public class AnswerService {
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
 
         answerRepository.save(new Answer(request, memberId));
-        notificationService.sendNotification(new Notification(question));
+        notificationService.send(new Notification(question));
         question.updateAnswerCount(question.getAnswerCount() + 1);
     }
 
@@ -146,7 +146,7 @@ public class AnswerService {
 
         answer.updateSelection(request.selection());
         member.updateFishShapedBun(member.getFishShapedBun() + answer.getQuestion().getReward());
-        notificationService.sendNotification(new Notification(answer, member));
+        notificationService.send(new Notification(answer, member));
     }
 
     /**

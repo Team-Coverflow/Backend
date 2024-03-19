@@ -33,7 +33,7 @@ public class InquiryService {
      * [특정 회원의 문의 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public FindInquiryResponse findInquiryByMemberId(
+    public FindInquiryResponse findMyInquiries(
             final int pageNo,
             final String criterion,
             final String memberId
@@ -59,7 +59,7 @@ public class InquiryService {
      * [관리자 전용: 전체 문의 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public FindAllInquiriesResponse findInquiries(
+    public FindAllInquiriesResponse find(
             final int pageNo,
             final String criterion
     ) {
@@ -79,7 +79,7 @@ public class InquiryService {
      * 특정 상태(답변대기/답변완료/삭제)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public FindAllInquiriesResponse findInquiriesByStatus(
+    public FindAllInquiriesResponse findByStatus(
             final int pageNo,
             final String criterion,
             final InquiryStatus inquiryStatus
@@ -99,7 +99,7 @@ public class InquiryService {
      * [문의 등록 메서드]
      */
     @Transactional
-    public void saveInquiry(
+    public void save(
             final SaveInquiryRequest request,
             final String memberId
     ) {
@@ -111,7 +111,7 @@ public class InquiryService {
      * [관리자 전용: 문의 수정 메서드]
      */
     @Transactional
-    public void updateInquiry(
+    public void update(
             final UpdateInquiryRequest request
     ) {
         Inquiry inquiry = inquiryRepository.findById(request.inquiryId())
@@ -125,7 +125,7 @@ public class InquiryService {
      * [관리자 전용: 문의 삭제 메서드]
      */
     @Transactional
-    public void deleteInquiry(final long inquiryId) {
+    public void delete(final long inquiryId) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
 

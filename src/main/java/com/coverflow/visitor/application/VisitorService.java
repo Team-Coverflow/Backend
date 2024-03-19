@@ -34,7 +34,7 @@ public class VisitorService {
      * 있으면 카운트 +1
      */
     @Transactional
-    public void updateDailyVisitor() {
+    public void update() {
         log.info(NOW);
         Visitor visitor = visitorRepository.findByToday(NOW).orElse(null);
         Visitor newVisitor = Visitor.builder()

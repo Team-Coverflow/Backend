@@ -6,7 +6,7 @@ import com.coverflow.member.domain.*;
 import com.coverflow.member.dto.MembersDTO;
 import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
-import com.coverflow.member.dto.response.FindMemberInfoResponse;
+import com.coverflow.member.dto.response.FindMemberResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.infrastructure.EmitterRepository;
@@ -82,17 +82,17 @@ public class MemberService {
      * [특정 회원 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public FindMemberInfoResponse findMemberById(final String username) {
+    public FindMemberResponse findMyMember(final String username) {
         Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
-        return FindMemberInfoResponse.from(member);
+        return FindMemberResponse.from(member);
     }
 
     /**
      * [관리자 전용: 전체 회원 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public FindAllMembersResponse findAllMembers(
+    public FindAllMembersResponse find(
             final int pageNo,
             final String criterion
     ) {
@@ -112,7 +112,7 @@ public class MemberService {
      * 특정 상태(등록/탈퇴)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public FindAllMembersResponse findMembersByStatus(
+    public FindAllMembersResponse findByStatus(
             final int pageNo,
             final String criterion,
             final MemberStatus memberStatus
@@ -132,7 +132,7 @@ public class MemberService {
      * [회원 추가 정보 등록 메서드]
      */
     @Transactional
-    public void saveMemberInfo(
+    public void save(
             final String username,
             final SaveMemberRequest request
     ) {
@@ -147,7 +147,7 @@ public class MemberService {
      * [닉네임 변경 메서드]
      */
     @Transactional
-    public UpdateNicknameResponse updateNickname(final String username) {
+    public UpdateNicknameResponse update(final String username) {
         Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
         String nickname = nicknameUtil.generateRandomNickname();
@@ -179,7 +179,7 @@ public class MemberService {
      * 30일 이후에 탈퇴(모든 데이터 소멸)
      */
     @Transactional
-    public void suspend(final String username) {
+    public void delete(final String username) {
         Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
 

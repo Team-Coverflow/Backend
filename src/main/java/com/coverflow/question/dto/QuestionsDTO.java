@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -22,7 +22,7 @@ public class QuestionsDTO {
     private int answerCount;
     private int reward;
     private QuestionStatus questionStatus;
-    private LocalDateTime createAt;
+    private LocalDate createAt;
 
     public static QuestionsDTO from(final Question question) {
         return new QuestionsDTO(
@@ -35,7 +35,7 @@ public class QuestionsDTO {
                 question.getAnswerCount(),
                 question.getReward(),
                 question.getQuestionStatus(),
-                question.getCreatedAt()
+                question.getCreatedAt().toLocalDate()
         );
     }
 }
