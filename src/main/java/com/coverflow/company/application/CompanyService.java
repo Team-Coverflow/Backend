@@ -164,7 +164,7 @@ public class CompanyService {
      * [관리자 전용: 기업 물리 삭제 메서드]
      */
     @Transactional
-    public void deleteReal(final long companyId) {
+    public void deleteData(final long companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
@@ -176,7 +176,7 @@ public class CompanyService {
      */
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
-    protected void deleteCompanyPeriodically() {
+    protected void deletePeriodically() {
         LocalDateTime date = LocalDateTime.now().minusDays(30);
         companyRepository.deleteByCompanyStatus(date);
     }

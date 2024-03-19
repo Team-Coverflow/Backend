@@ -130,10 +130,10 @@ public class CompanyController {
 
     @DeleteMapping("/admin/real/{companyId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteReal(
+    public ResponseEntity<ResponseHandler<Void>> deleteData(
             @PathVariable @Positive final long companyId
     ) {
-        companyService.deleteReal(companyId);
+        companyService.deleteData(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
