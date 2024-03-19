@@ -55,7 +55,7 @@ public class QuestionService {
     }
 
     /**
-     * [특정 회원의 질문 조회 메서드]
+     * [내 질문 조회 메서드]
      * 회원 id로 조회
      */
     @Transactional(readOnly = true)
@@ -88,7 +88,7 @@ public class QuestionService {
 
         question.updateViewCount(question.getViewCount() + 1);
 
-        AnswerListDTO answerList = answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId);
+        AnswerListDTO answerList = answerService.findByQuestionId(pageNo, criterion, questionId);
 
         return FindQuestionResponse.of(question, answerList.getTotalPages(), answerList.getAnswers());
     }
