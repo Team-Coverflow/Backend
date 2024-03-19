@@ -4,7 +4,7 @@ import com.coverflow.question.domain.Question;
 import com.coverflow.question.domain.QuestionTag;
 import com.coverflow.question.dto.AnswerDTO;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 public record FindQuestionResponse(
@@ -19,7 +19,7 @@ public record FindQuestionResponse(
         int reward,
         String questionerNickname,
         String questionerTag,
-        LocalDateTime createAt,
+        LocalDate createAt,
         int totalPages,
         List<AnswerDTO> answers
 ) {
@@ -40,7 +40,7 @@ public record FindQuestionResponse(
                 question.getReward(),
                 question.getMember().getNickname(),
                 question.getMember().getTag(),
-                question.getCreatedAt(),
+                question.getCreatedAt().toLocalDate(),
                 totalPages,
                 answers
         );

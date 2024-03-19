@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -18,7 +18,7 @@ public class AnswerDTO {
     private String answererNickname;
     private String answererTag;
     private String answerContent;
-    private LocalDateTime createAt;
+    private LocalDate createAt;
 
     public static AnswerDTO from(final Answer answer) {
         return new AnswerDTO(
@@ -26,7 +26,7 @@ public class AnswerDTO {
                 answer.getMember().getNickname(),
                 answer.getMember().getTag(),
                 answer.getContent(),
-                answer.getCreatedAt()
+                answer.getCreatedAt().toLocalDate()
         );
     }
 }
