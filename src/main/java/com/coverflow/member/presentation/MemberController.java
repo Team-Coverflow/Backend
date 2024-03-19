@@ -25,7 +25,7 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping
+    @GetMapping("/me")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindMemberResponse>> findMyMember(
             @AuthenticationPrincipal final UserDetails userDetails

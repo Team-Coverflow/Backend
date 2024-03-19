@@ -25,7 +25,7 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping
+    @GetMapping("/me")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindReportResponse>> findMyReport(
             @RequestParam @PositiveOrZero final int pageNo,
