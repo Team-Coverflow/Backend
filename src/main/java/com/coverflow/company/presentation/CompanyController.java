@@ -8,7 +8,9 @@ import com.coverflow.company.dto.response.FindAllCompaniesResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
+import com.coverflow.global.exception.GlobalException;
 import com.coverflow.global.handler.ResponseHandler;
+import com.vane.badwordfiltering.BadWordFiltering;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -85,6 +87,9 @@ public class CompanyController {
     public ResponseEntity<ResponseHandler<Void>> save(
             @RequestBody @Valid final SaveCompanyRequest saveCompanyRequest
     ) {
+        if (new BadWordFiltering().check(saveCompanyRequest.name())) {
+            throw new GlobalException.ExistBadwordException();
+        }
         companyService.save(saveCompanyRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
