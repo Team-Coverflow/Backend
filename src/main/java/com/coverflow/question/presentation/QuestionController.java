@@ -43,6 +43,19 @@ public class QuestionController {
 //                        .build()
 //                );
 //    }
+    @GetMapping("/me")
+    @MemberAuthorize
+    public ResponseEntity<ResponseHandler<Void>> findMyQuestions(
+            @RequestParam @PositiveOrZero final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @AuthenticationPrincipal final UserDetails userDetails
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .build()
+                );
+    }
+
     @GetMapping("/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
@@ -53,7 +66,7 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(questionService.findQuestionById(pageNo, criterion, questionId))
+                        .data(questionService.findByQuestionId(pageNo, criterion, questionId))
                         .build()
                 );
     }
@@ -67,7 +80,7 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllQuestionsResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(questionService.findAllQuestions(pageNo, criterion))
+                        .data(questionService.find(pageNo, criterion))
                         .build()
                 );
     }
@@ -82,7 +95,7 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllQuestionsResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(questionService.findQuestionsByStatus(pageNo, criterion, questionStatus))
+                        .data(questionService.findByStatus(pageNo, criterion, questionStatus))
                         .build()
                 );
     }
@@ -93,7 +106,7 @@ public class QuestionController {
             @RequestBody @Valid final SaveQuestionRequest saveQuestionRequest,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        questionService.saveQuestion(saveQuestionRequest, userDetails.getUsername());
+        questionService.save(saveQuestionRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
@@ -105,7 +118,7 @@ public class QuestionController {
     public ResponseEntity<ResponseHandler<Void>> updateQuestion(
             @RequestBody @Valid final UpdateQuestionRequest updateQuestionRequest
     ) {
-        questionService.updateQuestion(updateQuestionRequest);
+        questionService.update(updateQuestionRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
@@ -117,7 +130,7 @@ public class QuestionController {
     public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
             @PathVariable @Positive final long questionId
     ) {
-        questionService.deleteQuestion(questionId);
+        questionService.delete(questionId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
