@@ -53,10 +53,10 @@ public class NotificationController {
 //    }
 
     @PutMapping
-    public ResponseEntity<ResponseHandler<Void>> updateNotification(
+    public ResponseEntity<ResponseHandler<Void>> update(
             @RequestBody @Valid final List<UpdateNotificationRequest> requests
     ) {
-        notificationService.updateNotification(requests);
+        notificationService.update(requests);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

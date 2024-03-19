@@ -78,7 +78,7 @@ public class NotificationService {
      * [알림 전송 메서드]
      */
     @Transactional
-    public void sendNotification(final Notification notification) {
+    public void send(final Notification notification) {
         notificationRepository.save(notification);
 
         // 로그인 한 유저의 SseEmitter 모두 가져오기
@@ -136,7 +136,7 @@ public class NotificationService {
      * [알림 수정 메서드]
      */
     @Transactional
-    public void updateNotification(final List<UpdateNotificationRequest> request) {
+    public void update(final List<UpdateNotificationRequest> request) {
         for (UpdateNotificationRequest updateNotificationRequest : request) {
             final Notification notification = notificationRepository.findById(updateNotificationRequest.notificationId())
                     .orElseThrow(() -> new NotificationException.NotificationNotFoundException(updateNotificationRequest.notificationId()));
@@ -150,7 +150,7 @@ public class NotificationService {
      */
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
-    public void deleteNotification() {
+    public void delete() {
         LocalDateTime date = LocalDateTime.now().minusDays(30);
         notificationRepository.deleteByCreatedAt(date);
     }
