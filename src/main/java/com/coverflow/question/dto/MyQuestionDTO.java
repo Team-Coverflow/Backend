@@ -21,6 +21,7 @@ public class MyQuestionDTO {
     private String questionCategory;
     private int questionViewCount;
     private int answerCount;
+    private int reward;
     private LocalDate createAt;
 
     public static MyQuestionDTO from(final Question question) {
@@ -34,6 +35,7 @@ public class MyQuestionDTO {
                 question.getQuestionCategory(),
                 question.getViewCount(),
                 question.getAnswerCount(),
+                question.getReward(),
                 question.getCreatedAt().toLocalDate()
         );
     }

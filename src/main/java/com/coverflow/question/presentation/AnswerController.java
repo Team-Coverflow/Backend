@@ -30,7 +30,7 @@ public class AnswerController {
 
     private final AnswerService answerService;
 
-    @GetMapping("/my")
+    @GetMapping("/me")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindMyAnswersResponse>> findMyAnswers(
             @RequestParam @PositiveOrZero final int pageNo,

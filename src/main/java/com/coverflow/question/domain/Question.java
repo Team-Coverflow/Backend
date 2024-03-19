@@ -73,6 +73,7 @@ public class Question extends BaseTimeEntity {
         this.viewCount = 1;
         this.answerCount = 0;
         this.reward = request.reward();
+        this.questionTag = QuestionTag.valueOf(request.questionTag());
         this.questionStatus = QuestionStatus.REGISTRATION;
         this.company = Company.builder()
                 .id(request.companyId())
@@ -102,7 +103,7 @@ public class Question extends BaseTimeEntity {
     public void updateQuestionTag(final QuestionTag questionTag) {
         this.questionTag = questionTag;
     }
-    
+
     public void updateQuestionStatus(final QuestionStatus questionStatus) {
         this.questionStatus = questionStatus;
     }
