@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -24,7 +25,7 @@ public class MembersDTO {
     private int fishShapedBun;
     private MemberStatus memberStatus;
     private LocalDate createdAt;
-    private LocalDate connectedAt;
+    private LocalDateTime connectedAt;
     private Role role;
     private SocialType socialType;
 
@@ -39,7 +40,7 @@ public class MembersDTO {
                 member.getFishShapedBun(),
                 member.getMemberStatus(),
                 member.getCreatedAt().toLocalDate(),
-                member.getConnectedAt().toLocalDate(),
+                member.getConnectedAt(),
                 member.getRole(),
                 member.getSocialType()
         );

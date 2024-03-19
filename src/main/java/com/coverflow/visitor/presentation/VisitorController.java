@@ -1,5 +1,6 @@
 package com.coverflow.visitor.presentation;
 
+import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.visitor.application.VisitorService;
 import com.coverflow.visitor.dto.response.FindDailyVisitorResponse;
@@ -17,7 +18,8 @@ public class VisitorController {
 
     private final VisitorService visitorService;
 
-    @GetMapping
+    @GetMapping("/admin")
+    @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindDailyVisitorResponse>> findDailyCount() {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindDailyVisitorResponse>builder()

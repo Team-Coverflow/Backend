@@ -6,14 +6,14 @@ import java.util.List;
 
 public record FindAllCompaniesResponse(
         int totalPages,
-        List<CompaniesDTO> companiesList
+        List<CompaniesDTO> companies
 ) {
 
     public static FindAllCompaniesResponse of(
             final int totalPages,
-            final List<CompaniesDTO> companiesList
+            final List<CompaniesDTO> companies
     ) {
-        return new FindAllCompaniesResponse(totalPages, companiesList);
+        return new FindAllCompaniesResponse(totalPages, companies);
     }
 }
 
