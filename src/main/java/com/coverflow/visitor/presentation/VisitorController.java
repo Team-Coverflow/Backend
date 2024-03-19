@@ -17,7 +17,7 @@ public class VisitorController {
 
     private final VisitorService visitorService;
 
-    @GetMapping("/daily-count")
+    @GetMapping
     public ResponseEntity<ResponseHandler<FindDailyVisitorResponse>> findDailyCount() {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindDailyVisitorResponse>builder()
