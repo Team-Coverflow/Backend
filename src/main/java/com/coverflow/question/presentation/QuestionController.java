@@ -47,7 +47,7 @@ public class QuestionController {
 
     @GetMapping("/{questionId}")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
+    public ResponseEntity<ResponseHandler<FindQuestionResponse>> findByQuestionId(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @PathVariable @Positive final long questionId
@@ -62,7 +62,7 @@ public class QuestionController {
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllQuestionsResponse>> findAllQuestions(
+    public ResponseEntity<ResponseHandler<FindAllQuestionsResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
@@ -76,7 +76,7 @@ public class QuestionController {
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllQuestionsResponse>> findQuestionsByStatus(
+    public ResponseEntity<ResponseHandler<FindAllQuestionsResponse>> findByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final QuestionStatus questionStatus
@@ -91,7 +91,7 @@ public class QuestionController {
 
     @PostMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> saveQuestion(
+    public ResponseEntity<ResponseHandler<Void>> save(
             @RequestBody @Valid final SaveQuestionRequest saveQuestionRequest,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
@@ -104,7 +104,7 @@ public class QuestionController {
 
     @PutMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> updateQuestion(
+    public ResponseEntity<ResponseHandler<Void>> update(
             @RequestBody @Valid final UpdateQuestionRequest updateQuestionRequest
     ) {
         questionService.update(updateQuestionRequest);
@@ -116,7 +116,7 @@ public class QuestionController {
 
     @DeleteMapping("/admin/{questionId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
+    public ResponseEntity<ResponseHandler<Void>> delete(
             @PathVariable @Positive final long questionId
     ) {
         questionService.delete(questionId);
