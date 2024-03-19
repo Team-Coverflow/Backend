@@ -9,6 +9,7 @@ import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.request.UpdateSelectionRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
+import com.coverflow.question.dto.response.FindMyAnswersResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
@@ -20,6 +21,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @RequestMapping("/api/answer")
 @RestController
@@ -27,40 +30,38 @@ public class AnswerController {
 
     private final AnswerService answerService;
 
-    /**
-     * 일단 보류
-     */
-//    @GetMapping("/answers/{questionId}")
-//    @MemberAuthorize
-//    public ResponseEntity<ResponseHandler<List<AnswerDTO>>> findAnswer(
-//            @RequestParam @PositiveOrZero final int pageNo,
-//            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-//            @PathVariable @Positive final long questionId
-//    ) {
-//        return ResponseEntity.ok()
-//                .body(ResponseHandler.<List<AnswerDTO>>builder()
-//                        .statusCode(HttpStatus.OK)
-//                        .data(answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId))
-//                        .build()
-//                );
-//    }
+    @GetMapping("/my")
+    @MemberAuthorize
+    public ResponseEntity<ResponseHandler<FindMyAnswersResponse>> findMyAnswers(
+            @RequestParam @PositiveOrZero final int pageNo,
+            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
+            @AuthenticationPrincipal final UserDetails userDetails
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<FindMyAnswersResponse>builder()
+                        .statusCode(HttpStatus.OK)
+                        .data(answerService.findByMemberId(pageNo, criterion, UUID.fromString(userDetails.getUsername())))
+                        .build()
+                );
+    }
+
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAnswerResponse>> findAllAnswers(
+    public ResponseEntity<ResponseHandler<FindAnswerResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAnswerResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(answerService.findAllAnswers(pageNo, criterion))
+                        .data(answerService.find(pageNo, criterion))
                         .build()
                 );
     }
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAnswerResponse>> findAnswersByStatus(
+    public ResponseEntity<ResponseHandler<FindAnswerResponse>> findByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final AnswerStatus answerStatus
@@ -68,18 +69,18 @@ public class AnswerController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAnswerResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(answerService.findAnswersByStatus(pageNo, criterion, answerStatus))
+                        .data(answerService.findByStatus(pageNo, criterion, answerStatus))
                         .build()
                 );
     }
 
     @PostMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> saveAnswer(
+    public ResponseEntity<ResponseHandler<Void>> save(
             @RequestBody @Valid final SaveAnswerRequest saveAnswerRequest,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        answerService.saveAnswer(saveAnswerRequest, userDetails.getUsername());
+        answerService.save(saveAnswerRequest, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
@@ -88,10 +89,10 @@ public class AnswerController {
 
     @PutMapping("/selection")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> chooseAnswer(
+    public ResponseEntity<ResponseHandler<Void>> choose(
             @RequestBody @Valid final UpdateSelectionRequest updateSelectionRequest
     ) {
-        answerService.chooseAnswer(updateSelectionRequest);
+        answerService.choose(updateSelectionRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
@@ -100,10 +101,10 @@ public class AnswerController {
 
     @PutMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> updateAnswer(
+    public ResponseEntity<ResponseHandler<Void>> update(
             @RequestBody @Valid final UpdateAnswerRequest updateAnswerRequest
     ) {
-        answerService.updateAnswer(updateAnswerRequest);
+        answerService.update(updateAnswerRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
@@ -112,10 +113,10 @@ public class AnswerController {
 
     @DeleteMapping("/admin/{answerId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteAnswer(
+    public ResponseEntity<ResponseHandler<Void>> delete(
             @PathVariable @Positive final long answerId
     ) {
-        answerService.deleteAnswer(answerId);
+        answerService.delete(answerId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

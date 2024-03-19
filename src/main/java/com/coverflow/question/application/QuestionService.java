@@ -6,13 +6,11 @@ import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.CurrencyService;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.domain.QuestionStatus;
-import com.coverflow.question.dto.AnswerListDTO;
-import com.coverflow.question.dto.QuestionDTO;
-import com.coverflow.question.dto.QuestionListDTO;
-import com.coverflow.question.dto.QuestionsDTO;
+import com.coverflow.question.dto.*;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
+import com.coverflow.question.dto.response.FindMyQuestionsResponse;
 import com.coverflow.question.dto.response.FindQuestionResponse;
 import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.QuestionRepository;
@@ -23,9 +21,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 
-import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
-import static com.coverflow.global.constant.Constant.SMALL_PAGE_SIZE;
+import static com.coverflow.global.constant.Constant.*;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
 
 @RequiredArgsConstructor
@@ -39,21 +37,40 @@ public class QuestionService {
 
     /**
      * [특정 기업의 질문 조회 메서드]
-     * 기업 id로 조회
+     * 기업 id로 기업 및 질문 조회
      */
     @Transactional(readOnly = true)
-    public QuestionListDTO findAllQuestionsByCompanyId(
+    public CompanyAndQuestionDTO findByCompanyId(
             final int pageNo,
             final String criterion,
             final long companyId
     ) {
-        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), companyId);
+        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId);
 
         return questionList
                 .map(questionPage ->
-                        new QuestionListDTO(questionPage.getTotalPages(), questionPage.getContent().stream().map(QuestionDTO::from).toList())
+                        new CompanyAndQuestionDTO(questionPage.getTotalPages(), questionPage.getContent().stream().map(QuestionDTO::from).toList())
                 )
-                .orElseGet(() -> new QuestionListDTO(0, new ArrayList<>()));
+                .orElseGet(() -> new CompanyAndQuestionDTO(0, new ArrayList<>()));
+    }
+
+    /**
+     * [내 질문 조회 메서드]
+     * 회원 id로 조회
+     */
+    @Transactional(readOnly = true)
+    public FindMyQuestionsResponse findByMemberId(
+            final int pageNo,
+            final String criterion,
+            final UUID memberId
+    ) {
+        Page<Question> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), memberId)
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(memberId));
+
+        return FindMyQuestionsResponse.of(
+                questionList.getTotalPages(),
+                questionList.getContent().stream().map(MyQuestionDTO::from).toList()
+        );
     }
 
     /**
@@ -61,7 +78,7 @@ public class QuestionService {
      * 특정 질문 id로 질문 및 답변 조회
      */
     @Transactional
-    public FindQuestionResponse findQuestionById(
+    public FindQuestionResponse findByQuestionId(
             final int pageNo,
             final String criterion,
             final long questionId
@@ -71,7 +88,7 @@ public class QuestionService {
 
         question.updateViewCount(question.getViewCount() + 1);
 
-        AnswerListDTO answerList = answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId);
+        AnswerListDTO answerList = answerService.findByQuestionId(pageNo, criterion, questionId);
 
         return FindQuestionResponse.of(question, answerList.getTotalPages(), answerList.getAnswers());
     }
@@ -80,7 +97,7 @@ public class QuestionService {
      * [관리자 전용: 전체 질문 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public FindAllQuestionsResponse findAllQuestions(
+    public FindAllQuestionsResponse find(
             final int pageNo,
             final String criterion
     ) {
@@ -100,7 +117,7 @@ public class QuestionService {
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public FindAllQuestionsResponse findQuestionsByStatus(
+    public FindAllQuestionsResponse findByStatus(
             final int pageNo,
             final String criterion,
             final QuestionStatus questionStatus
@@ -120,7 +137,7 @@ public class QuestionService {
      * [질문 등록 메서드]
      */
     @Transactional
-    public void saveQuestion(
+    public void save(
             final SaveQuestionRequest request,
             final String memberId
     ) {
@@ -136,7 +153,7 @@ public class QuestionService {
      * [질문 수정 메서드]
      */
     @Transactional
-    public void updateQuestion(final UpdateQuestionRequest request) {
+    public void update(final UpdateQuestionRequest request) {
         Question question = questionRepository.findById(request.questionId())
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
 
@@ -147,7 +164,7 @@ public class QuestionService {
      * [관리자 전용: 질문 삭제 메서드]
      */
     @Transactional
-    public void deleteQuestion(final long questionId) {
+    public void delete(final long questionId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
