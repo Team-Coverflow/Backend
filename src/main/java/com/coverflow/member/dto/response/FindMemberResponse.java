@@ -6,6 +6,7 @@ import com.coverflow.member.domain.Role;
 import com.coverflow.member.domain.SocialType;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public record FindMemberResponse(
         String email,
@@ -16,7 +17,7 @@ public record FindMemberResponse(
         int fishShapedBun,
         MemberStatus memberStatus,
         LocalDate createdAt,
-        LocalDate connectedAt,
+        LocalDateTime connectedAt,
         Role role,
         SocialType socialType
 ) {
@@ -30,7 +31,7 @@ public record FindMemberResponse(
                 member.getFishShapedBun(),
                 member.getMemberStatus(),
                 member.getCreatedAt().toLocalDate(),
-                member.getConnectedAt().toLocalDate(),
+                member.getConnectedAt(),
                 member.getRole(),
                 member.getSocialType()
         );
