@@ -3,6 +3,7 @@ package com.coverflow.report.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
+import com.coverflow.global.util.BadwordUtil;
 import com.coverflow.report.application.ReportService;
 import com.coverflow.report.domain.ReportStatus;
 import com.coverflow.report.dto.request.SaveReportRequest;
@@ -70,10 +71,11 @@ public class ReportController {
     @PostMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> save(
-            @RequestBody @Valid final SaveReportRequest saveReportRequest,
+            @RequestBody @Valid final SaveReportRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        reportService.save(saveReportRequest, userDetails.getUsername());
+        BadwordUtil.check(request.content());
+        reportService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)

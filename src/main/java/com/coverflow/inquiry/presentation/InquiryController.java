@@ -3,6 +3,7 @@ package com.coverflow.inquiry.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
+import com.coverflow.global.util.BadwordUtil;
 import com.coverflow.inquiry.application.InquiryService;
 import com.coverflow.inquiry.domain.InquiryStatus;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
@@ -72,10 +73,12 @@ public class InquiryController {
     @PostMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> save(
-            @RequestBody @Valid final SaveInquiryRequest saveInquiryRequest,
+            @RequestBody @Valid final SaveInquiryRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        inquiryService.save(saveInquiryRequest, userDetails.getUsername());
+        BadwordUtil.check(request.title());
+        BadwordUtil.check(request.content());
+        inquiryService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
@@ -85,9 +88,10 @@ public class InquiryController {
     @PutMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> update(
-            @RequestBody @Valid final UpdateInquiryRequest updateInquiryRequest
+            @RequestBody @Valid final UpdateInquiryRequest request
     ) {
-        inquiryService.update(updateInquiryRequest);
+        BadwordUtil.check(request.inquiryAnswer());
+        inquiryService.update(request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

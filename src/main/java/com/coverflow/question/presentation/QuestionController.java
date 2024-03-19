@@ -3,6 +3,7 @@ package com.coverflow.question.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
+import com.coverflow.global.util.BadwordUtil;
 import com.coverflow.question.application.QuestionService;
 import com.coverflow.question.domain.QuestionStatus;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
@@ -92,10 +93,12 @@ public class QuestionController {
     @PostMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> save(
-            @RequestBody @Valid final SaveQuestionRequest saveQuestionRequest,
+            @RequestBody @Valid final SaveQuestionRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        questionService.save(saveQuestionRequest, userDetails.getUsername());
+        BadwordUtil.check(request.title());
+        BadwordUtil.check(request.content());
+        questionService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
@@ -105,9 +108,11 @@ public class QuestionController {
     @PutMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> update(
-            @RequestBody @Valid final UpdateQuestionRequest updateQuestionRequest
+            @RequestBody @Valid final UpdateQuestionRequest request
     ) {
-        questionService.update(updateQuestionRequest);
+        BadwordUtil.check(request.title());
+        BadwordUtil.check(request.content());
+        questionService.update(request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
