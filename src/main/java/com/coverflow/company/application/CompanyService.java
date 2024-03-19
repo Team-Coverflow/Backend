@@ -12,7 +12,7 @@ import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.question.application.QuestionService;
-import com.coverflow.question.dto.QuestionListDTO;
+import com.coverflow.question.dto.CompanyAndQuestionDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -55,7 +55,7 @@ public class CompanyService {
     }
 
     /**
-     * [기업 회사와 질문 조회 메서드]
+     * [특정 기업과 질문 조회 메서드]
      * 특정 기업과 질문 리스트를 조회하는 메서드
      */
     @Transactional(readOnly = true)
@@ -67,7 +67,7 @@ public class CompanyService {
         Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
-        QuestionListDTO questionList = questionService.findByCompanyId(pageNo, criterion, companyId);
+        CompanyAndQuestionDTO questionList = questionService.findByCompanyId(pageNo, criterion, companyId);
 
         return FindCompanyResponse.of(company, questionList.getTotalPages(), questionList.getQuestions());
     }

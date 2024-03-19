@@ -9,14 +9,14 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionListDTO {
+public class CompanyAndQuestionDTO {
     private int totalPages;
     private List<QuestionDTO> questions;
 
-    public static QuestionListDTO of(
+    public static CompanyAndQuestionDTO of(
             final int totalPages,
             final List<QuestionDTO> questions
     ) {
-        return new QuestionListDTO(totalPages, questions);
+        return new CompanyAndQuestionDTO(totalPages, questions);
     }
 }

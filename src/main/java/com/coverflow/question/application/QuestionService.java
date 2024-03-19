@@ -36,6 +36,25 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     /**
+     * [특정 기업의 질문 조회 메서드]
+     * 기업 id로 기업 및 질문 조회
+     */
+    @Transactional(readOnly = true)
+    public CompanyAndQuestionDTO findByCompanyId(
+            final int pageNo,
+            final String criterion,
+            final long companyId
+    ) {
+        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId);
+
+        return questionList
+                .map(questionPage ->
+                        new CompanyAndQuestionDTO(questionPage.getTotalPages(), questionPage.getContent().stream().map(QuestionDTO::from).toList())
+                )
+                .orElseGet(() -> new CompanyAndQuestionDTO(0, new ArrayList<>()));
+    }
+
+    /**
      * [특정 회원의 질문 조회 메서드]
      * 회원 id로 조회
      */
@@ -52,25 +71,6 @@ public class QuestionService {
                 questionList.getTotalPages(),
                 questionList.getContent().stream().map(MyQuestionDTO::from).toList()
         );
-    }
-
-    /**
-     * [특정 기업의 질문 조회 메서드]
-     * 기업 id로 조회
-     */
-    @Transactional(readOnly = true)
-    public QuestionListDTO findByCompanyId(
-            final int pageNo,
-            final String criterion,
-            final long companyId
-    ) {
-        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId);
-
-        return questionList
-                .map(questionPage ->
-                        new QuestionListDTO(questionPage.getTotalPages(), questionPage.getContent().stream().map(QuestionDTO::from).toList())
-                )
-                .orElseGet(() -> new QuestionListDTO(0, new ArrayList<>()));
     }
 
     /**
