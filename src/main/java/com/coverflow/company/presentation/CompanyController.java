@@ -26,20 +26,20 @@ public class CompanyController {
     private final CompanyService companyService;
 
     @GetMapping
-    public ResponseEntity<ResponseHandler<SearchCompanyResponse>> searchCompanies(
+    public ResponseEntity<ResponseHandler<SearchCompanyResponse>> search(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "name") @NotBlank final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<SearchCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(companyService.searchCompanies(pageNo, name))
+                        .data(companyService.search(pageNo, name))
                         .build()
                 );
     }
 
     @GetMapping("/{companyId}")
-    public ResponseEntity<ResponseHandler<FindCompanyResponse>> findCompanyById(
+    public ResponseEntity<ResponseHandler<FindCompanyResponse>> findByCompanyId(
             @PathVariable @Positive final long companyId,
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
@@ -47,21 +47,21 @@ public class CompanyController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(companyService.findCompanyById(pageNo, criterion, companyId))
+                        .data(companyService.findByCompanyId(pageNo, criterion, companyId))
                         .build()
                 );
     }
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllCompaniesResponse>> findAllCompanies(
+    public ResponseEntity<ResponseHandler<FindAllCompaniesResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllCompaniesResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(companyService.findAllCompanies(pageNo, criterion))
+                        .data(companyService.find(pageNo, criterion))
                         .build()
                 );
     }
@@ -82,10 +82,10 @@ public class CompanyController {
     }
 
     @PostMapping
-    public ResponseEntity<ResponseHandler<Void>> saveCompany(
+    public ResponseEntity<ResponseHandler<Void>> save(
             @RequestBody @Valid final SaveCompanyRequest saveCompanyRequest
     ) {
-        companyService.saveCompany(saveCompanyRequest);
+        companyService.save(saveCompanyRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
@@ -94,10 +94,10 @@ public class CompanyController {
 
     @PatchMapping("/admin/{companyId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> updateCompanyStatus(
+    public ResponseEntity<ResponseHandler<Void>> updateStatus(
             @PathVariable @Positive final long companyId
     ) {
-        companyService.updateCompanyStatus(companyId);
+        companyService.updateStatus(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
@@ -106,10 +106,10 @@ public class CompanyController {
 
     @PutMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> updateCompany(
+    public ResponseEntity<ResponseHandler<Void>> update(
             @RequestBody @Valid final UpdateCompanyRequest updateCompanyRequest
     ) {
-        companyService.updateCompany(updateCompanyRequest);
+        companyService.update(updateCompanyRequest);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
@@ -118,10 +118,10 @@ public class CompanyController {
 
     @DeleteMapping("/admin/{companyId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteCompany(
+    public ResponseEntity<ResponseHandler<Void>> delete(
             @PathVariable @Positive final long companyId
     ) {
-        companyService.deleteCompany(companyId);
+        companyService.delete(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
@@ -130,10 +130,10 @@ public class CompanyController {
 
     @DeleteMapping("/admin/real/{companyId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteCompanyReal(
+    public ResponseEntity<ResponseHandler<Void>> deleteReal(
             @PathVariable @Positive final long companyId
     ) {
-        companyService.deleteCompanyReal(companyId);
+        companyService.deleteReal(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

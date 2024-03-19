@@ -38,7 +38,7 @@ public class CompanyService {
      * 특정 이름으로 시작하는 기업 5개를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public SearchCompanyResponse searchCompanies(
+    public SearchCompanyResponse search(
             final int pageNo,
             final String name
     ) {
@@ -59,7 +59,7 @@ public class CompanyService {
      * 특정 기업과 질문 리스트를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public FindCompanyResponse findCompanyById(
+    public FindCompanyResponse findByCompanyId(
             final int pageNo,
             final String criterion,
             final long companyId
@@ -77,7 +77,7 @@ public class CompanyService {
      * 전체 기업을 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public FindAllCompaniesResponse findAllCompanies(
+    public FindAllCompaniesResponse find(
             final int pageNo,
             final String criterion
     ) {
@@ -119,7 +119,7 @@ public class CompanyService {
      * [기업 등록 메서드]
      */
     @Transactional
-    public void saveCompany(final SaveCompanyRequest request) {
+    public void save(final SaveCompanyRequest request) {
         if (companyRepository.findByName(request.name()).isPresent()) {
             throw new CompanyException.CompanyExistException(request.name());
         }
@@ -131,7 +131,7 @@ public class CompanyService {
      * [관리자 전용: 기업 상태 변경 메서드]
      */
     @Transactional
-    public void updateCompanyStatus(final long companyId) {
+    public void updateStatus(final long companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
@@ -142,7 +142,7 @@ public class CompanyService {
      * [관리자 전용: 기업 수정 메서드]
      */
     @Transactional
-    public void updateCompany(final UpdateCompanyRequest request) {
+    public void update(final UpdateCompanyRequest request) {
         Company company = companyRepository.findById(request.companyId())
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.companyId()));
 
@@ -153,7 +153,7 @@ public class CompanyService {
      * [관리자 전용: 기업 삭제 메서드]
      */
     @Transactional
-    public void deleteCompany(final long companyId) {
+    public void delete(final long companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
@@ -164,7 +164,7 @@ public class CompanyService {
      * [관리자 전용: 기업 물리 삭제 메서드]
      */
     @Transactional
-    public void deleteCompanyReal(final long companyId) {
+    public void deleteReal(final long companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
