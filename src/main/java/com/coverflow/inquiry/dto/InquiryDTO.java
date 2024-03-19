@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class InquiryDTO {
     private String inquiryAnswer;
     private InquiryStatus inquiryStatus;
     private String inquirerNickname;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
     private int allInquiriesCount;
     private int waitInquiriesCount;
     private int completeInquiriesCount;
@@ -34,7 +34,7 @@ public class InquiryDTO {
                 inquiry.getAnswer(),
                 inquiry.getInquiryStatus(),
                 inquiry.getMember().getNickname(),
-                inquiry.getCreatedAt(),
+                inquiry.getCreatedAt().toLocalDate(),
                 inquiryCountDTO.getAllInquiryCount(),
                 inquiryCountDTO.getWaitInquiryCount(),
                 inquiryCountDTO.getCompleteInquiryCount()

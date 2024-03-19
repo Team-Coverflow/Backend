@@ -2,6 +2,7 @@ package com.coverflow.feedback.domain;
 
 
 import com.coverflow.feedback.dto.request.SaveFeedbackRequest;
+import com.coverflow.global.entity.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -11,7 +12,7 @@ import lombok.*;
 @Builder
 @Entity
 @Table(name = "tbl_company")
-public class Feedback {
+public class Feedback extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

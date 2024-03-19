@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -18,7 +18,7 @@ public class InquiriesDTO {
     private String inquiryAnswer;
     private InquiryStatus inquiryStatus;
     private String inquirerNickname;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     public static InquiriesDTO from(final Inquiry inquiry) {
         return new InquiriesDTO(
@@ -28,7 +28,7 @@ public class InquiriesDTO {
                 inquiry.getAnswer(),
                 inquiry.getInquiryStatus(),
                 inquiry.getMember().getNickname(),
-                inquiry.getCreatedAt()
+                inquiry.getCreatedAt().toLocalDate()
         );
     }
 }
