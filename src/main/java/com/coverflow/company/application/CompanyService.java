@@ -67,7 +67,7 @@ public class CompanyService {
         Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
-        QuestionListDTO questionList = questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId);
+        QuestionListDTO questionList = questionService.findByCompanyId(pageNo, criterion, companyId);
 
         return FindCompanyResponse.of(company, questionList.getTotalPages(), questionList.getQuestions());
     }
