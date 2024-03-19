@@ -7,7 +7,7 @@ import com.coverflow.member.application.MemberService;
 import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
-import com.coverflow.member.dto.response.FindMemberInfoResponse;
+import com.coverflow.member.dto.response.FindMemberResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -27,32 +27,32 @@ public class MemberController {
 
     @GetMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<FindMemberInfoResponse>> findMemberById(
+    public ResponseEntity<ResponseHandler<FindMemberResponse>> findMyMember(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<FindMemberInfoResponse>builder()
+                .body(ResponseHandler.<FindMemberResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(memberService.findMemberById(userDetails.getUsername()))
+                        .data(memberService.findMyMember(userDetails.getUsername()))
                         .build());
     }
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllMembersResponse>> findAllMemberById(
+    public ResponseEntity<ResponseHandler<FindAllMembersResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllMembersResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(memberService.findAllMembers(pageNo, criterion))
+                        .data(memberService.find(pageNo, criterion))
                         .build());
     }
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllMembersResponse>> findMembersByStatus(
+    public ResponseEntity<ResponseHandler<FindAllMembersResponse>> findByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final MemberStatus memberStatus
@@ -60,17 +60,17 @@ public class MemberController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllMembersResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(memberService.findMembersByStatus(pageNo, criterion, memberStatus))
+                        .data(memberService.findByStatus(pageNo, criterion, memberStatus))
                         .build()
                 );
     }
 
     @PostMapping
-    public ResponseEntity<ResponseHandler<Void>> saveMember(
+    public ResponseEntity<ResponseHandler<Void>> save(
             @AuthenticationPrincipal final UserDetails userDetails,
             @RequestBody final SaveMemberRequest request
     ) {
-        memberService.saveMemberInfo(userDetails.getUsername(), request);
+        memberService.save(userDetails.getUsername(), request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
@@ -79,13 +79,13 @@ public class MemberController {
 
     @PutMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
+    public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> update(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<UpdateNicknameResponse>builder()
                         .statusCode(HttpStatus.RESET_CONTENT)
-                        .data(memberService.updateNickname(userDetails.getUsername()))
+                        .data(memberService.update(userDetails.getUsername()))
                         .build());
     }
 
@@ -103,10 +103,10 @@ public class MemberController {
 
     @DeleteMapping("/leave")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteMember(
+    public ResponseEntity<ResponseHandler<Void>> delete(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        memberService.suspend(userDetails.getUsername());
+        memberService.delete(userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
