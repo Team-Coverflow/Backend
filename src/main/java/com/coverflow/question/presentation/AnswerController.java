@@ -3,6 +3,7 @@ package com.coverflow.question.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
+import com.coverflow.global.util.BadwordUtil;
 import com.coverflow.question.application.AnswerService;
 import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
@@ -77,10 +78,11 @@ public class AnswerController {
     @PostMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> save(
-            @RequestBody @Valid final SaveAnswerRequest saveAnswerRequest,
+            @RequestBody @Valid final SaveAnswerRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        answerService.save(saveAnswerRequest, userDetails.getUsername());
+        BadwordUtil.check(request.content());
+        answerService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
@@ -90,9 +92,9 @@ public class AnswerController {
     @PutMapping("/selection")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> choose(
-            @RequestBody @Valid final UpdateSelectionRequest updateSelectionRequest
+            @RequestBody @Valid final UpdateSelectionRequest request
     ) {
-        answerService.choose(updateSelectionRequest);
+        answerService.choose(request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
@@ -102,9 +104,10 @@ public class AnswerController {
     @PutMapping("/admin")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> update(
-            @RequestBody @Valid final UpdateAnswerRequest updateAnswerRequest
+            @RequestBody @Valid final UpdateAnswerRequest request
     ) {
-        answerService.update(updateAnswerRequest);
+        BadwordUtil.check(request.content());
+        answerService.update(request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

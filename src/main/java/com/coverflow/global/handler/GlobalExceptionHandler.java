@@ -15,6 +15,7 @@ import java.util.Random;
 
 import static com.coverflow.company.exception.CompanyException.CompanyExistException;
 import static com.coverflow.company.exception.CompanyException.CompanyNotFoundException;
+import static com.coverflow.global.exception.GlobalException.ExistBadwordException;
 import static com.coverflow.inquiry.exception.InquiryException.InquiryNotFoundException;
 import static com.coverflow.member.exception.MemberException.*;
 import static com.coverflow.notification.exception.NotificationException.NotificationNotFoundException;
@@ -103,7 +104,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             CompanyExistException.class,
             QuestionExistException.class,
-            AnswerExistException.class,
+            AnswerExistException.class
     })
     public ResponseEntity<ErrorResponse> handleExistException(final RuntimeException exception) {
         String message = exception.getMessage();
@@ -117,7 +118,8 @@ public class GlobalExceptionHandler {
     // 커스텀 예외 사용 시
     @ExceptionHandler(value = {
             SuspendedMembershipException.class,
-            NotEnoughCurrencyException.class
+            NotEnoughCurrencyException.class,
+            ExistBadwordException.class
     })
     public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
         String message = exception.getMessage();
