@@ -128,43 +128,24 @@ public class CompanyService {
     }
 
     /**
-     * [관리자 전용: 기업 상태 변경 메서드]
-     */
-    @Transactional
-    public void updateStatus(final long companyId) {
-        Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
-
-        company.updateCompanyStatus(CompanyStatus.REGISTRATION);
-    }
-
-    /**
      * [관리자 전용: 기업 수정 메서드]
      */
     @Transactional
-    public void update(final UpdateCompanyRequest request) {
-        Company company = companyRepository.findById(request.companyId())
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(request.companyId()));
-
-        company.updateCompany(request);
-    }
-
-    /**
-     * [관리자 전용: 기업 삭제 메서드]
-     */
-    @Transactional
-    public void delete(final long companyId) {
+    public void update(
+            final long companyId,
+            final UpdateCompanyRequest request
+    ) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
-        company.updateCompanyStatus(CompanyStatus.DELETION);
+        company.updateCompany(request);
     }
 
     /**
      * [관리자 전용: 기업 물리 삭제 메서드]
      */
     @Transactional
-    public void deleteData(final long companyId) {
+    public void delete(final long companyId) {
         Company company = companyRepository.findById(companyId)
                 .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
 
