@@ -1,11 +1,9 @@
 package com.coverflow.company.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
 
 public record UpdateCompanyRequest(
-        @Positive
-        long companyId,
+
         @NotBlank
         String name,
         @NotBlank
@@ -14,6 +12,9 @@ public record UpdateCompanyRequest(
         String city,
         @NotBlank
         String district,
-        String establishment
+        @NotBlank
+        String establishment,
+        @NotBlank
+        String companyStatus
 ) {
 }

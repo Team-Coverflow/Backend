@@ -21,7 +21,8 @@ import java.util.UUID;
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
-import static com.coverflow.inquiry.domain.InquiryStatus.*;
+import static com.coverflow.inquiry.domain.InquiryStatus.COMPLETE;
+import static com.coverflow.inquiry.domain.InquiryStatus.WAIT;
 
 @RequiredArgsConstructor
 @Service
@@ -112,13 +113,13 @@ public class InquiryService {
      */
     @Transactional
     public void update(
+            final long inquiryId,
             final UpdateInquiryRequest request
     ) {
-        Inquiry inquiry = inquiryRepository.findById(request.inquiryId())
-                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(request.inquiryId()));
+        Inquiry inquiry = inquiryRepository.findById(inquiryId)
+                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
 
-        inquiry.updateAnswer(request.inquiryAnswer());
-        inquiry.updateInquiryStatus(COMPLETE);
+        inquiry.updateInquiry(request);
     }
 
     /**
@@ -129,6 +130,6 @@ public class InquiryService {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
 
-        inquiry.updateInquiryStatus(DELETION);
+        inquiryRepository.delete(inquiry);
     }
 }

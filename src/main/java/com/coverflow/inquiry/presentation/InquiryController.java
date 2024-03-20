@@ -85,13 +85,14 @@ public class InquiryController {
                         .build());
     }
 
-    @PutMapping("/admin")
+    @PatchMapping("/admin/{inquiryId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> update(
+            @PathVariable @Positive final long inquiryId,
             @RequestBody @Valid final UpdateInquiryRequest request
     ) {
         BadwordUtil.check(request.inquiryAnswer());
-        inquiryService.update(request);
+        inquiryService.update(inquiryId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

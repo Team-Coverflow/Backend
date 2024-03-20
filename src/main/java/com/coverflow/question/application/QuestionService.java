@@ -153,11 +153,14 @@ public class QuestionService {
      * [질문 수정 메서드]
      */
     @Transactional
-    public void update(final UpdateQuestionRequest request) {
-        Question question = questionRepository.findById(request.questionId())
-                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
+    public void update(
+            final long questionId,
+            final UpdateQuestionRequest request
+    ) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
-        question.updateQuestion(new Question(request));
+        question.updateQuestion(request);
     }
 
     /**
@@ -168,6 +171,6 @@ public class QuestionService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
-        question.updateQuestionStatus(QuestionStatus.DELETION);
+        questionRepository.delete(question);
     }
 }

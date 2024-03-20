@@ -15,7 +15,7 @@ import java.util.Random;
 
 import static com.coverflow.company.exception.CompanyException.CompanyExistException;
 import static com.coverflow.company.exception.CompanyException.CompanyNotFoundException;
-import static com.coverflow.global.exception.GlobalException.ExistBadwordException;
+import static com.coverflow.global.exception.GlobalException.*;
 import static com.coverflow.inquiry.exception.InquiryException.InquiryNotFoundException;
 import static com.coverflow.member.exception.MemberException.*;
 import static com.coverflow.notification.exception.NotificationException.NotificationNotFoundException;
@@ -76,7 +76,7 @@ public class GlobalExceptionHandler {
         log.warn(exception.getMessage());
 
         return ResponseEntity
-                .status(HttpStatus.UNAUTHORIZED.value())
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(new ErrorResponse("액세스 토큰이 유효하지 않습니다."));
     }
 
@@ -91,6 +91,7 @@ public class GlobalExceptionHandler {
             AnswerNotFoundException.class,
             ReportNotFoundException.class,
             DayNotFoundException.class,
+            JWTNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(final RuntimeException exception) {
         String message = exception.getMessage();
@@ -119,6 +120,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             SuspendedMembershipException.class,
             NotEnoughCurrencyException.class,
+            LogoutMemberException.class,
             ExistBadwordException.class
     })
     public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {

@@ -139,9 +139,12 @@ public class AnswerService {
      * [답변 채택 메서드]
      */
     @Transactional
-    public void choose(final UpdateSelectionRequest request) {
-        Answer answer = answerRepository.findById(request.answerId())
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
+    public void choose(
+            final long answerId,
+            final UpdateSelectionRequest request
+    ) {
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
         Member member = memberRepository.findById(answer.getMember().getId())
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(answer.getMember().getId()));
 
@@ -154,11 +157,14 @@ public class AnswerService {
      * [관리자 전용: 답변 수정 메서드]
      */
     @Transactional
-    public void update(final UpdateAnswerRequest request) {
-        Answer answer = answerRepository.findById(request.answerId())
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
+    public void update(
+            final long answerId,
+            final UpdateAnswerRequest request
+    ) {
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
 
-        answer.updateAnswer(new Answer(request.content()));
+        answer.updateAnswer(request);
     }
 
     /**
@@ -169,6 +175,6 @@ public class AnswerService {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
 
-        answer.updateAnswerStatus(AnswerStatus.DELETION);
+        answerRepository.delete(answer);
     }
 }

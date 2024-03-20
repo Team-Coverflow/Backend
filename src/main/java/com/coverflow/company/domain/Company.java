@@ -61,6 +61,7 @@ public class Company extends BaseTimeEntity {
         this.city = request.city();
         this.district = request.district();
         this.establishment = request.establishment();
+        this.companyStatus = CompanyStatus.valueOf(request.companyStatus());
     }
 
     public void updateQuestionCount(final int questionCount) {

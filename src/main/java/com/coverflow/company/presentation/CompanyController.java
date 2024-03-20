@@ -97,21 +97,10 @@ public class CompanyController {
     @PatchMapping("/admin/{companyId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> updateStatus(
-            @PathVariable @Positive final long companyId
+            @PathVariable @Positive final long companyId,
+            @RequestBody @Valid final UpdateCompanyRequest request
     ) {
-        companyService.updateStatus(companyId);
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.NO_CONTENT)
-                        .build());
-    }
-
-    @PutMapping("/admin")
-    @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> update(
-            @RequestBody @Valid final UpdateCompanyRequest updateCompanyRequest
-    ) {
-        companyService.update(updateCompanyRequest);
+        companyService.update(companyId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
@@ -120,22 +109,10 @@ public class CompanyController {
 
     @DeleteMapping("/admin/{companyId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> delete(
-            @PathVariable @Positive final long companyId
-    ) {
-        companyService.delete(companyId);
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.NO_CONTENT)
-                        .build());
-    }
-
-    @DeleteMapping("/admin/real/{companyId}")
-    @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> deleteData(
             @PathVariable @Positive final long companyId
     ) {
-        companyService.deleteData(companyId);
+        companyService.delete(companyId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

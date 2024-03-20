@@ -83,9 +83,10 @@ public class Question extends BaseTimeEntity {
                 .build();
     }
 
-    public void updateQuestion(final Question question) {
-        this.title = question.getTitle();
-        this.content = question.getContent();
+    public void updateQuestion(final UpdateQuestionRequest request) {
+        this.title = request.title();
+        this.content = request.content();
+        this.questionStatus = QuestionStatus.valueOf(request.questionStatus());
     }
 
     public void updateViewCount(int viewCount) {

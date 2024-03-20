@@ -8,6 +8,7 @@ import com.coverflow.report.domain.Report;
 import com.coverflow.report.domain.ReportStatus;
 import com.coverflow.report.dto.ReportDTO;
 import com.coverflow.report.dto.request.SaveReportRequest;
+import com.coverflow.report.dto.request.UpdateReportRequest;
 import com.coverflow.report.dto.response.FindReportResponse;
 import com.coverflow.report.exception.ReportException;
 import com.coverflow.report.infrastructure.ReportRepository;
@@ -112,6 +113,20 @@ public class ReportService {
     }
 
     /**
+     * [관리자: 신고 수정 메서드]
+     */
+    @Transactional
+    public void update(
+            final long reportId,
+            final UpdateReportRequest request
+    ) {
+        Report report = reportRepository.findById(reportId)
+                .orElseThrow(() -> new ReportException.ReportNotFoundException(reportId));
+
+        report.updateReport(request);
+    }
+
+    /**
      * [관리자 전용: 신고 삭제 메서드]
      */
     @Transactional
@@ -119,6 +134,6 @@ public class ReportService {
         Report report = reportRepository.findById(reportId)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(reportId));
 
-        report.updateReportStatus(ReportStatus.DELETION);
+        reportRepository.delete(report);
     }
 }
