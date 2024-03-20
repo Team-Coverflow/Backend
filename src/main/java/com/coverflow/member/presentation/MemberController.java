@@ -77,7 +77,7 @@ public class MemberController {
                         .build());
     }
 
-    @PutMapping
+    @PatchMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> update(
             @AuthenticationPrincipal final UserDetails userDetails
