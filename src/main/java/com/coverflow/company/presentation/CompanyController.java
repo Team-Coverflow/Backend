@@ -96,7 +96,7 @@ public class CompanyController {
 
     @PatchMapping("/admin/{companyId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> updateStatus(
+    public ResponseEntity<ResponseHandler<Void>> update(
             @PathVariable @Positive final long companyId,
             @RequestBody @Valid final UpdateCompanyRequest request
     ) {
