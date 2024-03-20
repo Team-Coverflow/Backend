@@ -89,7 +89,7 @@ public class MemberController {
                         .build());
     }
 
-    @PutMapping("/logout")
+    @PatchMapping("/logout")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> logout(
             @AuthenticationPrincipal final UserDetails userDetails
