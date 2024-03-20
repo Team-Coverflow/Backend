@@ -105,14 +105,15 @@ public class QuestionController {
                         .build());
     }
 
-    @PutMapping
+    @PatchMapping("/{questionId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> update(
+            @PathVariable @Positive final long questionId,
             @RequestBody @Valid final UpdateQuestionRequest request
     ) {
         BadwordUtil.check(request.title());
         BadwordUtil.check(request.content());
-        questionService.update(request);
+        questionService.update(questionId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
