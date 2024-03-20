@@ -89,25 +89,27 @@ public class AnswerController {
                         .build());
     }
 
-    @PutMapping("/selection")
+    @PatchMapping("/selection/{answerId}")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> choose(
+            @PathVariable @Positive final long answerId,
             @RequestBody @Valid final UpdateSelectionRequest request
     ) {
-        answerService.choose(request);
+        answerService.choose(answerId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 
-    @PutMapping("/admin")
+    @PatchMapping("/admin/{answerId}")
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<Void>> update(
+            @PathVariable @Positive final long answerId,
             @RequestBody @Valid final UpdateAnswerRequest request
     ) {
         BadwordUtil.check(request.content());
-        answerService.update(request);
+        answerService.update(answerId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

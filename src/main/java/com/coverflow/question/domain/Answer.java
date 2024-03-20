@@ -3,6 +3,7 @@ package com.coverflow.question.domain;
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
+import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.report.domain.Report;
 import jakarta.persistence.*;
 import lombok.*;
@@ -42,10 +43,6 @@ public class Answer extends BaseTimeEntity {
     @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
     private List<Report> reports = new ArrayList<>(); // 답변에 대한 신고 리스트
 
-    public Answer(final String content) {
-        this.content = content;
-    }
-
     public Answer(
             final SaveAnswerRequest request,
             final String memberId
@@ -61,8 +58,9 @@ public class Answer extends BaseTimeEntity {
                 .build();
     }
 
-    public void updateAnswer(final Answer answer) {
-        this.content = answer.getContent();
+    public void updateAnswer(final UpdateAnswerRequest request) {
+        this.content = request.content();
+        this.answerStatus = AnswerStatus.valueOf(request.answerStatus());
     }
 
     public void updateSelection(final boolean selection) {
