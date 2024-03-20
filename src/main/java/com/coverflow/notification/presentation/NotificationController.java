@@ -52,7 +52,7 @@ public class NotificationController {
 //                );
 //    }
 
-    @PutMapping
+    @PatchMapping
     public ResponseEntity<ResponseHandler<Void>> update(
             @RequestBody @Valid final List<UpdateNotificationRequest> requests
     ) {
