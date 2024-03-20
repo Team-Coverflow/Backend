@@ -1,6 +1,7 @@
 package com.coverflow.member.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
+import com.coverflow.inquiry.domain.Inquiry;
 import com.coverflow.member.dto.MemberSignUpDTO;
 import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.notification.domain.Notification;
@@ -9,7 +10,6 @@ import com.coverflow.question.domain.Question;
 import com.coverflow.report.domain.Report;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -46,6 +46,8 @@ public class Member extends BaseTimeEntity {
     @Column
     private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
     @Column
+    private String socialAccessToken; // 소셜 액세스 토큰
+    @Column
     private String refreshToken; // 리프레쉬 토큰
 
     @Enumerated(EnumType.STRING)
@@ -55,7 +57,7 @@ public class Member extends BaseTimeEntity {
     private Role role; // 권한
 
     @Enumerated(EnumType.STRING)
-    private MemberStatus memberStatus; // 회원 상태 (등록/탈퇴)
+    private MemberStatus memberStatus; // 회원 상태 (대기/등록/탈퇴)
 
     @Enumerated(EnumType.STRING)
     private RefreshTokenStatus refreshTokenStatus; // 리프레쉬 토큰 상태 (로그인/로그아웃)
@@ -74,6 +76,10 @@ public class Member extends BaseTimeEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    private List<Inquiry> inquiries = new ArrayList<>(); // 회원의 문의 리스트
+
+    @Builder.Default
+    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
     private List<Report> reports = new ArrayList<>(); // 회원의 신고 리스트
 
     public Member(final MemberSignUpDTO memberSignUpDTO) {
@@ -86,8 +92,7 @@ public class Member extends BaseTimeEntity {
         this.socialId = memberSignUpDTO.getSocialId();
         this.socialType = memberSignUpDTO.getSocialType();
         this.role = Role.GUEST;
-        this.memberStatus = MemberStatus.REGISTRATION;
-        this.refreshTokenStatus = RefreshTokenStatus.LOGIN;
+        this.memberStatus = MemberStatus.WAIT;
     }
 
     public void saveMemberInfo(final SaveMemberRequest request) {
@@ -104,9 +109,9 @@ public class Member extends BaseTimeEntity {
         this.nickname = updateNickname;
     }
 
-    public void updateAge(final String updateAge) {
-        this.age = updateAge;
-    }
+//    public void updateAge(final String updateAge) {
+//        this.age = updateAge;
+//    }
 
     public void updateConnectedAt() {
         this.connectedAt = LocalDateTime.now();
@@ -120,6 +125,10 @@ public class Member extends BaseTimeEntity {
         this.fishShapedBun = fishShapedBun;
     }
 
+    public void updateSocialAccessToken(final String socialAccessToken) {
+        this.socialAccessToken = socialAccessToken;
+    }
+
     public void updateMemberStatus(final MemberStatus memberStatus) {
         this.memberStatus = memberStatus;
     }
@@ -128,15 +137,15 @@ public class Member extends BaseTimeEntity {
         this.refreshTokenStatus = refreshTokenStatus;
     }
 
-    public void passwordEncode(final PasswordEncoder passwordEncoder) {
-        this.password = passwordEncoder.encode(this.password);
-    }
-
-    public void updatePassword(
-            final String updatePassword,
-            final PasswordEncoder passwordEncoder
-    ) {
-        this.password = passwordEncoder.encode(updatePassword);
-    }
+//    public void passwordEncode(final PasswordEncoder passwordEncoder) {
+//        this.password = passwordEncoder.encode(this.password);
+//    }
+//
+//    public void updatePassword(
+//            final String updatePassword,
+//            final PasswordEncoder passwordEncoder
+//    ) {
+//        this.password = passwordEncoder.encode(updatePassword);
+//    }
 
 }

@@ -1,29 +1,17 @@
 package com.coverflow.question.dto.response;
 
-import com.coverflow.question.domain.Answer;
-import com.coverflow.question.domain.AnswerStatus;
+import com.coverflow.question.dto.AnswersDTO;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 public record FindAnswerResponse(
-        long answerId,
-        String answerContent,
-        boolean selection,
-        String answererNickname,
-        String answererTag,
-        AnswerStatus answerStatus,
-        LocalDateTime createAt
+        int totalPages,
+        List<AnswersDTO> answers
 ) {
 
-    public static FindAnswerResponse from(final Answer answer) {
-        return new FindAnswerResponse(
-                answer.getId(),
-                answer.getContent(),
-                answer.isSelection(),
-                answer.getMember().getNickname(),
-                answer.getMember().getTag(),
-                answer.getAnswerStatus(),
-                answer.getCreatedAt()
-        );
+    public static FindAnswerResponse of(
+            final int totalPages,
+            final List<AnswersDTO> answers) {
+        return new FindAnswerResponse(totalPages, answers);
     }
 }

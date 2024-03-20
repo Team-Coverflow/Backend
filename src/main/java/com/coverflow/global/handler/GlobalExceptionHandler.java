@@ -1,5 +1,6 @@
 package com.coverflow.global.handler;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import java.util.Random;
 
 import static com.coverflow.company.exception.CompanyException.CompanyExistException;
 import static com.coverflow.company.exception.CompanyException.CompanyNotFoundException;
+import static com.coverflow.global.exception.GlobalException.ExistBadwordException;
 import static com.coverflow.inquiry.exception.InquiryException.InquiryNotFoundException;
 import static com.coverflow.member.exception.MemberException.*;
 import static com.coverflow.notification.exception.NotificationException.NotificationNotFoundException;
@@ -68,6 +70,18 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {
+            JWTVerificationException.class
+    })
+    public ResponseEntity<ErrorResponse> handleUnauthorizedException(final MethodArgumentTypeMismatchException exception) {
+        log.warn(exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse("액세스 토큰이 유효하지 않습니다."));
+    }
+
+
+    @ExceptionHandler(value = {
             CompanyNotFoundException.class,
             InquiryNotFoundException.class,
             NotificationNotFoundException.class,
@@ -76,7 +90,7 @@ public class GlobalExceptionHandler {
             QuestionNotFoundException.class,
             AnswerNotFoundException.class,
             ReportNotFoundException.class,
-            DayNotFoundException.class,
+            DayNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFoundException(final RuntimeException exception) {
         String message = exception.getMessage();
@@ -90,7 +104,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             CompanyExistException.class,
             QuestionExistException.class,
-            AnswerExistException.class,
+            AnswerExistException.class
     })
     public ResponseEntity<ErrorResponse> handleExistException(final RuntimeException exception) {
         String message = exception.getMessage();
@@ -103,7 +117,9 @@ public class GlobalExceptionHandler {
 
     // 커스텀 예외 사용 시
     @ExceptionHandler(value = {
-            NotEnoughCurrencyException.class
+            SuspendedMembershipException.class,
+            NotEnoughCurrencyException.class,
+            ExistBadwordException.class
     })
     public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
         String message = exception.getMessage();

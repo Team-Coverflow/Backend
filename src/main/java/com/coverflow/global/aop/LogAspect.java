@@ -50,7 +50,6 @@ public class LogAspect {
                 log.info("parameter type = {}", arg.getClass().getSimpleName());
                 log.info("parameter value = {}", arg);
             }
-
         }
     }
 
@@ -65,7 +64,6 @@ public class LogAspect {
                 log.info("return type = {}", arg.getClass().getSimpleName());
                 log.info("return value = {}", arg);
             }
-
         }
     }
 

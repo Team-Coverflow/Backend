@@ -1,5 +1,6 @@
 package com.coverflow.global.jwt.filter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.util.PasswordUtil;
 import com.coverflow.member.domain.Member;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -21,6 +23,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static com.coverflow.global.exception.GlobalException.LogoutMemberException;
 
 /**
  * Jwt 인증 필터
@@ -49,7 +53,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final HttpServletResponse response,
             final FilterChain filterChain
     ) throws ServletException, IOException {
-        log.info("요청 URL: {}", request.getRequestURI());
+        log.info("요청 URL: {}", request.getRequestURI() + "?" + request.getQueryString());
+        log.info("요청 Method: {}", request.getMethod());
         if (request.getRequestURI().equals(NO_CHECK_URL)) {
             filterChain.doFilter(request, response); // "/login" 요청이 들어오면, 다음 필터 호출
             return; // return으로 이후 현재 필터 진행 막기 (안해주면 아래로 내려가서 계속 필터 진행시킴)
@@ -131,15 +136,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final FilterChain filterChain
     ) throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentication() 호출");
-        jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
-                .ifPresent(accessToken -> {
-                    jwtService.extractMemberId(accessToken)
-                            .ifPresent(memberId -> {
-                                memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION)
-                                        .ifPresent(this::saveAuthentication);
-                            });
-                });
+        try {
+            jwtService.extractAccessToken(request)
+                    .filter(jwtService::isTokenValid)
+                    .flatMap(jwtService::extractMemberId)
+                    .flatMap(memberId -> memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION))
+                    .ifPresent(this::saveAuthentication);
+        } catch (JWTVerificationException e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return;
+        } catch (LogoutMemberException e) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            return;
+        }
 
         filterChain.doFilter(request, response);
     }

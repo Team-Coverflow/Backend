@@ -9,10 +9,14 @@ import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.AnswerDTO;
+import com.coverflow.question.dto.AnswerListDTO;
+import com.coverflow.question.dto.AnswersDTO;
+import com.coverflow.question.dto.MyAnswerDTO;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.request.UpdateSelectionRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
+import com.coverflow.question.dto.response.FindMyAnswersResponse;
 import com.coverflow.question.exception.AnswerException;
 import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.AnswerRepository;
@@ -23,8 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
@@ -43,42 +47,55 @@ public class AnswerService {
      * [특정 질문에 대한 답변 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<AnswerDTO> findAllAnswersByQuestionId(
+    public AnswerListDTO findByQuestionId(
             final int pageNo,
             final String criterion,
             final long questionId
     ) {
-        Optional<Page<Answer>> optionalAnswers = answerRepository.findAllAnswersByQuestionIdAndAnswerStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), questionId);
-        List<AnswerDTO> answers = new ArrayList<>();
+        Optional<Page<Answer>> answerList = answerRepository.findByQuestionIdAndAnswerStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), questionId);
 
-        if (optionalAnswers.isPresent()) {
-            Page<Answer> answerList = optionalAnswers.get();
-            for (int i = 0; i < answerList.getContent().size(); i++) {
-                answers.add(i, new AnswerDTO(
-                        answerList.getContent().get(i).getId(),
-                        answerList.getContent().get(i).getMember().getNickname(),
-                        answerList.getContent().get(i).getMember().getTag(),
-                        answerList.getContent().get(i).getContent(),
-                        answerList.getContent().get(i).getCreatedAt()));
-            }
-        }
-        return answers;
+        return answerList
+                .map(answerPage ->
+                        new AnswerListDTO(answerPage.getTotalPages(), answerPage.getContent().stream().map(AnswerDTO::from).toList())
+                )
+                .orElseGet(() -> new AnswerListDTO(0, new ArrayList<>()));
+    }
+
+    /**
+     * [내 답변 목록 조회 메서드]
+     */
+    @Transactional(readOnly = true)
+    public FindMyAnswersResponse findByMemberId(
+            final int pageNo,
+            final String criterion,
+            final UUID memberId
+    ) {
+        Page<Answer> answers = answerRepository.findRegisteredAnswers(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), memberId)
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(memberId));
+
+        return FindMyAnswersResponse.of(
+                answers.getTotalPages(),
+                answers.getContent().stream().map(MyAnswerDTO::from).toList()
+        );
     }
 
     /**
      * [관리자 전용: 전체 답변 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<FindAnswerResponse> findAllAnswers(
+    public FindAnswerResponse find(
             final int pageNo,
             final String criterion
     ) {
-        Page<Answer> answers = answerRepository.findAllAnswers(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
+        Page<Answer> answers = answerRepository.find(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(AnswerException.AnswerNotFoundException::new);
 
-        return answers.getContent().stream()
-                .map(FindAnswerResponse::from)
-                .toList();
+        return FindAnswerResponse.of(
+                answers.getTotalPages(),
+                answers.getContent().stream()
+                        .map(AnswersDTO::from)
+                        .toList()
+        );
     }
 
     /**
@@ -86,24 +103,27 @@ public class AnswerService {
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<FindAnswerResponse> findAnswersByStatus(
+    public FindAnswerResponse findByStatus(
             final int pageNo,
             final String criterion,
             final AnswerStatus answerStatus
     ) {
-        Page<Answer> answers = answerRepository.findAllByAnswerStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), answerStatus)
+        Page<Answer> answers = answerRepository.findByAnswerStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), answerStatus)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerStatus));
 
-        return answers.getContent().stream()
-                .map(FindAnswerResponse::from)
-                .toList();
+        return FindAnswerResponse.of(
+                answers.getTotalPages(),
+                answers.getContent().stream()
+                        .map(AnswersDTO::from)
+                        .toList()
+        );
     }
 
     /**
      * [답변 등록 메서드]
      */
     @Transactional
-    public void saveAnswer(
+    public void save(
             final SaveAnswerRequest request,
             final String memberId
     ) {
@@ -111,7 +131,7 @@ public class AnswerService {
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
 
         answerRepository.save(new Answer(request, memberId));
-        notificationService.sendNotification(new Notification(question));
+        notificationService.send(new Notification(question));
         question.updateAnswerCount(question.getAnswerCount() + 1);
     }
 
@@ -119,36 +139,42 @@ public class AnswerService {
      * [답변 채택 메서드]
      */
     @Transactional
-    public void chooseAnswer(final UpdateSelectionRequest request) {
-        Answer answer = answerRepository.findById(request.answerId())
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
+    public void choose(
+            final long answerId,
+            final UpdateSelectionRequest request
+    ) {
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
         Member member = memberRepository.findById(answer.getMember().getId())
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(answer.getMember().getId()));
 
         answer.updateSelection(request.selection());
         member.updateFishShapedBun(member.getFishShapedBun() + answer.getQuestion().getReward());
-        notificationService.sendNotification(new Notification(answer, member));
+        notificationService.send(new Notification(answer, member));
     }
 
     /**
      * [관리자 전용: 답변 수정 메서드]
      */
     @Transactional
-    public void updateAnswer(final UpdateAnswerRequest request) {
-        Answer answer = answerRepository.findById(request.answerId())
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.answerId()));
+    public void update(
+            final long answerId,
+            final UpdateAnswerRequest request
+    ) {
+        Answer answer = answerRepository.findById(answerId)
+                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
 
-        answer.updateAnswer(new Answer(request.content()));
+        answer.updateAnswer(request);
     }
 
     /**
      * [관리자 전용: 답변 삭제 메서드]
      */
     @Transactional
-    public void deleteAnswer(final long answerId) {
+    public void delete(final long answerId) {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
 
-        answer.updateAnswerStatus(AnswerStatus.DELETION);
+        answerRepository.delete(answer);
     }
 }

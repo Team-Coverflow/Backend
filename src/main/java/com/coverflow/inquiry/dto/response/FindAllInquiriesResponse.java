@@ -1,29 +1,18 @@
 package com.coverflow.inquiry.dto.response;
 
-import com.coverflow.inquiry.domain.Inquiry;
-import com.coverflow.inquiry.domain.InquiryStatus;
+import com.coverflow.inquiry.dto.InquiriesDTO;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 public record FindAllInquiriesResponse(
-        long inquiryId,
-        String inquiryTitle,
-        String inquiryContent,
-        String inquiryAnswer,
-        InquiryStatus inquiryStatus,
-        String inquirerNickname,
-        LocalDateTime createdAt
+        int totalPages,
+        List<InquiriesDTO> inquiries
 ) {
 
-    public static FindAllInquiriesResponse from(final Inquiry inquiry) {
-        return new FindAllInquiriesResponse(
-                inquiry.getId(),
-                inquiry.getTitle(),
-                inquiry.getContent(),
-                inquiry.getAnswer(),
-                inquiry.getInquiryStatus(),
-                inquiry.getMember().getNickname(),
-                inquiry.getCreatedAt()
-        );
+    public static FindAllInquiriesResponse of(
+            final int totalPages,
+            final List<InquiriesDTO> inquiries
+    ) {
+        return new FindAllInquiriesResponse(totalPages, inquiries);
     }
 }

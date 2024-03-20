@@ -5,6 +5,10 @@ import jakarta.validation.constraints.Positive;
 
 public record SaveQuestionRequest(
         @NotBlank
+        String questionTag,
+        @NotBlank
+        String questionCategory,
+        @NotBlank
         String title,
         @NotBlank
         String content,

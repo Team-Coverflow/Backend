@@ -3,12 +3,13 @@ package com.coverflow.question.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
+import com.coverflow.global.util.BadwordUtil;
 import com.coverflow.question.application.QuestionService;
 import com.coverflow.question.domain.QuestionStatus;
-import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
+import com.coverflow.question.dto.response.FindMyQuestionsResponse;
 import com.coverflow.question.dto.response.FindQuestionResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -21,7 +22,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/question")
@@ -30,26 +31,24 @@ public class QuestionController {
 
     private final QuestionService questionService;
 
-    /**
-     * 일단 보류
-     */
-    @GetMapping("/questions/{companyId}")
-    public ResponseEntity<ResponseHandler<List<QuestionDTO>>> findAllQuestionsByCompanyId(
+    @GetMapping("/me")
+    @MemberAuthorize
+    public ResponseEntity<ResponseHandler<FindMyQuestionsResponse>> findMyQuestions(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @PathVariable @Positive final long companyId
+            @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<QuestionDTO>>builder()
+                .body(ResponseHandler.<FindMyQuestionsResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(questionService.findAllQuestionsByCompanyId(pageNo, criterion, companyId))
+                        .data(questionService.findByMemberId(pageNo, criterion, UUID.fromString(userDetails.getUsername())))
                         .build()
                 );
     }
 
     @GetMapping("/{questionId}")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<FindQuestionResponse>> findQuestionById(
+    public ResponseEntity<ResponseHandler<FindQuestionResponse>> findByQuestionId(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @PathVariable @Positive final long questionId
@@ -57,59 +56,64 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(questionService.findQuestionById(pageNo, criterion, questionId))
+                        .data(questionService.findByQuestionId(pageNo, criterion, questionId))
                         .build()
                 );
     }
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findAllQuestions(
+    public ResponseEntity<ResponseHandler<FindAllQuestionsResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
+                .body(ResponseHandler.<FindAllQuestionsResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(questionService.findAllQuestions(pageNo, criterion))
+                        .data(questionService.find(pageNo, criterion))
                         .build()
                 );
     }
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllQuestionsResponse>>> findQuestionsByStatus(
+    public ResponseEntity<ResponseHandler<FindAllQuestionsResponse>> findByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final QuestionStatus questionStatus
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllQuestionsResponse>>builder()
+                .body(ResponseHandler.<FindAllQuestionsResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(questionService.findQuestionsByStatus(pageNo, criterion, questionStatus))
+                        .data(questionService.findByStatus(pageNo, criterion, questionStatus))
                         .build()
                 );
     }
 
-    @PostMapping("/")
+    @PostMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> saveQuestion(
-            @RequestBody @Valid final SaveQuestionRequest saveQuestionRequest,
+    public ResponseEntity<ResponseHandler<Void>> save(
+            @RequestBody @Valid final SaveQuestionRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        questionService.saveQuestion(saveQuestionRequest, userDetails.getUsername());
+        BadwordUtil.check(request.title());
+        BadwordUtil.check(request.content());
+        questionService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
-    @PutMapping("/")
+    @PatchMapping("/{questionId}")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> updateQuestion(
-            @RequestBody @Valid final UpdateQuestionRequest updateQuestionRequest
+    public ResponseEntity<ResponseHandler<Void>> update(
+            @PathVariable @Positive final long questionId,
+            @RequestBody @Valid final UpdateQuestionRequest request
     ) {
-        questionService.updateQuestion(updateQuestionRequest);
+        BadwordUtil.check(request.title());
+        BadwordUtil.check(request.content());
+        questionService.update(questionId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
@@ -118,10 +122,10 @@ public class QuestionController {
 
     @DeleteMapping("/admin/{questionId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteQuestion(
+    public ResponseEntity<ResponseHandler<Void>> delete(
             @PathVariable @Positive final long questionId
     ) {
-        questionService.deleteQuestion(questionId);
+        questionService.delete(questionId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

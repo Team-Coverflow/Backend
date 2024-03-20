@@ -4,7 +4,6 @@ import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.dto.request.UpdateNotificationRequest;
-import com.coverflow.notification.dto.response.FindNotificationResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,35 +25,38 @@ public class NotificationController {
 
     @GetMapping(value = "/connect", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<SseEmitter>> connect(
+    public ResponseEntity<SseEmitter> connect(
             @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") final String lastEventId,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<SseEmitter>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(notificationService.connect(userDetails.getUsername(), lastEventId))
-                        .build()
-                );
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+//        return ResponseEntity.ok()
+//                .body(ResponseHandler.<SseEmitter>builder()
+//                        .statusCode(HttpStatus.OK)
+//                        .data(notificationService.connect(userDetails.getUsername(), lastEventId))
+//                        .build()
+//                );
+        return ResponseEntity.ok(notificationService.connect(userDetails.getUsername(), lastEventId));
     }
 
-    @GetMapping("/")
-    public ResponseEntity<ResponseHandler<List<FindNotificationResponse>>> findNotification(
-            @AuthenticationPrincipal final UserDetails userDetails
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindNotificationResponse>>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(notificationService.findNotification(userDetails.getUsername()))
-                        .build()
-                );
-    }
+//    @GetMapping
+//    public ResponseEntity<ResponseHandler<List<FindNotificationResponse>>> findNotification(
+//            @AuthenticationPrincipal final UserDetails userDetails
+//    ) {
+//        return ResponseEntity.ok()
+//                .body(ResponseHandler.<List<FindNotificationResponse>>builder()
+//                        .statusCode(HttpStatus.OK)
+//                        .data(notificationService.findNotification(userDetails.getUsername()))
+//                        .build()
+//                );
+//    }
 
-    @PutMapping("/")
-    public ResponseEntity<ResponseHandler<Void>> updateNotification(
+    @PatchMapping
+    public ResponseEntity<ResponseHandler<Void>> update(
             @RequestBody @Valid final List<UpdateNotificationRequest> requests
     ) {
-        notificationService.updateNotification(requests);
+        notificationService.update(requests);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

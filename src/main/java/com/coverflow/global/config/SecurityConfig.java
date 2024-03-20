@@ -18,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -31,13 +32,17 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final String[] ALLOWED_URLS = {
             "/",
             "/index.html",
-            "/api/company/",
-            "/api/company/{companyId}"
+            "/api/auth/token",
+            "/api/company",
+            "/api/company/{companyId}",
+            "/api/question/{questionId}",
+            "/api/feedback"
     };
     private final LoginService loginService;
     private final JwtService jwtService;
@@ -66,9 +71,9 @@ public class SecurityConfig {
                         request.requestMatchers(ALLOWED_URLS).permitAll()
                                 .anyRequest().authenticated())
                 .oauth2Login(oauth2Login -> oauth2Login
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                         .successHandler(oAuth2LoginSuccessHandler) // 동의하기 눌렀을 때 핸들러 설정
                         .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
-                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
                 )
 
 

@@ -7,7 +7,7 @@ import com.coverflow.member.application.MemberService;
 import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
-import com.coverflow.member.dto.response.FindMemberInfoResponse;
+import com.coverflow.member.dto.response.FindMemberResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -18,8 +18,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RequestMapping("/api/member")
 @RestController
@@ -27,71 +25,71 @@ public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/")
+    @GetMapping("/me")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<FindMemberInfoResponse>> findMemberById(
+    public ResponseEntity<ResponseHandler<FindMemberResponse>> findMyMember(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<FindMemberInfoResponse>builder()
+                .body(ResponseHandler.<FindMemberResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(memberService.findMemberById(userDetails.getUsername()))
+                        .data(memberService.findMyMember(userDetails.getUsername()))
                         .build());
     }
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findAllMemberById(
+    public ResponseEntity<ResponseHandler<FindAllMembersResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
+                .body(ResponseHandler.<FindAllMembersResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(memberService.findAllMembers(pageNo, criterion))
+                        .data(memberService.find(pageNo, criterion))
                         .build());
     }
 
     @GetMapping("/admin/status")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<List<FindAllMembersResponse>>> findMembersByStatus(
+    public ResponseEntity<ResponseHandler<FindAllMembersResponse>> findByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @RequestParam @NotBlank final MemberStatus memberStatus
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<List<FindAllMembersResponse>>builder()
+                .body(ResponseHandler.<FindAllMembersResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(memberService.findMembersByStatus(pageNo, criterion, memberStatus))
+                        .data(memberService.findByStatus(pageNo, criterion, memberStatus))
                         .build()
                 );
     }
 
-    @PostMapping("/")
-    public ResponseEntity<ResponseHandler<Void>> saveMember(
+    @PostMapping
+    public ResponseEntity<ResponseHandler<Void>> save(
             @AuthenticationPrincipal final UserDetails userDetails,
             @RequestBody final SaveMemberRequest request
     ) {
-        memberService.saveMemberInfo(userDetails.getUsername(), request);
+        memberService.save(userDetails.getUsername(), request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
                         .build());
     }
 
-    @PutMapping("/")
+    @PatchMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
+    public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> update(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<UpdateNicknameResponse>builder()
                         .statusCode(HttpStatus.RESET_CONTENT)
-                        .data(memberService.updateNickname(userDetails.getUsername()))
+                        .data(memberService.update(userDetails.getUsername()))
                         .build());
     }
 
-    @PutMapping("/logout")
+    @PatchMapping("/logout")
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> logout(
             @AuthenticationPrincipal final UserDetails userDetails
@@ -105,10 +103,10 @@ public class MemberController {
 
     @DeleteMapping("/leave")
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<Void>> deleteMember(
+    public ResponseEntity<ResponseHandler<Void>> delete(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        memberService.leaveMember(userDetails.getUsername());
+        memberService.delete(userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)

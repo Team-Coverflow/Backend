@@ -3,10 +3,6 @@ package com.coverflow.member.application;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
-import com.coverflow.notification.application.NotificationService;
-import com.coverflow.notification.domain.Notification;
-import com.coverflow.notification.domain.NotificationStatus;
-import com.coverflow.notification.domain.NotificationType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,29 +15,21 @@ import java.util.UUID;
 public class CurrencyService {
 
     private final MemberRepository memberRepository;
-    private final NotificationService notificationService;
 
     /**
      * [출석 체크 메서드]
-     * 당일 첫 로그인 시 화폐 30 증가
+     * 당일 첫 로그인 시 화폐 5 증가
      */
     @Transactional
     public void dailyCheck(final UUID username) {
         Member member = memberRepository.findById(username)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
-        Notification notification = Notification.builder()
-                .type(NotificationType.DAILY)
-                .notificationStatus(NotificationStatus.NO)
-                .member(member)
-                .build();
 
         // 오늘 첫 로그인 시 = 출석
-        if (!member.getConnectedAt().toString().substring(0, 10).equals(LocalDateTime.now().toString().substring(0, 10))) {
+        if (null == member.getConnectedAt() ||
+                !LocalDateTime.now().toString().substring(0, 10).equals(member.getConnectedAt().toString().substring(0, 10))) {
             // 출석 체크 시 붕어빵 지급
             member.updateFishShapedBun(member.getFishShapedBun() + 5);
-
-            // 출석 체크 알림
-            notificationService.sendNotification(notification);
         }
     }
 

@@ -5,9 +5,10 @@ import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.domain.SocialType;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public record FindMemberInfoResponse(
+public record FindMemberResponse(
         String email,
         String nickname,
         String tag,
@@ -15,12 +16,13 @@ public record FindMemberInfoResponse(
         String gender,
         int fishShapedBun,
         MemberStatus memberStatus,
+        LocalDate createdAt,
         LocalDateTime connectedAt,
         Role role,
         SocialType socialType
 ) {
-    public static FindMemberInfoResponse from(final Member member) {
-        return new FindMemberInfoResponse(
+    public static FindMemberResponse from(final Member member) {
+        return new FindMemberResponse(
                 member.getEmail(),
                 member.getNickname(),
                 member.getTag(),
@@ -28,6 +30,7 @@ public record FindMemberInfoResponse(
                 member.getGender(),
                 member.getFishShapedBun(),
                 member.getMemberStatus(),
+                member.getCreatedAt().toLocalDate(),
                 member.getConnectedAt(),
                 member.getRole(),
                 member.getSocialType()

@@ -9,8 +9,20 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
+import java.util.UUID;
 
 public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
+
+    @Query("""
+            SELECT count(*)
+            FROM Inquiry e
+            WHERE e.member.id = :memberId
+            AND e.inquiryStatus = :inquiryStatus
+            """)
+    int findAllCountByMemberId(
+            @Param("memberId") final UUID memberId,
+            @Param("inquiryStatus") final InquiryStatus inquiryStatus
+    );
 
     @Query("""
             SELECT e
@@ -20,7 +32,7 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
             """)
     Optional<Page<Inquiry>> findAllByMemberIdAndStatus(
             final Pageable pageable,
-            @Param("memberId") final String memberId
+            @Param("memberId") final UUID memberId
     );
 
     @Query("""
@@ -38,4 +50,6 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
             final Pageable pageable,
             @Param("inquiryStatus") final InquiryStatus inquiryStatus
     );
+
+    void deleteByMemberId(UUID id);
 }

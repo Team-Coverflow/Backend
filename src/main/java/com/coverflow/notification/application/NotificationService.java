@@ -1,8 +1,8 @@
 package com.coverflow.notification.application;
 
+import com.coverflow.member.application.CurrencyService;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.notification.dto.request.UpdateNotificationRequest;
-import com.coverflow.notification.dto.response.FindNotificationResponse;
 import com.coverflow.notification.exception.NotificationException;
 import com.coverflow.notification.infrastructure.EmitterRepository;
 import com.coverflow.notification.infrastructure.NotificationRepository;
@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -26,6 +25,7 @@ import java.util.UUID;
 public class NotificationService {
 
     private static final long DEFAULT_TIMEOUT = 60L * 1000 * 60;
+    private final CurrencyService currencyService;
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
 
@@ -60,6 +60,9 @@ public class NotificationService {
         // 첫 연결 시 503 Service Unavailable 방지용 더미 Event 전송
         sendToClient(eventId, emitter, "알림 서버 연결 성공. [memberId = " + memberId + "]");
 
+        // 출석 체크
+        currencyService.dailyCheck(UUID.fromString(memberId));
+
         // 클라이언트가 미수신한 Event 목록이 존재할 경우 모두 전송
         if (!lastEventId.isEmpty()) {
             Map<String, Object> events = emitterRepository.findAllEventCacheStartWithId(memberId);
@@ -75,7 +78,7 @@ public class NotificationService {
      * [알림 전송 메서드]
      */
     @Transactional
-    public void sendNotification(final Notification notification) {
+    public void send(final Notification notification) {
         notificationRepository.save(notification);
 
         // 로그인 한 유저의 SseEmitter 모두 가져오기
@@ -106,6 +109,7 @@ public class NotificationService {
                     .data(object)
             );
         } catch (IOException e) {
+            emitterRepository.delete(eventId);
             throw new RuntimeException("알림 서버 연결 오류");
         }
     }
@@ -114,25 +118,25 @@ public class NotificationService {
      * [알림 조회 메서드]
      * 현재 사용 x
      */
-    @Transactional(readOnly = true)
-    public List<FindNotificationResponse> findNotification(String memberId) {
-        List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId))
-                .orElseThrow(() -> new NotificationException.NotificationNotFoundException(memberId));
-        List<FindNotificationResponse> findNotifications = new ArrayList<>();
-
-        for (int i = 0; i < notifications.size(); i++) {
-            if (notifications.get(i).getCreatedAt().isAfter(LocalDateTime.now().minusDays(31))) {
-                findNotifications.add(i, FindNotificationResponse.from(notifications.get(i)));
-            }
-        }
-        return findNotifications;
-    }
+//    @Transactional(readOnly = true)
+//    public List<FindNotificationResponse> findNotification(String memberId) {
+//        List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId))
+//                .orElseThrow(() -> new NotificationException.NotificationNotFoundException(memberId));
+//        List<FindNotificationResponse> findNotifications = new ArrayList<>();
+//
+//        for (int i = 0; i < notifications.size(); i++) {
+//            if (notifications.get(i).getCreatedAt().isAfter(LocalDateTime.now().minusDays(31))) {
+//                findNotifications.add(i, FindNotificationResponse.from(notifications.get(i)));
+//            }
+//        }
+//        return findNotifications;
+//    }
 
     /**
      * [알림 수정 메서드]
      */
     @Transactional
-    public void updateNotification(final List<UpdateNotificationRequest> request) {
+    public void update(final List<UpdateNotificationRequest> request) {
         for (UpdateNotificationRequest updateNotificationRequest : request) {
             final Notification notification = notificationRepository.findById(updateNotificationRequest.notificationId())
                     .orElseThrow(() -> new NotificationException.NotificationNotFoundException(updateNotificationRequest.notificationId()));
@@ -146,9 +150,8 @@ public class NotificationService {
      */
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
-    public void deleteNotification() {
+    public void delete() {
         LocalDateTime date = LocalDateTime.now().minusDays(30);
         notificationRepository.deleteByCreatedAt(date);
     }
-
 }

@@ -5,6 +5,7 @@ import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.report.dto.request.SaveReportRequest;
+import com.coverflow.report.dto.request.UpdateReportRequest;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -73,7 +74,7 @@ public class Report extends BaseTimeEntity {
                 .build();
     }
 
-    public void updateReportStatus(final ReportStatus reportStatus) {
-        this.reportStatus = reportStatus;
+    public void updateReport(final UpdateReportRequest request) {
+        this.reportStatus = ReportStatus.valueOf(request.updateStatus());
     }
 }

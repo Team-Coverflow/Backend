@@ -1,29 +1,21 @@
 package com.coverflow.company.dto.response;
 
-import com.coverflow.company.domain.Company;
-import com.coverflow.company.domain.CompanyStatus;
+import com.coverflow.company.dto.CompaniesDTO;
+
+import java.util.List;
 
 public record FindAllCompaniesResponse(
-        long companyId,
-        String companyName,
-        String companyType,
-        String companyCity,
-        String companyDistrict,
-        String companyEstablishment,
-        int questionCount,
-        CompanyStatus companyStatus
+        int totalPages,
+        long totalCompanyCount,
+        List<CompaniesDTO> companies
 ) {
 
-    public static FindAllCompaniesResponse from(final Company company) {
-        return new FindAllCompaniesResponse(
-                company.getId(),
-                company.getName(),
-                company.getType(),
-                company.getCity(),
-                company.getDistrict(),
-                company.getEstablishment(),
-                company.getQuestionCount(),
-                company.getCompanyStatus()
-        );
+    public static FindAllCompaniesResponse of(
+            final int totalPages,
+            final long totalCompanyCount,
+            final List<CompaniesDTO> companies
+    ) {
+        return new FindAllCompaniesResponse(totalPages, totalCompanyCount, companies);
     }
 }
+

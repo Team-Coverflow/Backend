@@ -6,10 +6,11 @@ import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.CurrencyService;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.domain.QuestionStatus;
-import com.coverflow.question.dto.QuestionDTO;
+import com.coverflow.question.dto.*;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
+import com.coverflow.question.dto.response.FindMyQuestionsResponse;
 import com.coverflow.question.dto.response.FindQuestionResponse;
 import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.QuestionRepository;
@@ -19,11 +20,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
-import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
-import static com.coverflow.global.constant.Constant.SMALL_PAGE_SIZE;
+import static com.coverflow.global.constant.Constant.*;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
 
 @RequiredArgsConstructor
@@ -36,34 +36,41 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
 
     /**
-     * [특정 회사의 질문 조회 메서드]
-     * 회사 id로 조회
+     * [특정 기업의 질문 조회 메서드]
+     * 기업 id로 기업 및 질문 조회
      */
     @Transactional(readOnly = true)
-    public List<QuestionDTO> findAllQuestionsByCompanyId(
+    public CompanyAndQuestionDTO findByCompanyId(
             final int pageNo,
             final String criterion,
             final long companyId
     ) {
-        Optional<Page<Question>> optionalQuestions = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), companyId);
-        List<QuestionDTO> questions = new ArrayList<>();
+        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId);
 
-        if (optionalQuestions.isPresent()) {
-            Page<Question> questionList = optionalQuestions.get();
-            for (int i = 0; i < questionList.getContent().size(); i++) {
-                questions.add(i, new QuestionDTO(
-                        questionList.getContent().get(i).getId(),
-                        questionList.getContent().get(i).getMember().getNickname(),
-                        questionList.getContent().get(i).getMember().getTag(),
-                        questionList.getContent().get(i).getTitle(),
-                        questionList.getContent().get(i).getContent(),
-                        questionList.getContent().get(i).getViewCount(),
-                        questionList.getContent().get(i).getAnswerCount(),
-                        questionList.getContent().get(i).getReward(),
-                        questionList.getContent().get(i).getCreatedAt()));
-            }
-        }
-        return questions;
+        return questionList
+                .map(questionPage ->
+                        new CompanyAndQuestionDTO(questionPage.getTotalPages(), questionPage.getContent().stream().map(QuestionDTO::from).toList())
+                )
+                .orElseGet(() -> new CompanyAndQuestionDTO(0, new ArrayList<>()));
+    }
+
+    /**
+     * [내 질문 조회 메서드]
+     * 회원 id로 조회
+     */
+    @Transactional(readOnly = true)
+    public FindMyQuestionsResponse findByMemberId(
+            final int pageNo,
+            final String criterion,
+            final UUID memberId
+    ) {
+        Page<Question> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), memberId)
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(memberId));
+
+        return FindMyQuestionsResponse.of(
+                questionList.getTotalPages(),
+                questionList.getContent().stream().map(MyQuestionDTO::from).toList()
+        );
     }
 
     /**
@@ -71,7 +78,7 @@ public class QuestionService {
      * 특정 질문 id로 질문 및 답변 조회
      */
     @Transactional
-    public FindQuestionResponse findQuestionById(
+    public FindQuestionResponse findByQuestionId(
             final int pageNo,
             final String criterion,
             final long questionId
@@ -80,23 +87,29 @@ public class QuestionService {
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
         question.updateViewCount(question.getViewCount() + 1);
-        return FindQuestionResponse.of(question, answerService.findAllAnswersByQuestionId(pageNo, criterion, questionId));
+
+        AnswerListDTO answerList = answerService.findByQuestionId(pageNo, criterion, questionId);
+
+        return FindQuestionResponse.of(question, answerList.getTotalPages(), answerList.getAnswers());
     }
 
     /**
      * [관리자 전용: 전체 질문 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public List<FindAllQuestionsResponse> findAllQuestions(
+    public FindAllQuestionsResponse find(
             final int pageNo,
             final String criterion
     ) {
         Page<Question> questions = questionRepository.findAllQuestions(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(QuestionException.QuestionNotFoundException::new);
 
-        return questions.getContent().stream()
-                .map(FindAllQuestionsResponse::from)
-                .toList();
+        return FindAllQuestionsResponse.of(
+                questions.getTotalPages(),
+                questions.getContent().stream()
+                        .map(QuestionsDTO::from)
+                        .toList()
+        );
     }
 
     /**
@@ -104,7 +117,7 @@ public class QuestionService {
      * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
      */
     @Transactional(readOnly = true)
-    public List<FindAllQuestionsResponse> findQuestionsByStatus(
+    public FindAllQuestionsResponse findByStatus(
             final int pageNo,
             final String criterion,
             final QuestionStatus questionStatus
@@ -112,16 +125,19 @@ public class QuestionService {
         Page<Question> questions = questionRepository.findAllByQuestionStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), questionStatus)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionStatus));
 
-        return questions.getContent().stream()
-                .map(FindAllQuestionsResponse::from)
-                .toList();
+        return FindAllQuestionsResponse.of(
+                questions.getTotalPages(),
+                questions.getContent().stream()
+                        .map(QuestionsDTO::from)
+                        .toList()
+        );
     }
 
     /**
      * [질문 등록 메서드]
      */
     @Transactional
-    public void saveQuestion(
+    public void save(
             final SaveQuestionRequest request,
             final String memberId
     ) {
@@ -137,21 +153,24 @@ public class QuestionService {
      * [질문 수정 메서드]
      */
     @Transactional
-    public void updateQuestion(final UpdateQuestionRequest request) {
-        Question question = questionRepository.findById(request.questionId())
-                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
+    public void update(
+            final long questionId,
+            final UpdateQuestionRequest request
+    ) {
+        Question question = questionRepository.findById(questionId)
+                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
-        question.updateQuestion(new Question(request));
+        question.updateQuestion(request);
     }
 
     /**
      * [관리자 전용: 질문 삭제 메서드]
      */
     @Transactional
-    public void deleteQuestion(final long questionId) {
+    public void delete(final long questionId) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(questionId));
 
-        question.updateQuestionStatus(QuestionStatus.DELETION);
+        questionRepository.delete(question);
     }
 }

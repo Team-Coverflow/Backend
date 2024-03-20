@@ -4,14 +4,14 @@ import com.coverflow.notification.domain.Notification;
 import com.coverflow.notification.domain.NotificationStatus;
 import com.coverflow.notification.domain.NotificationType;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 public record FindNotificationResponse(
         String content,
         String url,
         NotificationType type,
         NotificationStatus notificationStatus,
-        LocalDateTime createdAt
+        LocalDate createdAt
 ) {
 
     public static FindNotificationResponse from(Notification notification) {
@@ -20,7 +20,7 @@ public record FindNotificationResponse(
                 notification.getUrl(),
                 notification.getType(),
                 notification.getNotificationStatus(),
-                notification.getCreatedAt()
+                notification.getCreatedAt().toLocalDate()
         );
     }
 }
