@@ -33,6 +33,7 @@ public class FeedbackService {
 
         return FeedbackResponse.of(
                 feedbacks.getTotalPages(),
+                feedbacks.getTotalElements(),
                 feedbacks.getContent()
                         .stream()
                         .map(FeedbackDTO::from)
