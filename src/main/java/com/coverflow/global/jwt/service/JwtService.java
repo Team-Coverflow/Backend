@@ -2,7 +2,12 @@ package com.coverflow.global.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.coverflow.global.exception.GlobalException;
+import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.RefreshTokenStatus;
 import com.coverflow.member.domain.Role;
+import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -112,6 +117,9 @@ public class JwtService {
     public Optional<String> extractAccessToken(
             final HttpServletRequest request
     ) {
+//        if (request.getHeader(accessHeader) == null) {
+//            throw new GlobalException.JWTNotFoundException();
+//        }
         return Optional.ofNullable(request.getHeader(accessHeader))
                 .filter(accessToken -> accessToken.startsWith(BEARER))
                 .map(accessToken -> accessToken.replace(BEARER, ""));
@@ -141,11 +149,19 @@ public class JwtService {
             final String accessToken
     ) {
         // 토큰 유효성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
-        return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
+        UUID memberId = JWT.require(Algorithm.HMAC512(secretKey))
                 .build() // 반환된 빌더로 JWT verifier 생성
                 .verify(accessToken) // accessToken을 검증하고 유효하지 않다면 예외 발생
                 .getClaim(MEMBER_ID_CLAIM) // claim(MemberId) 가져오기
-                .as(UUID.class));
+                .as(UUID.class);
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberException.MemberNotFoundException::new);
+
+        if ((RefreshTokenStatus.LOGOUT).equals(member.getRefreshTokenStatus())) {
+            throw new GlobalException.LogoutMemberException();
+        }
+
+        return Optional.of(memberId);
     }
 
     /**
@@ -189,7 +205,12 @@ public class JwtService {
     public boolean isTokenValid(
             final String token
     ) {
-        JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+        try {
+            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
+        } catch (JWTVerificationException e) {
+            throw new JWTVerificationException("액세스 토큰이 유효하지 않습니다.");
+        }
+
         return true;
     }
 }
