@@ -2,6 +2,7 @@ package com.coverflow.inquiry.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
+import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.member.domain.Member;
 import jakarta.persistence.*;
 import lombok.*;
@@ -43,6 +44,11 @@ public class Inquiry extends BaseTimeEntity {
         this.member = Member.builder()
                 .id(UUID.fromString(memberId))
                 .build();
+    }
+
+    public void updateInquiry(final UpdateInquiryRequest request) {
+        this.answer = request.inquiryAnswer();
+        this.inquiryStatus = InquiryStatus.valueOf(request.inquiryStatus());
     }
 
     public void updateAnswer(final String answer) {
