@@ -9,7 +9,6 @@ import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.dto.response.SearchCompanyResponse;
-import com.coverflow.company.exception.CompanyException;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.question.application.QuestionService;
 import com.coverflow.question.dto.CompanyAndQuestionDTO;
@@ -21,6 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
+import static com.coverflow.company.exception.CompanyException.CompanyExistException;
+import static com.coverflow.company.exception.CompanyException.CompanyNotFoundException;
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageAsc;
@@ -43,7 +44,7 @@ public class CompanyService {
             final String name
     ) {
         Page<Company> companies = companyRepository.findAllByNameStartingWithAndCompanyStatus(generatePageAsc(pageNo, NORMAL_PAGE_SIZE, "name"), name)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(name));
+                .orElseThrow(() -> new CompanyNotFoundException(name));
 
         return SearchCompanyResponse.of(
                 companies.getTotalPages(),
@@ -65,7 +66,7 @@ public class CompanyService {
             final long companyId
     ) {
         Company company = companyRepository.findRegisteredCompany(companyId)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
+                .orElseThrow(() -> new CompanyNotFoundException(companyId));
 
         CompanyAndQuestionDTO questionList = questionService.findByCompanyId(pageNo, criterion, companyId);
 
@@ -82,7 +83,7 @@ public class CompanyService {
             final String criterion
     ) {
         Page<Company> companies = companyRepository.findAllCompanies(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
-                .orElseThrow(CompanyException.CompanyNotFoundException::new);
+                .orElseThrow(CompanyNotFoundException::new);
 
         return FindAllCompaniesResponse.of(
                 companies.getTotalPages(),
@@ -105,7 +106,7 @@ public class CompanyService {
             final CompanyStatus companyStatus
     ) {
         Page<Company> companies = companyRepository.findAllByCompanyStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), companyStatus)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyStatus));
+                .orElseThrow(() -> new CompanyNotFoundException(companyStatus));
 
         return FindAllCompaniesResponse.of(
                 companies.getTotalPages(),
@@ -123,7 +124,7 @@ public class CompanyService {
     @Transactional
     public void save(final SaveCompanyRequest request) {
         if (companyRepository.findByName(request.name()).isPresent()) {
-            throw new CompanyException.CompanyExistException(request.name());
+            throw new CompanyExistException(request.name());
         }
 
         companyRepository.save(new Company(request));
@@ -138,7 +139,7 @@ public class CompanyService {
             final UpdateCompanyRequest request
     ) {
         Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
+                .orElseThrow(() -> new CompanyNotFoundException(companyId));
 
         company.updateCompany(request);
     }
@@ -149,7 +150,7 @@ public class CompanyService {
     @Transactional
     public void delete(final long companyId) {
         Company company = companyRepository.findById(companyId)
-                .orElseThrow(() -> new CompanyException.CompanyNotFoundException(companyId));
+                .orElseThrow(() -> new CompanyNotFoundException(companyId));
 
         companyRepository.delete(company);
     }

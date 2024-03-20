@@ -1,5 +1,6 @@
 package com.coverflow.global.jwt.filter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.util.PasswordUtil;
 import com.coverflow.member.domain.Member;
@@ -12,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -21,6 +23,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+
+import static com.coverflow.global.exception.GlobalException.JWTNotFoundException;
+import static com.coverflow.global.exception.GlobalException.LogoutMemberException;
 
 /**
  * Jwt 인증 필터
@@ -132,11 +137,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final FilterChain filterChain
     ) throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentication() 호출");
-        jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
-                .flatMap(jwtService::extractMemberId)
-                .flatMap(memberId -> memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION))
-                .ifPresent(this::saveAuthentication);
+        try {
+            jwtService.extractAccessToken(request)
+                    .filter(jwtService::isTokenValid)
+                    .flatMap(jwtService::extractMemberId)
+                    .flatMap(memberId -> memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION))
+                    .ifPresent(this::saveAuthentication);
+        } catch (JWTNotFoundException | JWTVerificationException e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return;
+        } catch (LogoutMemberException e) {
+            response.setStatus(HttpStatus.FORBIDDEN.value());
+            return;
+        }
 
         filterChain.doFilter(request, response);
     }
