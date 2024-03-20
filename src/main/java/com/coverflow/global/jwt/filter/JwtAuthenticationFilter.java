@@ -24,7 +24,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-import static com.coverflow.global.exception.GlobalException.JWTNotFoundException;
 import static com.coverflow.global.exception.GlobalException.LogoutMemberException;
 
 /**
@@ -143,7 +142,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .flatMap(jwtService::extractMemberId)
                     .flatMap(memberId -> memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION))
                     .ifPresent(this::saveAuthentication);
-        } catch (JWTNotFoundException | JWTVerificationException e) {
+        } catch (JWTVerificationException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return;
         } catch (LogoutMemberException e) {
