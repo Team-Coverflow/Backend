@@ -86,6 +86,7 @@ public class CompanyService {
 
         return FindAllCompaniesResponse.of(
                 companies.getTotalPages(),
+                companies.getTotalElements(),
                 companies.getContent()
                         .stream()
                         .map(CompaniesDTO::from)
@@ -108,6 +109,7 @@ public class CompanyService {
 
         return FindAllCompaniesResponse.of(
                 companies.getTotalPages(),
+                companies.getTotalElements(),
                 companies.getContent()
                         .stream()
                         .map(CompaniesDTO::from)
