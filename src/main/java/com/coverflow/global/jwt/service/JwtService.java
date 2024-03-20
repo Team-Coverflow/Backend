@@ -117,9 +117,9 @@ public class JwtService {
     public Optional<String> extractAccessToken(
             final HttpServletRequest request
     ) {
-//        if (request.getHeader(accessHeader) == null) {
-//            throw new GlobalException.JWTNotFoundException();
-//        }
+        if (request.getHeader(accessHeader) == null) {
+            throw new GlobalException.JWTNotFoundException();
+        }
         return Optional.ofNullable(request.getHeader(accessHeader))
                 .filter(accessToken -> accessToken.startsWith(BEARER))
                 .map(accessToken -> accessToken.replace(BEARER, ""));
