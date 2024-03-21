@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -26,8 +26,7 @@ public class CurrencyService {
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
 
         // 오늘 첫 로그인 시 = 출석
-        if (null == member.getConnectedAt() ||
-                !LocalDateTime.now().toString().substring(0, 10).equals(member.getConnectedAt().toString().substring(0, 10))) {
+        if (null == member.getConnectedAt() || !LocalDate.now().equals(member.getConnectedAt().toLocalDate())) {
             // 출석 체크 시 붕어빵 지급
             member.updateFishShapedBun(member.getFishShapedBun() + 5);
         }
