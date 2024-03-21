@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "tbl_company")
+@Table(name = "tbl_feedback")
 public class Feedback extends BaseTimeEntity {
 
     @Id
