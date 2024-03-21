@@ -48,6 +48,7 @@ public class CompanyService {
 
         return SearchCompanyResponse.of(
                 companies.getTotalPages(),
+                companies.getTotalElements(),
                 companies.getContent()
                         .stream()
                         .map(CompanyDTO::from)
