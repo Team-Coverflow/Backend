@@ -49,6 +49,7 @@ public class InquiryService {
 
         return FindInquiryResponse.of(
                 inquiries.getTotalPages(),
+                inquiries.getTotalElements(),
                 inquiries.getContent()
                         .stream()
                         .map(inquiry -> InquiryDTO.of(inquiry, inquiryCountDTO))
