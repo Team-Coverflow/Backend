@@ -33,7 +33,6 @@ public class VisitorService {
      * 오늘 날짜 조회해서 없으면 새로 저장
      * 있으면 카운트 +1
      */
-    @Transactional
     public void update() {
         log.info(NOW);
         Visitor visitor = visitorRepository.findByToday(NOW).orElse(null);
