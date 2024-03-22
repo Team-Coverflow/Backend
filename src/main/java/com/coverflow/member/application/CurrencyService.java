@@ -20,7 +20,6 @@ public class CurrencyService {
      * [출석 체크 메서드]
      * 당일 첫 로그인 시 화폐 5 증가
      */
-    @Transactional
     public void dailyCheck(final UUID username) {
         Member member = memberRepository.findById(username)
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(username));

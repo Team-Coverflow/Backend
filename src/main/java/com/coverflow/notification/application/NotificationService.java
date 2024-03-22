@@ -34,6 +34,7 @@ public class NotificationService {
      * 알림 서버 접속 시 요청 회원의 고유 이벤트 id를 key, SseEmitter 인스턴스를 value로
      * 알림 서버 저장소에 추가합니다.
      */
+    @Transactional
     public SseEmitter connect(
             final String memberId,
             final String lastEventId
@@ -77,7 +78,6 @@ public class NotificationService {
     /**
      * [알림 전송 메서드]
      */
-    @Transactional
     public void send(final Notification notification) {
         notificationRepository.save(notification);
 
