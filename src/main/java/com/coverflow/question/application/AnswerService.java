@@ -75,6 +75,7 @@ public class AnswerService {
 
         return FindMyAnswersResponse.of(
                 answers.getTotalPages(),
+                answers.getTotalElements(),
                 answers.getContent().stream().map(MyAnswerDTO::from).toList()
         );
     }
