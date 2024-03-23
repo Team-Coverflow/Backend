@@ -144,7 +144,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .flatMap(jwtService::extractMemberId)
                     .flatMap(memberId -> memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION))
                     .ifPresent(this::saveAuthentication);
-        } catch (GlobalException.JWTNotFoundException | GlobalException.TokenValidationException e) {
+        } catch (GlobalException.TokenValidationException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
             response.setCharacterEncoding("UTF-8");
