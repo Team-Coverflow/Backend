@@ -76,10 +76,11 @@ public class SecurityConfig {
                         .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
                 )
 
-
                 // 원래 스프링 시큐리티 필터 순서가 LogoutFilter 이후에 로그인 필터 동작
                 // 따라서, LogoutFilter 이후에 우리가 만든 필터 동작하도록 설정
-                // 순서 : LogoutFilter -> JwtAuthenticationProcessingFilter -> CustomJsonUsernamePasswordAuthenticationFilter
+                // 순서1 : LogoutFilter -> JwtAuthenticationFilter -> CustomJsonUsernamePasswordAuthenticationFilter
+
+//                .addFilterBefore(jwtAuthenticationFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(jwtAuthenticationFilter(), LogoutFilter.class)
 //                .addFilterBefore(jwtAuthenticationFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class)
 //                .addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class)

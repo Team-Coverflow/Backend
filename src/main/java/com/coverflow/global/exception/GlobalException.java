@@ -20,6 +20,12 @@ public class GlobalException extends RuntimeException {
         }
     }
 
+    public static class TokenValidationException extends GlobalException {
+        public TokenValidationException() {
+            super("유효하지 않은 토큰입니다.");
+        }
+    }
+
     public static class ExistBadwordException extends GlobalException {
 
         public ExistBadwordException() {
