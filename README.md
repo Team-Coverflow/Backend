@@ -132,7 +132,7 @@ Entity(도메인) + Controller/Service/Repository/...
  class createCategory{
 
      @Test
-     @DisplayName("카테고리를 생성에 성공한다.")
+     @DisplayName("카테고리 생성에 성공한다.")
       void success() {
           // given
           // when
