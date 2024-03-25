@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MyQuestionDTO {
     private long questionId;
+    private long companyId;
     private String companyName;
     private String questionerNickname;
     private String questionerTag;
@@ -27,6 +28,7 @@ public class MyQuestionDTO {
     public static MyQuestionDTO from(final Question question) {
         return new MyQuestionDTO(
                 question.getId(),
+                question.getCompany().getId(),
                 question.getCompany().getName(),
                 question.getMember().getNickname(),
                 question.getMember().getTag(),
