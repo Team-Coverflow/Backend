@@ -1,9 +1,6 @@
 <p align="center">
-  <a href="https://coverflow.co.kr" target="_blank" alt="CoverFlow">사이트 바로가기</a>
+  <a href="https://coverflow.co.kr" target="_blank" >사이트 바로가기</a>
 </p>
-
-[사이트 바로가기](https://coverflow.co.kr)
-
 
 ## ✈ 기본
 
