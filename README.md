@@ -1,5 +1,5 @@
 <div align="center">
-  https://coverflow.co.kr
+  <a href="https://coverflow.co.kr">사이트 바로가기</a>
 </div>
 
 ## ✈ 기본
