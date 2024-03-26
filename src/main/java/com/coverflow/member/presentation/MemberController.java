@@ -6,6 +6,7 @@ import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.member.application.MemberService;
 import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.dto.request.SaveMemberRequest;
+import com.coverflow.member.dto.request.UpdateMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
@@ -79,13 +80,26 @@ public class MemberController {
 
     @PatchMapping
     @MemberAuthorize
-    public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> update(
+    public ResponseEntity<ResponseHandler<Void>> update(
+            @AuthenticationPrincipal final UserDetails userDetails,
+            @RequestBody final UpdateMemberRequest request
+    ) {
+        memberService.update(userDetails.getUsername(), request);
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<Void>builder()
+                        .statusCode(HttpStatus.OK)
+                        .build());
+    }
+
+    @PatchMapping("/nickname")
+    @MemberAuthorize
+    public ResponseEntity<ResponseHandler<UpdateNicknameResponse>> updateNickname(
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<UpdateNicknameResponse>builder()
-                        .statusCode(HttpStatus.RESET_CONTENT)
-                        .data(memberService.update(userDetails.getUsername()))
+                        .statusCode(HttpStatus.OK)
+                        .data(memberService.updateNickname(userDetails.getUsername()))
                         .build());
     }
 
@@ -97,7 +111,7 @@ public class MemberController {
         memberService.logout(userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.NO_CONTENT)
+                        .statusCode(HttpStatus.OK)
                         .build());
     }
 
