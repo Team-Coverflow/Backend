@@ -4,6 +4,7 @@ import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.inquiry.domain.Inquiry;
 import com.coverflow.member.dto.MemberSignUpDTO;
 import com.coverflow.member.dto.request.SaveMemberRequest;
+import com.coverflow.member.dto.request.UpdateMemberRequest;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
@@ -95,7 +96,13 @@ public class Member extends BaseTimeEntity {
         this.memberStatus = MemberStatus.WAIT;
     }
 
-    public void saveMemberInfo(final SaveMemberRequest request) {
+    public void updateMember(final SaveMemberRequest request) {
+        this.tag = request.tag();
+        this.age = request.age();
+        this.gender = request.gender();
+    }
+
+    public void updateMember(final UpdateMemberRequest request) {
         this.tag = request.tag();
         this.age = request.age();
         this.gender = request.gender();
@@ -108,10 +115,6 @@ public class Member extends BaseTimeEntity {
     public void updateNickname(final String updateNickname) {
         this.nickname = updateNickname;
     }
-
-//    public void updateAge(final String updateAge) {
-//        this.age = updateAge;
-//    }
 
     public void updateConnectedAt() {
         this.connectedAt = LocalDateTime.now();
