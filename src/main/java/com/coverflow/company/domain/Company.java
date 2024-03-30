@@ -34,8 +34,6 @@ public class Company extends BaseTimeEntity {
     @Column
     private String district; // 구
     @Column
-    private String establishment; // 설립일
-    @Column
     private int questionCount; // 질문 수
 
     @Enumerated(EnumType.STRING)
@@ -50,7 +48,6 @@ public class Company extends BaseTimeEntity {
         this.type = request.type();
         this.city = request.city();
         this.district = request.district();
-        this.establishment = request.establishment();
         this.questionCount = 0;
         this.companyStatus = CompanyStatus.EXAMINATION;
     }
@@ -60,7 +57,6 @@ public class Company extends BaseTimeEntity {
         this.type = request.type();
         this.city = request.city();
         this.district = request.district();
-        this.establishment = request.establishment();
         this.companyStatus = CompanyStatus.valueOf(request.companyStatus());
     }
 

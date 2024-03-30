@@ -11,7 +11,6 @@ public record SaveCompanyRequest(
         @NotBlank
         String city,
         @NotBlank
-        String district,
-        String establishment
+        String district
 ) {
 }

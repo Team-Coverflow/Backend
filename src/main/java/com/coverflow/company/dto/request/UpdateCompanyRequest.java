@@ -12,7 +12,6 @@ public record UpdateCompanyRequest(
         String city,
         @NotBlank
         String district,
-        String establishment,
         @NotBlank
         String companyStatus
 ) {

@@ -8,7 +8,6 @@ public record FindPendingResponse(
         String name,
         String type,
         String address,
-        String establishment,
         int questionCount,
         CompanyStatus companyStatus
 ) {
@@ -19,7 +18,6 @@ public record FindPendingResponse(
                 company.getName(),
                 company.getType(),
                 company.getCity() + " " + company.getDistrict(),
-                company.getEstablishment(),
                 company.getQuestionCount(),
                 company.getCompanyStatus()
         );
