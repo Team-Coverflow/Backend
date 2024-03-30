@@ -10,7 +10,6 @@ public record FindCompanyResponse(
         String companyName,
         String companyType,
         String companyAddress,
-        String companyEstablishment,
         int questionCount,
         int totalPages,
         List<QuestionDTO> questions
@@ -26,7 +25,6 @@ public record FindCompanyResponse(
                 company.getName(),
                 company.getType(),
                 company.getCity() + " " + company.getDistrict(),
-                company.getEstablishment(),
                 company.getQuestionCount(),
                 totalPages,
                 questions
