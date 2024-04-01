@@ -42,6 +42,8 @@ public class NotificationService {
         // SseEmitter 인스턴스 생성 후 Map에 저장
         SseEmitter emitter = emitterRepository.save(eventId, new SseEmitter(DEFAULT_TIMEOUT));
 
+        System.out.println("emitter = " + emitter);
+
         // 이벤트 전송 시
         emitter.onCompletion(() -> {
             log.info("onCompletion callback");
