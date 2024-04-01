@@ -8,12 +8,15 @@ import com.coverflow.member.domain.RefreshTokenStatus;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.notification.application.NotificationService;
+import com.coverflow.notification.domain.Notification;
 import com.coverflow.visitor.application.VisitorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Slf4j
@@ -23,6 +26,7 @@ public class OAuth2LoginService {
 
     private final JwtService jwtService;
     private final VisitorService visitorService;
+    private final NotificationService notificationService;
     private final MemberRepository memberRepository;
 
     @Transactional
@@ -64,12 +68,26 @@ public class OAuth2LoginService {
         findMember.updateRefreshToken(refreshToken);
         findMember.updateTokenStatus(RefreshTokenStatus.LOGIN);
 
-        // 접속 시간 업데이트
-        findMember.updateConnectedAt();
+        // 출석 체크 & 접속 시간 업데이트
+        dailyCheck(findMember);
 
         // 일일 방문자 수 증가
         visitorService.update();
 
         return accessToken + "/" + refreshToken;
+    }
+
+    /**
+     * [출석 체크 메서드]
+     * 당일 첫 로그인 시 화폐 5 증가
+     */
+    private void dailyCheck(final Member member) {
+        // 오늘 첫 로그인 시 = 출석
+        if (null == member.getConnectedAt() || !LocalDate.now().equals(LocalDate.from(member.getConnectedAt()))) {
+            // 출석 체크 시 붕어빵 지급
+            member.updateFishShapedBun(member.getFishShapedBun() + 5);
+            notificationService.send(new Notification(member));
+        }
+        member.updateConnectedAt();
     }
 }
