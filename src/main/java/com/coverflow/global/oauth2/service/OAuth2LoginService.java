@@ -8,6 +8,8 @@ import com.coverflow.member.domain.RefreshTokenStatus;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
+import com.coverflow.notification.application.NotificationService;
+import com.coverflow.notification.domain.Notification;
 import com.coverflow.visitor.application.VisitorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,6 +26,7 @@ public class OAuth2LoginService {
 
     private final JwtService jwtService;
     private final VisitorService visitorService;
+    private final NotificationService notificationService;
     private final MemberRepository memberRepository;
 
     @Transactional
@@ -83,6 +86,7 @@ public class OAuth2LoginService {
         if (null == member.getConnectedAt() || !LocalDate.now().equals(LocalDate.from(member.getConnectedAt()))) {
             // 출석 체크 시 붕어빵 지급
             member.updateFishShapedBun(member.getFishShapedBun() + 5);
+            notificationService.send(new Notification(member));
         }
         member.updateConnectedAt();
     }
