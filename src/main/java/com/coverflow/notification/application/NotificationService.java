@@ -1,6 +1,5 @@
 package com.coverflow.notification.application;
 
-import com.coverflow.member.application.CurrencyService;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.notification.dto.request.UpdateNotificationRequest;
 import com.coverflow.notification.exception.NotificationException;
@@ -24,7 +23,6 @@ import java.util.Map;
 public class NotificationService {
 
     private static final long DEFAULT_TIMEOUT = 60L * 1000 * 60;
-    private final CurrencyService currencyService;
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
 
@@ -81,6 +79,8 @@ public class NotificationService {
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEventStartWithId(String.valueOf(notification.getMember().getId()));
         sseEmitters.forEach(
                 (key, emitter) -> {
+                    System.out.println("key = " + key);
+                    System.out.println("emitter = " + emitter);
                     // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
                     emitterRepository.saveEventCache(key, notification);
                     // 데이터 전송
