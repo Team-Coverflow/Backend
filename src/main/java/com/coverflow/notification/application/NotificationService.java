@@ -72,6 +72,7 @@ public class NotificationService {
     /**
      * [알림 전송 메서드]
      */
+    @Transactional
     public void send(final Notification notification) {
         notificationRepository.save(notification);
 
