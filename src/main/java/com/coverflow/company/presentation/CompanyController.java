@@ -1,7 +1,7 @@
 package com.coverflow.company.presentation;
 
 import com.coverflow.company.application.CompanyService;
-import com.coverflow.company.domain.CompanyStatus;
+import com.coverflow.company.dto.request.FindCompanyAdminRequest;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
@@ -57,27 +57,13 @@ public class CompanyController {
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindAllCompaniesResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<FindAllCompaniesResponse>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(companyService.find(pageNo, criterion))
-                        .build()
-                );
-    }
-
-    @GetMapping("/admin/status")
-    @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllCompaniesResponse>> findPending(
-            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @RequestParam @NotBlank final CompanyStatus companyStatus
+            @RequestBody final FindCompanyAdminRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllCompaniesResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(companyService.findPending(pageNo, criterion, companyStatus))
+                        .data(companyService.find(pageNo, criterion, request))
                         .build()
                 );
     }
