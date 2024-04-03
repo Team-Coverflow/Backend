@@ -1,9 +1,9 @@
 package com.coverflow.company.application;
 
 import com.coverflow.company.domain.Company;
-import com.coverflow.company.domain.CompanyStatus;
 import com.coverflow.company.dto.CompaniesDTO;
 import com.coverflow.company.dto.CompanyDTO;
+import com.coverflow.company.dto.request.FindCompanyAdminRequest;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
@@ -75,39 +75,16 @@ public class CompanyService {
     }
 
     /**
-     * [관리자 전용: 전체 기업 조회 메서드]
-     * 전체 기업을 조회하는 메서드
+     * [관리자 전용: 기업 조회 메서드]
+     * 기업을 필터링해서 조회하는 메서드
      */
     @Transactional(readOnly = true)
     public FindAllCompaniesResponse find(
             final int pageNo,
-            final String criterion
-    ) {
-        Page<Company> companies = companyRepository.findAllCompanies(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
-                .orElseThrow(CompanyNotFoundException::new);
-
-        return FindAllCompaniesResponse.of(
-                companies.getTotalPages(),
-                companies.getTotalElements(),
-                companies.getContent()
-                        .stream()
-                        .map(CompaniesDTO::from)
-                        .toList()
-        );
-    }
-
-    /**
-     * [관리자 전용: 특정 상태 기업 조회 메서드]
-     * 특정 상태(검토/등록/삭제)의 기업을 조회하는 메서드
-     */
-    @Transactional(readOnly = true)
-    public FindAllCompaniesResponse findPending(
-            final int pageNo,
             final String criterion,
-            final CompanyStatus companyStatus
-    ) {
-        Page<Company> companies = companyRepository.findAllByCompanyStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), companyStatus)
-                .orElseThrow(() -> new CompanyNotFoundException(companyStatus));
+            final FindCompanyAdminRequest request) {
+        Page<Company> companies = companyRepository.findWithFilters(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), request)
+                .orElseThrow(() -> new CompanyNotFoundException(request));
 
         return FindAllCompaniesResponse.of(
                 companies.getTotalPages(),
