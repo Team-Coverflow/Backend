@@ -43,7 +43,7 @@ public class CompanyService {
             final int pageNo,
             final String name
     ) {
-        Page<Company> companies = companyRepository.findAllByNameStartingWithAndCompanyStatus(generatePageAsc(pageNo, NORMAL_PAGE_SIZE, "name"), name)
+        Page<Company> companies = companyRepository.findByNameStartingWithAndCompanyStatus(generatePageAsc(pageNo, NORMAL_PAGE_SIZE, "name"), name)
                 .orElseThrow(() -> new CompanyNotFoundException(name));
 
         return SearchCompanyResponse.of(
