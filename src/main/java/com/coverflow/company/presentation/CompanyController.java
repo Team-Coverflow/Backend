@@ -11,7 +11,6 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.global.util.BadwordUtil;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +28,7 @@ public class CompanyController {
     @GetMapping
     public ResponseEntity<ResponseHandler<SearchCompanyResponse>> search(
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "name") @NotBlank final String name
+            @RequestParam(defaultValue = "name") final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<SearchCompanyResponse>builder()
@@ -43,7 +42,7 @@ public class CompanyController {
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findByCompanyId(
             @PathVariable @Positive final long companyId,
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
+            @RequestParam(defaultValue = "createdAt") final String criterion
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
@@ -57,8 +56,8 @@ public class CompanyController {
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindAllCompaniesResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @RequestBody final FindCompanyAdminRequest request
+            @RequestParam(defaultValue = "createdAt") final String criterion,
+            @ModelAttribute final FindCompanyAdminRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllCompaniesResponse>builder()
