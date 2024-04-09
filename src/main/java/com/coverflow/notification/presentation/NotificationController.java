@@ -29,14 +29,6 @@ public class NotificationController {
             @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") final String lastEventId,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        return ResponseEntity.ok()
-//                .body(ResponseHandler.<SseEmitter>builder()
-//                        .statusCode(HttpStatus.OK)
-//                        .data(notificationService.connect(userDetails.getUsername(), lastEventId))
-//                        .build()
-//                );
         return ResponseEntity.ok(notificationService.connect(userDetails.getUsername(), lastEventId));
     }
 

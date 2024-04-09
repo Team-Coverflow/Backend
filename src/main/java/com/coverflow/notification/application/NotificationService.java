@@ -42,8 +42,6 @@ public class NotificationService {
         // SseEmitter 인스턴스 생성 후 Map에 저장
         SseEmitter emitter = emitterRepository.save(eventId, new SseEmitter(DEFAULT_TIMEOUT));
 
-        System.out.println("emitter = " + emitter);
-
         // 이벤트 전송 시
         emitter.onCompletion(() -> {
             log.info("onCompletion callback");
@@ -82,8 +80,6 @@ public class NotificationService {
         Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEventStartWithId(String.valueOf(notification.getMember().getId()));
         sseEmitters.forEach(
                 (key, emitter) -> {
-                    System.out.println("key = " + key);
-                    System.out.println("emitter = " + emitter);
                     // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
                     emitterRepository.saveEventCache(key, notification);
                     // 데이터 전송
@@ -101,10 +97,9 @@ public class NotificationService {
             final Object object
     ) {
         try {
-            emitter.send(SseEmitter
-                    .event()
-                    .id(eventId)
+            emitter.send(SseEmitter.event()
                     .name("connect")
+                    .id(eventId)
                     .data(object)
             );
         } catch (IOException e) {
@@ -133,6 +128,7 @@ public class NotificationService {
 
     /**
      * [알림 수정 메서드]
+     * 사용자가 알림 읽으면 상태 true로 변경
      */
     @Transactional
     public void update(final List<UpdateNotificationRequest> request) {
@@ -140,7 +136,7 @@ public class NotificationService {
             final Notification notification = notificationRepository.findById(updateNotificationRequest.notificationId())
                     .orElseThrow(() -> new NotificationException.NotificationNotFoundException(updateNotificationRequest.notificationId()));
 
-            notification.updateNotificationStatus(updateNotificationRequest.notificationStatus());
+            notification.updateIsRead(true);
         }
     }
 
