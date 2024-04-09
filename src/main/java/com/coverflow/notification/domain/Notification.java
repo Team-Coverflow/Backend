@@ -46,10 +46,7 @@ public class Notification extends BaseTimeEntity {
         this.member = question.getMember();
     }
 
-    public Notification(
-            final Answer answer,
-            final Member member
-    ) {
+    public Notification(final Answer answer, final Member member) {
         this.content = answer.getQuestion().getCompany().getName();
         this.url = "/company-info/" + answer.getQuestion().getCompany().getId().toString() + "/" + answer.getQuestion().getId().toString();
         this.type = NotificationType.SELECTION;
