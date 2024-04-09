@@ -1,6 +1,12 @@
 <p align="center">
-  <a href="https://coverflow.co.kr" target="_blank" >사이트 바로가기</a>
+<!--   <a href="https://coverflow.co.kr" target="_blank" >사이트 바로가기</a> -->
 </p>
+
+## 🚀 기술스택
+![image](https://github.com/COFLLL/CoverFlow-BE/assets/98208452/24554168-9162-4e9e-9c0d-5c91fa66d02e)
+
+## 🚀 프로젝트 아키텍처
+![image](https://github.com/COFLLL/.github/assets/98208452/bdd1c678-3eef-4af7-a75e-661069930261)
 
 ## ✈ 기본
 
