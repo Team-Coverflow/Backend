@@ -37,7 +37,7 @@ public class QReport extends EntityPathBase<Report> {
 
     public final com.coverflow.question.domain.QQuestion question;
 
-    public final EnumPath<ReportStatus> reportStatus = createEnum("reportStatus", ReportStatus.class);
+    public final BooleanPath reportStatus = createBoolean("reportStatus");
 
     public final EnumPath<ReportType> type = createEnum("type", ReportType.class);
 
