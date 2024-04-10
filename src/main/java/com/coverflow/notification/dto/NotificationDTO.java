@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class NotificationDTO {
     private String content;
-    private String url;
+    private String uri;
     private NotificationType type;
     private boolean isRead;
     private LocalDate createdAt;
@@ -21,7 +21,7 @@ public class NotificationDTO {
     public static NotificationDTO from(final Notification notification) {
         return new NotificationDTO(
                 notification.getContent(),
-                notification.getUrl(),
+                notification.getUri(),
                 notification.getType(),
                 notification.isRead(),
                 LocalDate.from(notification.getCreatedAt())
