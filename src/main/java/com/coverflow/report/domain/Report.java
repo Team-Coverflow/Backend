@@ -26,9 +26,8 @@ public class Report extends BaseTimeEntity {
     private String content; // 내용
     @Column
     private ReportType type; // 신고 종류
-
-    @Enumerated(EnumType.STRING)
-    private ReportStatus reportStatus; // 상태(등록/삭제)
+    @Column
+    private boolean reportStatus; // 상태(T: 등록/F: 삭제)
 
     @ManyToOne
     @JoinColumn(name = "member_id")
@@ -47,7 +46,8 @@ public class Report extends BaseTimeEntity {
             final String memberId
     ) {
         this.content = request.content();
-        this.reportStatus = ReportStatus.REGISTRATION;
+        this.type = ReportType.valueOf(request.type());
+        this.reportStatus = true;
         this.member = Member.builder()
                 .id(UUID.fromString(memberId))
                 .build();
@@ -62,7 +62,8 @@ public class Report extends BaseTimeEntity {
             final String memberId
     ) {
         this.content = request.content();
-        this.reportStatus = ReportStatus.REGISTRATION;
+        this.type = ReportType.valueOf(request.type());
+        this.reportStatus = true;
         this.member = Member.builder()
                 .id(UUID.fromString(memberId))
                 .build();
@@ -75,6 +76,6 @@ public class Report extends BaseTimeEntity {
     }
 
     public void updateReport(final UpdateReportRequest request) {
-        this.reportStatus = ReportStatus.valueOf(request.updateStatus());
+        this.reportStatus = request.updateStatus();
     }
 }
