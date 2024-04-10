@@ -46,7 +46,7 @@ public class Report extends BaseTimeEntity {
             final String memberId
     ) {
         this.content = request.content();
-        this.type = ReportType.valueOf(request.type());
+        this.type = ReportType.QUESTION;
         this.reportStatus = true;
         this.member = Member.builder()
                 .id(UUID.fromString(memberId))
@@ -62,7 +62,7 @@ public class Report extends BaseTimeEntity {
             final String memberId
     ) {
         this.content = request.content();
-        this.type = ReportType.valueOf(request.type());
+        this.type = ReportType.ANSWER;
         this.reportStatus = true;
         this.member = Member.builder()
                 .id(UUID.fromString(memberId))
