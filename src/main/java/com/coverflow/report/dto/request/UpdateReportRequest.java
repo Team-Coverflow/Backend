@@ -5,6 +5,6 @@ import jakarta.validation.constraints.NotBlank;
 public record UpdateReportRequest(
 
         @NotBlank
-        String updateStatus
+        boolean updateStatus
 ) {
 }

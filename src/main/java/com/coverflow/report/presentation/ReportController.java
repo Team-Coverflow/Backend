@@ -98,9 +98,7 @@ public class ReportController {
 
     @DeleteMapping("/admin/{reportId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> delete(
-            @PathVariable @Positive final long reportId
-    ) {
+    public ResponseEntity<ResponseHandler<Void>> delete(@PathVariable @Positive final long reportId) {
         reportService.delete(reportId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
