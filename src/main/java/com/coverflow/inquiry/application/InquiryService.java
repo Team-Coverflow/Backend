@@ -122,11 +122,9 @@ public class InquiryService {
     ) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
-        Notification notification = new Notification(inquiry);
 
-        inquiry.getMember().addNotification(notification);
         inquiry.updateInquiry(request);
-        notificationService.send(notification);
+        notificationService.send(new Notification(inquiry));
     }
 
     /**
