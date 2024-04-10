@@ -1,7 +1,5 @@
 package com.coverflow.question.application;
 
-import com.coverflow.member.domain.Member;
-import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
@@ -146,12 +144,10 @@ public class AnswerService {
     ) {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
-        Member member = memberRepository.findById(answer.getMember().getId())
-                .orElseThrow(() -> new MemberException.MemberNotFoundException(answer.getMember().getId()));
 
         answer.updateSelection(request.selection());
-        member.updateFishShapedBun(member.getFishShapedBun() + answer.getQuestion().getReward());
-        notificationService.send(new Notification(answer, member));
+        answer.getMember().updateFishShapedBun(answer.getMember().getFishShapedBun() + answer.getQuestion().getReward());
+        notificationService.send(new Notification(answer));
     }
 
     /**
