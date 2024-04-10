@@ -1,7 +1,6 @@
 package com.coverflow.report.infrastructure;
 
 import com.coverflow.report.domain.Report;
-import com.coverflow.report.domain.ReportStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,7 +16,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             SELECT r
             FROM Report r
             WHERE r.member.id = :memberId
-            AND r.reportStatus = 'REGISTRATION'
+            AND r.reportStatus = true
             """)
     Optional<Page<Report>> findByMemberId(
             @Param("memberId") final String memberId,
@@ -37,7 +36,7 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
             """)
     Optional<Page<Report>> findByReportStatus(
             final Pageable pageable,
-            @Param("reportStatus") final ReportStatus reportStatus
+            @Param("reportStatus") final boolean reportStatus
     );
 
     void deleteByMemberId(UUID id);
