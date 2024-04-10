@@ -8,7 +8,6 @@ public record FindNotificationResponse(
         int noReadElements,
         List<NotificationDTO> notificationList
 ) {
-
     public static FindNotificationResponse of(
             int noReadElements,
             final List<NotificationDTO> notificationList
