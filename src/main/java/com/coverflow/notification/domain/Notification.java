@@ -5,6 +5,7 @@ import com.coverflow.inquiry.domain.Inquiry;
 import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -29,14 +30,15 @@ public class Notification extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private NotificationType type; // 알림 종류 (DAILY, QUESTION, ANSWER)
 
-    @Setter
     @ManyToOne
     @JoinColumn(name = "member_id")
+    @JsonBackReference
     private Member member; // 회원 정보
 
     public Notification(final Member member) {
         this.type = NotificationType.DAILY;
         this.isRead = false;
+        this.member = member;
     }
 
     public Notification(final Question question) {
@@ -44,19 +46,22 @@ public class Notification extends BaseTimeEntity {
         this.uri = "/company-info/" + question.getCompany().getId().toString() + "/" + question.getId().toString();
         this.type = NotificationType.ANSWER;
         this.isRead = false;
+        this.member = question.getMember();
     }
 
-    public Notification(final Answer answer, final Member member) {
+    public Notification(final Answer answer) {
         this.content = answer.getQuestion().getCompany().getName();
         this.uri = "/company-info/" + answer.getQuestion().getCompany().getId().toString() + "/" + answer.getQuestion().getId().toString();
         this.type = NotificationType.SELECTION;
         this.isRead = false;
+        this.member = answer.getMember();
     }
 
     public Notification(final Inquiry inquiry) {
         this.uri = "contact" + inquiry.getId().toString();
         this.type = NotificationType.INQUIRY;
         this.isRead = false;
+        this.member = inquiry.getMember();
     }
 
     public void updateIsRead(final boolean isRead) {

@@ -6,6 +6,7 @@ import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.report.dto.request.SaveReportRequest;
 import com.coverflow.report.dto.request.UpdateReportRequest;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,14 +33,17 @@ public class Report extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "member_id")
+    @JsonBackReference
     private Member member; // 작성자 정보
 
     @ManyToOne
     @JoinColumn(name = "question_id")
+    @JsonBackReference
     private Question question; // 질문 정보
 
     @ManyToOne
     @JoinColumn(name = "answer_id")
+    @JsonBackReference
     private Answer answer; // 답변 정보
 
     public Report(
