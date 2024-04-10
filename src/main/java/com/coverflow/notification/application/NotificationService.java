@@ -1,12 +1,15 @@
 package com.coverflow.notification.application;
 
 import com.coverflow.notification.domain.Notification;
+import com.coverflow.notification.dto.NotificationDTO;
 import com.coverflow.notification.dto.request.UpdateNotificationRequest;
+import com.coverflow.notification.dto.response.FindNotificationResponse;
 import com.coverflow.notification.exception.NotificationException;
 import com.coverflow.notification.infrastructure.EmitterRepository;
 import com.coverflow.notification.infrastructure.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,7 +35,6 @@ public class NotificationService {
      * 알림 서버 접속 시 요청 회원의 고유 이벤트 id를 key, SseEmitter 인스턴스를 value로
      * 알림 서버 저장소에 추가합니다.
      */
-    @Transactional
     public SseEmitter connect(
             final String memberId,
             final String lastEventId
@@ -72,18 +75,21 @@ public class NotificationService {
     /**
      * [알림 전송 메서드]
      */
-    @Transactional
+    @Async
     public void send(final Notification notification) {
         notificationRepository.save(notification);
 
+        String receiverId = notification.getMember().getId().toString();
+        String eventId = notification.getMember().getId() + "_" + System.currentTimeMillis();
+
         // 로그인 한 유저의 SseEmitter 모두 가져오기
-        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEventStartWithId(String.valueOf(notification.getMember().getId()));
+        Map<String, SseEmitter> sseEmitters = emitterRepository.findAllEventStartWithId(receiverId);
         sseEmitters.forEach(
                 (key, emitter) -> {
                     // 데이터 캐시 저장(유실된 데이터 처리하기 위함)
                     emitterRepository.saveEventCache(key, notification);
                     // 데이터 전송
-                    sendToClient(key, emitter, notification);
+                    sendToClient(eventId, emitter, notification);
                 }
         );
     }
@@ -110,21 +116,28 @@ public class NotificationService {
 
     /**
      * [알림 조회 메서드]
-     * 현재 사용 x
      */
-//    @Transactional(readOnly = true)
-//    public List<FindNotificationResponse> findNotification(String memberId) {
-//        List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId))
-//                .orElseThrow(() -> new NotificationException.NotificationNotFoundException(memberId));
-//        List<FindNotificationResponse> findNotifications = new ArrayList<>();
-//
-//        for (int i = 0; i < notifications.size(); i++) {
-//            if (notifications.get(i).getCreatedAt().isAfter(LocalDateTime.now().minusDays(31))) {
-//                findNotifications.add(i, FindNotificationResponse.from(notifications.get(i)));
-//            }
-//        }
-//        return findNotifications;
-//    }
+    @Transactional(readOnly = true)
+    public FindNotificationResponse find(final String memberId) {
+        List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId), LocalDateTime.now().minusDays(31))
+                .orElseThrow(() -> new NotificationException.NotificationNotFoundException(memberId));
+
+        return FindNotificationResponse.of(
+                countNoReadNotification(notifications),
+                notifications.stream().map(NotificationDTO::from).toList()
+        );
+    }
+
+    private int countNoReadNotification(final List<Notification> notifications) {
+        int count = 0;
+
+        for (Notification notification : notifications) {
+            if (!notification.isRead()) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     /**
      * [알림 수정 메서드]
@@ -142,6 +155,7 @@ public class NotificationService {
 
     /**
      * [알림 삭제 메서드]
+     * 30일이 지난 알림들 매일 자정에 삭제
      */
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
