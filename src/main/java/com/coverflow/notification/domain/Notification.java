@@ -1,6 +1,7 @@
 package com.coverflow.notification.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
+import com.coverflow.inquiry.domain.Inquiry;
 import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
@@ -49,6 +50,12 @@ public class Notification extends BaseTimeEntity {
         this.content = answer.getQuestion().getCompany().getName();
         this.uri = "/company-info/" + answer.getQuestion().getCompany().getId().toString() + "/" + answer.getQuestion().getId().toString();
         this.type = NotificationType.SELECTION;
+        this.isRead = false;
+    }
+
+    public Notification(final Inquiry inquiry) {
+        this.uri = "contact" + inquiry.getId().toString();
+        this.type = NotificationType.INQUIRY;
         this.isRead = false;
     }
 

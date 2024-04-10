@@ -11,6 +11,8 @@ import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
 import com.coverflow.inquiry.dto.response.FindInquiryResponse;
 import com.coverflow.inquiry.exception.InquiryException;
 import com.coverflow.inquiry.infrastructure.InquiryRepository;
+import com.coverflow.notification.application.NotificationService;
+import com.coverflow.notification.domain.Notification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ import static com.coverflow.inquiry.domain.InquiryStatus.WAIT;
 @Service
 public class InquiryService {
 
+    private final NotificationService notificationService;
     private final InquiryRepository inquiryRepository;
 
     /**
@@ -119,8 +122,11 @@ public class InquiryService {
     ) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
                 .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
+        Notification notification = new Notification(inquiry);
 
+        inquiry.getMember().addNotification(notification);
         inquiry.updateInquiry(request);
+        notificationService.send(notification);
     }
 
     /**
