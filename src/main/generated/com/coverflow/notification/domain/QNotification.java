@@ -31,16 +31,16 @@ public class QNotification extends EntityPathBase<Notification> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final com.coverflow.member.domain.QMember member;
+    public final BooleanPath isRead = createBoolean("isRead");
 
-    public final EnumPath<NotificationStatus> notificationStatus = createEnum("notificationStatus", NotificationStatus.class);
+    public final com.coverflow.member.domain.QMember member;
 
     public final EnumPath<NotificationType> type = createEnum("type", NotificationType.class);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final StringPath url = createString("url");
+    public final StringPath uri = createString("uri");
 
     public QNotification(String variable) {
         this(Notification.class, forVariable(variable), INITS);

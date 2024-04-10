@@ -17,10 +17,13 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
             SELECT n
             FROM Notification n
             WHERE n.member.id = :member_id
-            AND n.notificationStatus = 'NO'
+            AND n.createdAt> :date
             ORDER BY n.createdAt DESC
             """)
-    Optional<List<Notification>> findByMemberId(@Param("member_id") final UUID memberId);
+    Optional<List<Notification>> findByMemberId(
+            @Param("member_id") final UUID memberId,
+            @Param("date") final LocalDateTime date
+    );
 
     @Modifying
     @Query("""

@@ -9,6 +9,7 @@ import com.coverflow.notification.domain.Notification;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.report.domain.Report;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -65,14 +66,17 @@ public class Member extends BaseTimeEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Question> questions = new ArrayList<>(); // 회원의 질문 리스트
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Answer> answers = new ArrayList<>(); // 회원의 답변 리스트
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Notification> notifications = new ArrayList<>(); // 회원의 알림 리스트
 
     @Builder.Default
@@ -81,6 +85,7 @@ public class Member extends BaseTimeEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Report> reports = new ArrayList<>(); // 회원의 신고 리스트
 
     public Member(final MemberSignUpDTO memberSignUpDTO) {
