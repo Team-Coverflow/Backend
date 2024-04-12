@@ -6,6 +6,8 @@ import com.coverflow.member.domain.Member;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.report.domain.Report;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,18 +47,22 @@ public class Question extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "company_id")
+    @JsonBackReference
     private Company company; // 회사 정보
 
     @ManyToOne
     @JoinColumn(name = "member_id")
+    @JsonBackReference
     private Member member; // 질문 작성자 정보
 
     @Builder.Default
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Answer> answers = new ArrayList<>(); // 질문에 대한 답변 리스트
 
     @Builder.Default
     @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Report> reports = new ArrayList<>(); // 질문에 대한 신고 리스트
 
     public Question(final UpdateQuestionRequest request) {

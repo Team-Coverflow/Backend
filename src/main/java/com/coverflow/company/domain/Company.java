@@ -4,6 +4,7 @@ import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.question.domain.Question;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,8 +35,6 @@ public class Company extends BaseTimeEntity {
     @Column
     private String district; // 구
     @Column
-    private String establishment; // 설립일
-    @Column
     private int questionCount; // 질문 수
 
     @Enumerated(EnumType.STRING)
@@ -43,6 +42,7 @@ public class Company extends BaseTimeEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Question> questions = new ArrayList<>();
 
     public Company(final SaveCompanyRequest request) {
@@ -50,7 +50,6 @@ public class Company extends BaseTimeEntity {
         this.type = request.type();
         this.city = request.city();
         this.district = request.district();
-        this.establishment = request.establishment();
         this.questionCount = 0;
         this.companyStatus = CompanyStatus.EXAMINATION;
     }
@@ -60,7 +59,6 @@ public class Company extends BaseTimeEntity {
         this.type = request.type();
         this.city = request.city();
         this.district = request.district();
-        this.establishment = request.establishment();
         this.companyStatus = CompanyStatus.valueOf(request.companyStatus());
     }
 

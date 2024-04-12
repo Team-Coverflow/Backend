@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -15,23 +14,6 @@ import java.util.UUID;
 public class CurrencyService {
 
     private final MemberRepository memberRepository;
-
-    /**
-     * [출석 체크 메서드]
-     * 당일 첫 로그인 시 화폐 5 증가
-     */
-    @Transactional
-    public void dailyCheck(final UUID username) {
-        Member member = memberRepository.findById(username)
-                .orElseThrow(() -> new MemberException.MemberNotFoundException(username));
-
-        // 오늘 첫 로그인 시 = 출석
-        if (null == member.getConnectedAt() ||
-                !LocalDateTime.now().toString().substring(0, 10).equals(member.getConnectedAt().toString().substring(0, 10))) {
-            // 출석 체크 시 붕어빵 지급
-            member.updateFishShapedBun(member.getFishShapedBun() + 5);
-        }
-    }
 
     /**
      * [질문 작성 시 화폐 감소 메서드]

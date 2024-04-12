@@ -69,6 +69,7 @@ public class QuestionService {
 
         return FindMyQuestionsResponse.of(
                 questionList.getTotalPages(),
+                questionList.getTotalElements(),
                 questionList.getContent().stream().map(MyQuestionDTO::from).toList()
         );
     }

@@ -14,7 +14,6 @@ public class CompanyDTO {
     private String companyName;
     private String companyType;
     private String companyAddress;
-    private String companyEstablishment;
     private int questionCount;
     private CompanyStatus companyStatus;
 
@@ -24,7 +23,6 @@ public class CompanyDTO {
                 company.getName(),
                 company.getType(),
                 company.getCity() + " " + company.getDistrict(),
-                company.getEstablishment(),
                 company.getQuestionCount(),
                 company.getCompanyStatus()
         );

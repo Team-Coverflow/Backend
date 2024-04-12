@@ -1,12 +1,14 @@
 package com.coverflow.global.jwt.filter;
 
-import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.coverflow.global.exception.GlobalException;
+import com.coverflow.global.handler.ErrorResponse;
 import com.coverflow.global.jwt.service.JwtService;
 import com.coverflow.global.util.PasswordUtil;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.domain.RefreshTokenStatus;
 import com.coverflow.member.infrastructure.MemberRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -14,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
@@ -23,8 +26,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-
-import static com.coverflow.global.exception.GlobalException.LogoutMemberException;
 
 /**
  * Jwt 인증 필터
@@ -71,7 +72,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 리프레시 토큰이 요청 헤더에 존재했다면, 사용자가 AccessToken이 만료되어서
         // RefreshToken까지 보낸 것이므로 리프레시 토큰이 DB의 리프레시 토큰과 일치하는지 판단 후,
         // 일치한다면 AccessToken을 재발급해준다.
-        if (refreshToken != null) {
+        if (refreshToken != null && ("/api/auth/reissue").equals(request.getRequestURI())) {
             log.info("리프레쉬 토큰 존재");
             checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
             return; // RefreshToken을 보낸 경우에는 AccessToken을 재발급 하고 인증 처리는 하지 않게 하기위해 바로 return으로 필터 진행 막기
@@ -135,6 +136,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             final HttpServletResponse response,
             final FilterChain filterChain
     ) throws ServletException, IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
         log.info("checkAccessTokenAndAuthentication() 호출");
         try {
             jwtService.extractAccessToken(request)
@@ -142,11 +144,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     .flatMap(jwtService::extractMemberId)
                     .flatMap(memberId -> memberRepository.findByIdAndMemberStatus(memberId, MemberStatus.REGISTRATION))
                     .ifPresent(this::saveAuthentication);
-        } catch (JWTVerificationException e) {
+        } catch (GlobalException.TokenValidationException e) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            objectMapper.writeValue(response.getWriter(), new ErrorResponse(e.getMessage()));
             return;
-        } catch (LogoutMemberException e) {
+        } catch (GlobalException.LogoutMemberException e) {
             response.setStatus(HttpStatus.FORBIDDEN.value());
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+            response.setCharacterEncoding("UTF-8");
+            objectMapper.writeValue(response.getWriter(), new ErrorResponse(e.getMessage()));
             return;
         }
 
@@ -183,8 +191,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 .build();
 
         Authentication authentication =
-                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-                        authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+                new UsernamePasswordAuthenticationToken(userDetailsUser, null, authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

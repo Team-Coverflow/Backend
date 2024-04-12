@@ -5,7 +5,7 @@ import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.exception.AnswerException;
 import com.coverflow.question.infrastructure.AnswerRepository;
 import com.coverflow.report.domain.Report;
-import com.coverflow.report.domain.ReportStatus;
+import com.coverflow.report.domain.ReportType;
 import com.coverflow.report.dto.ReportDTO;
 import com.coverflow.report.dto.request.SaveReportRequest;
 import com.coverflow.report.dto.request.UpdateReportRequest;
@@ -76,7 +76,7 @@ public class ReportService {
     public FindReportResponse findByStatus(
             final int pageNo,
             final String criterion,
-            final ReportStatus reportStatus
+            final boolean reportStatus
     ) {
         Page<Report> reports = reportRepository.findByReportStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), reportStatus)
                 .orElseThrow(() -> new ReportException.ReportNotFoundException(reportStatus));
@@ -99,10 +99,10 @@ public class ReportService {
     ) {
         Report report = Report.builder().build();
 
-        if ((QUESTION).equals(request.type())) {
+        if ((QUESTION).equals(ReportType.valueOf(request.type()))) {
             report = new Report(request, memberId);
         }
-        if ((ANSWER).equals(request.type())) {
+        if ((ANSWER).equals(ReportType.valueOf(request.type()))) {
             Answer answer = answerRepository.findByIdAndAnswerStatus(request.id(), AnswerStatus.REGISTRATION)
                     .orElseThrow(() -> new AnswerException.AnswerNotFoundException(request.id()));
 

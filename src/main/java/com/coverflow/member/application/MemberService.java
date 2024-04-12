@@ -5,6 +5,7 @@ import com.coverflow.inquiry.infrastructure.InquiryRepository;
 import com.coverflow.member.domain.*;
 import com.coverflow.member.dto.MembersDTO;
 import com.coverflow.member.dto.request.SaveMemberRequest;
+import com.coverflow.member.dto.request.UpdateMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
 import com.coverflow.member.dto.response.FindMemberResponse;
 import com.coverflow.member.dto.response.UpdateNicknameResponse;
@@ -139,15 +140,29 @@ public class MemberService {
         Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
 
-        member.saveMemberInfo(request);
+        member.updateMember(request);
         member.updateAuthorization(Role.MEMBER);
+    }
+
+    /**
+     * [회원 정보 수정 메서드]
+     */
+    @Transactional
+    public void update(
+            final String username,
+            final UpdateMemberRequest request
+    ) {
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
+                .orElseThrow(() -> new MemberNotFoundException(username));
+
+        member.updateMember(request);
     }
 
     /**
      * [닉네임 변경 메서드]
      */
     @Transactional
-    public UpdateNicknameResponse update(final String username) {
+    public UpdateNicknameResponse updateNickname(final String username) {
         Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
                 .orElseThrow(() -> new MemberNotFoundException(username));
         String nickname = nicknameUtil.generateRandomNickname();

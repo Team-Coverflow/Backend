@@ -1,26 +1,17 @@
 package com.coverflow.notification.dto.response;
 
-import com.coverflow.notification.domain.Notification;
-import com.coverflow.notification.domain.NotificationStatus;
-import com.coverflow.notification.domain.NotificationType;
+import com.coverflow.notification.dto.NotificationDTO;
 
-import java.time.LocalDate;
+import java.util.List;
 
 public record FindNotificationResponse(
-        String content,
-        String url,
-        NotificationType type,
-        NotificationStatus notificationStatus,
-        LocalDate createdAt
+        int noReadElements,
+        List<NotificationDTO> notificationList
 ) {
-
-    public static FindNotificationResponse from(Notification notification) {
-        return new FindNotificationResponse(
-                notification.getContent(),
-                notification.getUrl(),
-                notification.getType(),
-                notification.getNotificationStatus(),
-                notification.getCreatedAt().toLocalDate()
-        );
+    public static FindNotificationResponse of(
+            int noReadElements,
+            final List<NotificationDTO> notificationList
+    ) {
+        return new FindNotificationResponse(noReadElements, notificationList);
     }
 }

@@ -1,6 +1,12 @@
-<div align="center">
-  https://coverflow.co.kr
-</div>
+<p align="center">
+<!--   <a href="https://coverflow.co.kr" target="_blank" >사이트 바로가기</a> -->
+</p>
+
+## 🚀 기술 스택
+![image](https://github.com/COFLLL/CoverFlow-BE/assets/98208452/4d2492f0-36dc-4c61-8078-c1a5907b84b9)
+
+## 🚀 프로젝트 아키텍처
+![image](https://github.com/COFLLL/.github/assets/98208452/bdd1c678-3eef-4af7-a75e-661069930261)
 
 ## ✈ 기본
 
@@ -132,7 +138,7 @@ Entity(도메인) + Controller/Service/Repository/...
  class createCategory{
 
      @Test
-     @DisplayName("카테고리를 생성에 성공한다.")
+     @DisplayName("카테고리 생성에 성공한다.")
       void success() {
           // given
           // when

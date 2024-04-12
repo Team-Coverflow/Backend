@@ -12,7 +12,9 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class MyAnswerDTO {
     private long answerId;
+    private long companyId;
     private String companyName;
+    private Long questionId;
     private String questionTitle;
     private String answerContent;
     private boolean selection;
@@ -23,7 +25,9 @@ public class MyAnswerDTO {
     public static MyAnswerDTO from(final Answer answer) {
         return new MyAnswerDTO(
                 answer.getId(),
+                answer.getQuestion().getCompany().getId(),
                 answer.getQuestion().getCompany().getName(),
+                answer.getQuestion().getId(),
                 answer.getQuestion().getTitle(),
                 answer.getContent(),
                 answer.isSelection(),

@@ -5,7 +5,6 @@ import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.global.util.BadwordUtil;
 import com.coverflow.report.application.ReportService;
-import com.coverflow.report.domain.ReportStatus;
 import com.coverflow.report.dto.request.SaveReportRequest;
 import com.coverflow.report.dto.request.UpdateReportRequest;
 import com.coverflow.report.dto.response.FindReportResponse;
@@ -59,7 +58,7 @@ public class ReportController {
     public ResponseEntity<ResponseHandler<FindReportResponse>> findByStatus(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @RequestParam @NotBlank final ReportStatus reportStatus
+            @RequestParam @NotBlank final boolean reportStatus
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindReportResponse>builder()
@@ -98,9 +97,7 @@ public class ReportController {
 
     @DeleteMapping("/admin/{reportId}")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> delete(
-            @PathVariable @Positive final long reportId
-    ) {
+    public ResponseEntity<ResponseHandler<Void>> delete(@PathVariable @Positive final long reportId) {
         reportService.delete(reportId);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()

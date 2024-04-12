@@ -5,6 +5,8 @@ import com.coverflow.member.domain.Member;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.report.domain.Report;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,14 +35,17 @@ public class Answer extends BaseTimeEntity {
 
     @ManyToOne
     @JoinColumn(name = "question_id")
+    @JsonBackReference
     private Question question; // 질문 정보
 
     @ManyToOne
     @JoinColumn(name = "member_id")
+    @JsonBackReference
     private Member member; // 답변 작성자 정보
 
     @Builder.Default
     @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Report> reports = new ArrayList<>(); // 답변에 대한 신고 리스트
 
     public Answer(

@@ -4,10 +4,12 @@ import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.inquiry.domain.Inquiry;
 import com.coverflow.member.dto.MemberSignUpDTO;
 import com.coverflow.member.dto.request.SaveMemberRequest;
+import com.coverflow.member.dto.request.UpdateMemberRequest;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.report.domain.Report;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -64,14 +66,17 @@ public class Member extends BaseTimeEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Question> questions = new ArrayList<>(); // 회원의 질문 리스트
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Answer> answers = new ArrayList<>(); // 회원의 답변 리스트
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Notification> notifications = new ArrayList<>(); // 회원의 알림 리스트
 
     @Builder.Default
@@ -80,6 +85,7 @@ public class Member extends BaseTimeEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Report> reports = new ArrayList<>(); // 회원의 신고 리스트
 
     public Member(final MemberSignUpDTO memberSignUpDTO) {
@@ -95,7 +101,13 @@ public class Member extends BaseTimeEntity {
         this.memberStatus = MemberStatus.WAIT;
     }
 
-    public void saveMemberInfo(final SaveMemberRequest request) {
+    public void updateMember(final SaveMemberRequest request) {
+        this.tag = request.tag();
+        this.age = request.age();
+        this.gender = request.gender();
+    }
+
+    public void updateMember(final UpdateMemberRequest request) {
         this.tag = request.tag();
         this.age = request.age();
         this.gender = request.gender();
@@ -108,10 +120,6 @@ public class Member extends BaseTimeEntity {
     public void updateNickname(final String updateNickname) {
         this.nickname = updateNickname;
     }
-
-//    public void updateAge(final String updateAge) {
-//        this.age = updateAge;
-//    }
 
     public void updateConnectedAt() {
         this.connectedAt = LocalDateTime.now();
