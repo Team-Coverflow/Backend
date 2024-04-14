@@ -1,6 +1,5 @@
 package com.coverflow.question.application;
 
-import com.coverflow.member.infrastructure.MemberRepository;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.question.domain.Answer;
@@ -36,7 +35,6 @@ import static com.coverflow.global.util.PageUtil.generatePageDesc;
 @Service
 public class AnswerService {
 
-    private final MemberRepository memberRepository;
     private final QuestionRepository questionRepository;
     private final AnswerRepository answerRepository;
     private final NotificationService notificationService;
@@ -129,9 +127,13 @@ public class AnswerService {
         Question question = questionRepository.findById(request.questionId())
                 .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
 
+        if (String.valueOf(question.getMember().getId()).equals(memberId)) {
+            throw new AnswerException.QuestionAuthorException(memberId);
+        }
+
+        question.updateAnswerCount(question.getAnswerCount() + 1);
         answerRepository.save(new Answer(request, memberId));
         notificationService.send(new Notification(question));
-        question.updateAnswerCount(question.getAnswerCount() + 1);
     }
 
     /**
@@ -140,10 +142,15 @@ public class AnswerService {
     @Transactional
     public void choose(
             final long answerId,
-            final UpdateSelectionRequest request
+            final UpdateSelectionRequest request,
+            final String memberId
     ) {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
+
+        if (!String.valueOf(answer.getQuestion().getMember().getId()).equals(memberId)) {
+            throw new AnswerException.SelectionException();
+        }
 
         answer.updateSelection(request.selection());
         answer.getMember().updateFishShapedBun(answer.getMember().getFishShapedBun() + answer.getQuestion().getReward());
