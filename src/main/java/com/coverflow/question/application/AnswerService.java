@@ -142,10 +142,15 @@ public class AnswerService {
     @Transactional
     public void choose(
             final long answerId,
-            final UpdateSelectionRequest request
+            final UpdateSelectionRequest request,
+            final String memberId
     ) {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
+
+        if (!String.valueOf(answer.getQuestion().getMember().getId()).equals(memberId)) {
+            throw new AnswerException.SelectionException();
+        }
 
         answer.updateSelection(request.selection());
         answer.getMember().updateFishShapedBun(answer.getMember().getFishShapedBun() + answer.getQuestion().getReward());

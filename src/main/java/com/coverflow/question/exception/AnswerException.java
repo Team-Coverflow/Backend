@@ -30,4 +30,11 @@ public class AnswerException extends RuntimeException {
             super(String.format("질문 작성자는 답변 작성이 불가능합니다. - request info => %s", data));
         }
     }
+
+    public static class SelectionException extends AnswerException {
+
+        public SelectionException() {
+            super("질문 작성자 이외엔 채택이 불가능합니다. - request info => %s");
+        }
+    }
 }

@@ -93,9 +93,10 @@ public class AnswerController {
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> choose(
             @PathVariable @Positive final long answerId,
-            @RequestBody @Valid final UpdateSelectionRequest request
+            @RequestBody @Valid final UpdateSelectionRequest request,
+            @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        answerService.choose(answerId, request);
+        answerService.choose(answerId, request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.NO_CONTENT)
