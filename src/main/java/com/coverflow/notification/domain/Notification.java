@@ -58,7 +58,7 @@ public class Notification extends BaseTimeEntity {
     }
 
     public Notification(final Inquiry inquiry) {
-        this.uri = "contact" + inquiry.getId().toString();
+        this.uri = "/contact";
         this.type = NotificationType.INQUIRY;
         this.isRead = false;
         this.member = inquiry.getMember();
