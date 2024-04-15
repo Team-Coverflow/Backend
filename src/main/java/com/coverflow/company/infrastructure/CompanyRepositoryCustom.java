@@ -9,5 +9,5 @@ import java.util.Optional;
 
 public interface CompanyRepositoryCustom {
 
-    Optional<Page<Company>> findWithFilters(final Pageable pageable, final FindCompanyAdminRequest companyStatus);
+    Optional<Page<Company>> findWithFilters(final Pageable pageable, final FindCompanyAdminRequest request);
 }
