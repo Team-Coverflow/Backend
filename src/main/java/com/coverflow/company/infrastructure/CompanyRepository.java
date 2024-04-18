@@ -19,7 +19,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, Company
             WHERE c.name LIKE :name%
             AND c.companyStatus = 'REGISTRATION'
             """)
-    Optional<Page<Company>> findAllByNameStartingWithAndCompanyStatus(
+    Optional<Page<Company>> findByNameStartingWithAndCompanyStatus(
             final Pageable pageable,
             @Param("name") final String name
     );

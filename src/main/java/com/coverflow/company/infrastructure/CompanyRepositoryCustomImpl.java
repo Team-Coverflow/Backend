@@ -3,17 +3,12 @@ package com.coverflow.company.infrastructure;
 import com.coverflow.company.domain.Company;
 import com.coverflow.company.domain.CompanyStatus;
 import com.coverflow.company.dto.request.FindCompanyAdminRequest;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.EntityPathBase;
-import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -22,31 +17,12 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 import static com.coverflow.company.domain.QCompany.company;
+import static com.coverflow.global.util.RepositoryUtil.makeOrderSpecifiers;
 
 @RequiredArgsConstructor
 public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
-
-    public static <T> OrderSpecifier[] makeOrderSpecifiers(final EntityPathBase<T> qClass, final Pageable pageable) {
-        return pageable.getSort()
-                .stream()
-                .map(sort -> toOrderSpecifier(qClass, sort))
-                .toList().toArray(OrderSpecifier[]::new);
-    }
-
-    private static <T> OrderSpecifier toOrderSpecifier(final EntityPathBase<T> qClass, final Sort.Order sortOrder) {
-        final Order orderMethod = toOrder(sortOrder);
-        final PathBuilder<T> pathBuilder = new PathBuilder<>(qClass.getType(), qClass.getMetadata());
-        return new OrderSpecifier(orderMethod, pathBuilder.get(sortOrder.getProperty()));
-    }
-
-    private static Order toOrder(final Sort.Order sortOrder) {
-        if (sortOrder.isAscending()) {
-            return Order.ASC;
-        }
-        return Order.DESC;
-    }
 
     @Override
     public Optional<Page<Company>> findWithFilters(
