@@ -3,9 +3,6 @@ package com.coverflow.global.util;
 import java.util.Random;
 
 
-/**
- * 폼 로그인 구현 시 사용 예정
- */
 public class PasswordUtil {
 
     public static String generateRandomPassword() {
