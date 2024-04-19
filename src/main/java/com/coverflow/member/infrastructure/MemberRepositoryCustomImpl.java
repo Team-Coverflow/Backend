@@ -13,14 +13,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.util.StringUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import static com.coverflow.company.domain.QCompany.company;
 import static com.coverflow.member.domain.QMember.member;
 
 @RequiredArgsConstructor
@@ -60,7 +59,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 jpaQueryFactory
                         .selectFrom(member)
                         .where(
-
+                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate())
                         )
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
@@ -73,7 +72,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                         .select(member.count())
                         .from(member)
                         .where(
-
+                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate())
                         )
                         .fetchOne()
         );
@@ -90,10 +89,21 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return Optional.of(new PageImpl<>(members, pageable, total));
     }
 
-    private BooleanExpression toContainsCreatedStartDate(final String createdStartDate) {
-        if (!StringUtils.hasText(createdStartDate)) {
+    private BooleanExpression toContainsCreatedStartDate(String startDate) {
+        if (startDate == null) {
             return null;
         }
-        return member..contains(createdStartDate);
+        return member.createdAt.goe(LocalDate.parse(startDate).atStartOfDay()); // 시작 날짜 이후
+    }
+
+    private BooleanExpression toContainsCreatedEndDate(String endDate) {
+        if (endDate == null) {
+            return null;
+        }
+        return member.createdAt.loe(LocalDate.parse(endDate).atStartOfDay()); // 종료 날짜 이전
+    }
+
+    private BooleanExpression toCreatedDateBetween(String startDate, String endDate) {
+        return toContainsCreatedStartDate(startDate).and(toContainsCreatedEndDate(endDate));
     }
 }
