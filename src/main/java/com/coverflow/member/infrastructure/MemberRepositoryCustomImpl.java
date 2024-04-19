@@ -1,6 +1,7 @@
 package com.coverflow.member.infrastructure;
 
 import com.coverflow.member.domain.Member;
+import com.coverflow.member.domain.MemberStatus;
 import com.coverflow.member.dto.request.FindMemberAdminRequest;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -59,7 +61,8 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 jpaQueryFactory
                         .selectFrom(member)
                         .where(
-                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate())
+                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
+                                eqMemberStatus(request.status())
                         )
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
@@ -72,7 +75,8 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                         .select(member.count())
                         .from(member)
                         .where(
-                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate())
+                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
+                                eqMemberStatus(request.status())
                         )
                         .fetchOne()
         );
@@ -105,5 +109,12 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     private BooleanExpression toCreatedDateBetween(String startDate, String endDate) {
         return toContainsCreatedStartDate(startDate).and(toContainsCreatedEndDate(endDate));
+    }
+
+    private BooleanExpression eqMemberStatus(final String memberStatus) {
+        if (!StringUtils.hasText(memberStatus)) {
+            return null;
+        }
+        return member.memberStatus.eq(MemberStatus.valueOf(memberStatus));
     }
 }
