@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -98,22 +99,30 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return Optional.of(new PageImpl<>(members, pageable, total));
     }
 
-    private BooleanExpression toContainsCreatedStartDate(String startDate) {
-        if (startDate == null) {
+    private BooleanExpression toContainsCreatedStartDate(final String startDate) {
+        if (!StringUtils.hasText(startDate)) {
             return null;
         }
         return member.createdAt.goe(LocalDate.parse(startDate).atStartOfDay()); // 시작 날짜 이후
     }
 
-    private BooleanExpression toContainsCreatedEndDate(String endDate) {
-        if (endDate == null) {
+    private BooleanExpression toContainsCreatedEndDate(final String endDate) {
+        if (!StringUtils.hasText(endDate)) {
             return null;
         }
         return member.createdAt.loe(LocalDate.parse(endDate).atStartOfDay()); // 종료 날짜 이전
     }
 
-    private BooleanExpression toCreatedDateBetween(String startDate, String endDate) {
-        return toContainsCreatedStartDate(startDate).and(toContainsCreatedEndDate(endDate));
+    private BooleanExpression toCreatedDateBetween(final String startDate, final String endDate) {
+        try {
+            BooleanExpression booleanExpression = Objects.requireNonNull(toContainsCreatedStartDate(startDate)).and(toContainsCreatedEndDate(endDate));
+            if (booleanExpression == null) {
+                throw new NullPointerException();
+            }
+            return booleanExpression;
+        } catch (NullPointerException npe) {
+            return null;
+        }
     }
 
     private BooleanExpression eqMemberStatus(final String memberStatus) {
@@ -130,21 +139,29 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return member.role.eq(Role.valueOf(memberRole));
     }
 
-    private BooleanExpression toContainsConnectedStartDate(String startDate) {
-        if (startDate == null) {
+    private BooleanExpression toContainsConnectedStartDate(final String startDate) {
+        if (!StringUtils.hasText(startDate)) {
             return null;
         }
         return member.connectedAt.goe(LocalDate.parse(startDate).atStartOfDay());
     }
 
-    private BooleanExpression toContainsConnectedEndDate(String endDate) {
-        if (endDate == null) {
+    private BooleanExpression toContainsConnectedEndDate(final String endDate) {
+        if (!StringUtils.hasText(endDate)) {
             return null;
         }
         return member.connectedAt.loe(LocalDate.parse(endDate).atStartOfDay());
     }
 
-    private BooleanExpression toConnectedDateBetween(String startDate, String endDate) {
-        return toContainsConnectedStartDate(startDate).and(toContainsConnectedEndDate(endDate));
+    private BooleanExpression toConnectedDateBetween(final String startDate, final String endDate) {
+        try {
+            BooleanExpression booleanExpression = Objects.requireNonNull(toContainsConnectedStartDate(startDate)).and(toContainsConnectedEndDate(endDate));
+            if (booleanExpression == null) {
+                throw new NullPointerException();
+            }
+            return booleanExpression;
+        } catch (NullPointerException npe) {
+            return null;
+        }
     }
 }
