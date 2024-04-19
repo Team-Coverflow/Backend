@@ -2,6 +2,7 @@ package com.coverflow.member.infrastructure;
 
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberStatus;
+import com.coverflow.member.domain.Role;
 import com.coverflow.member.dto.request.FindMemberAdminRequest;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -62,7 +63,9 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                         .selectFrom(member)
                         .where(
                                 toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
-                                eqMemberStatus(request.status())
+                                eqMemberStatus(request.status()),
+                                eqMemberRole(request.role()),
+                                toConnectedDateBetween(request.connectedStartDate(), request.connectedEndDate())
                         )
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
@@ -76,7 +79,9 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                         .from(member)
                         .where(
                                 toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
-                                eqMemberStatus(request.status())
+                                eqMemberStatus(request.status()),
+                                eqMemberRole(request.role()),
+                                toConnectedDateBetween(request.connectedStartDate(), request.connectedEndDate())
                         )
                         .fetchOne()
         );
@@ -116,5 +121,30 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
             return null;
         }
         return member.memberStatus.eq(MemberStatus.valueOf(memberStatus));
+    }
+
+    private BooleanExpression eqMemberRole(final String memberRole) {
+        if (!StringUtils.hasText(memberRole)) {
+            return null;
+        }
+        return member.role.eq(Role.valueOf(memberRole));
+    }
+
+    private BooleanExpression toContainsConnectedStartDate(String startDate) {
+        if (startDate == null) {
+            return null;
+        }
+        return member.connectedAt.goe(LocalDate.parse(startDate).atStartOfDay());
+    }
+
+    private BooleanExpression toContainsConnectedEndDate(String endDate) {
+        if (endDate == null) {
+            return null;
+        }
+        return member.connectedAt.loe(LocalDate.parse(endDate).atStartOfDay());
+    }
+
+    private BooleanExpression toConnectedDateBetween(String startDate, String endDate) {
+        return toContainsConnectedStartDate(startDate).and(toContainsConnectedEndDate(endDate));
     }
 }
