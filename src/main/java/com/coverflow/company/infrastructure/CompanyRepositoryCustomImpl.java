@@ -29,6 +29,9 @@ public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
             final Pageable pageable,
             final FindCompanyAdminRequest request
     ) {
+        List<Company> companies;
+        long total;
+
         CompletableFuture<List<Company>> companiesFuture = CompletableFuture.supplyAsync(() ->
                 jpaQueryFactory
                         .selectFrom(company)
@@ -57,10 +60,8 @@ public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
                         .fetchOne()
         );
 
-        CompletableFuture.allOf(companiesFuture, countFuture).join(); // 이 호출로 두 쿼리가 완료될 때까지 대기
+        CompletableFuture.allOf(companiesFuture, countFuture).join();
 
-        List<Company> companies; // 목록 조회 결과
-        long total; // 카운트 조회 결과
         try {
             companies = companiesFuture.get();
             total = countFuture.get();

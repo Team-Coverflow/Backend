@@ -53,6 +53,9 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
             final Pageable pageable,
             final FindMemberAdminRequest request
     ) {
+        List<Member> members;
+        long total;
+
         CompletableFuture<List<Member>> membersFuture = CompletableFuture.supplyAsync(() ->
                 jpaQueryFactory
                         .selectFrom(member)
@@ -75,10 +78,8 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                         .fetchOne()
         );
 
-        CompletableFuture.allOf(membersFuture, countFuture).join(); // 이 호출로 두 쿼리가 완료될 때까지 대기
+        CompletableFuture.allOf(membersFuture, countFuture).join();
 
-        List<Member> members;
-        long total;
         try {
             members = membersFuture.get();
             total = countFuture.get();
