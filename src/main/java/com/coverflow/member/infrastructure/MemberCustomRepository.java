@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-public interface MemberRepositoryCustom {
+public interface MemberCustomRepository {
 
     Optional<Page<Member>> findWithFilters(final Pageable pageable, final FindMemberAdminRequest request);
 }

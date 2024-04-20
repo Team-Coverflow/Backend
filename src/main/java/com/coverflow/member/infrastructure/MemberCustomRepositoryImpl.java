@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutionException;
 import static com.coverflow.member.domain.QMember.member;
 
 @RequiredArgsConstructor
-public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
+public class MemberCustomRepositoryImpl implements MemberCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
