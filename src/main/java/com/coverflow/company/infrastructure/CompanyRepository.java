@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface CompanyRepository extends JpaRepository<Company, Long>, CompanyRepositoryCustom {
+public interface CompanyRepository extends JpaRepository<Company, Long>, CompanyCustomRepository {
 
     @Query("""
             SELECT c

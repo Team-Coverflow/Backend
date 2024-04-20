@@ -9,7 +9,6 @@ import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
 import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
 import com.coverflow.inquiry.dto.response.FindInquiryResponse;
-import com.coverflow.inquiry.exception.InquiryException;
 import com.coverflow.inquiry.infrastructure.InquiryRepository;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
@@ -25,6 +24,7 @@ import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
 import static com.coverflow.inquiry.domain.InquiryStatus.COMPLETE;
 import static com.coverflow.inquiry.domain.InquiryStatus.WAIT;
+import static com.coverflow.inquiry.exception.InquiryException.InquiryNotFoundException;
 
 @RequiredArgsConstructor
 @Service
@@ -43,7 +43,7 @@ public class InquiryService {
             final String memberId
     ) {
         Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), UUID.fromString(memberId))
-                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(memberId));
+                .orElseThrow(() -> new InquiryNotFoundException(memberId));
         int waitInquiryCount = inquiryRepository.findAllCountByMemberId(UUID.fromString(memberId), WAIT);
         int completeInquiryCount = inquiryRepository.findAllCountByMemberId(UUID.fromString(memberId), COMPLETE);
         int allInquiryCount = waitInquiryCount + completeInquiryCount;
@@ -69,12 +69,14 @@ public class InquiryService {
             final String criterion,
             final FindInquiryAdminRequest request
     ) {
-        Page<Inquiry> inquiries = inquiryRepository.findInquiries(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
-                .orElseThrow(InquiryException.InquiryNotFoundException::new);
+        Page<Inquiry> inquiries = inquiryRepository.findWithFilters(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), request)
+                .orElseThrow(() -> new InquiryNotFoundException(request));
 
         return FindAllInquiriesResponse.of(
                 inquiries.getTotalPages(),
-                inquiries.getContent().stream()
+                inquiries.getTotalElements(),
+                inquiries.getContent()
+                        .stream()
                         .map(InquiriesDTO::from)
                         .toList()
         );
@@ -88,7 +90,6 @@ public class InquiryService {
             final SaveInquiryRequest request,
             final String memberId
     ) {
-
         inquiryRepository.save(new Inquiry(request, memberId));
     }
 
@@ -101,7 +102,7 @@ public class InquiryService {
             final UpdateInquiryRequest request
     ) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
+                .orElseThrow(() -> new InquiryNotFoundException(inquiryId));
 
         inquiry.updateInquiry(request);
         notificationService.send(new Notification(inquiry));
@@ -113,7 +114,7 @@ public class InquiryService {
     @Transactional
     public void delete(final long inquiryId) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
+                .orElseThrow(() -> new InquiryNotFoundException(inquiryId));
 
         inquiryRepository.delete(inquiry);
     }

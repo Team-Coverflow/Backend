@@ -20,7 +20,7 @@ import static com.coverflow.company.domain.QCompany.company;
 import static com.coverflow.global.util.RepositoryUtil.makeOrderSpecifiers;
 
 @RequiredArgsConstructor
-public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
+public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

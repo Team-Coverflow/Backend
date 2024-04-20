@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
+public interface InquiryRepository extends JpaRepository<Inquiry, Long>, InquiryCustomRepository {
 
     @Query("""
             SELECT count(*)
