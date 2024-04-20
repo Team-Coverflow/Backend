@@ -1,10 +1,10 @@
 package com.coverflow.inquiry.application;
 
 import com.coverflow.inquiry.domain.Inquiry;
-import com.coverflow.inquiry.domain.InquiryStatus;
 import com.coverflow.inquiry.dto.InquiriesDTO;
 import com.coverflow.inquiry.dto.InquiryCountDTO;
 import com.coverflow.inquiry.dto.InquiryDTO;
+import com.coverflow.inquiry.dto.request.FindInquiryAdminRequest;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
 import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
@@ -61,36 +61,16 @@ public class InquiryService {
     }
 
     /**
-     * [관리자 전용: 전체 문의 조회 메서드]
+     * [관리자 - 문의 조회 메서드]
      */
     @Transactional(readOnly = true)
     public FindAllInquiriesResponse find(
             final int pageNo,
-            final String criterion
+            final String criterion,
+            final FindInquiryAdminRequest request
     ) {
         Page<Inquiry> inquiries = inquiryRepository.findInquiries(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(InquiryException.InquiryNotFoundException::new);
-
-        return FindAllInquiriesResponse.of(
-                inquiries.getTotalPages(),
-                inquiries.getContent().stream()
-                        .map(InquiriesDTO::from)
-                        .toList()
-        );
-    }
-
-    /**
-     * [관리자 전용: 특정 상태 문의 조회 메서드]
-     * 특정 상태(답변대기/답변완료/삭제)의 회사를 조회하는 메서드
-     */
-    @Transactional(readOnly = true)
-    public FindAllInquiriesResponse findByStatus(
-            final int pageNo,
-            final String criterion,
-            final InquiryStatus inquiryStatus
-    ) {
-        Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), inquiryStatus)
-                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryStatus));
 
         return FindAllInquiriesResponse.of(
                 inquiries.getTotalPages(),
@@ -113,7 +93,7 @@ public class InquiryService {
     }
 
     /**
-     * [관리자 전용: 문의 수정 메서드]
+     * [관리자 - 문의 수정 메서드]
      */
     @Transactional
     public void update(
@@ -128,7 +108,7 @@ public class InquiryService {
     }
 
     /**
-     * [관리자 전용: 문의 삭제 메서드]
+     * [관리자 - 문의 삭제 메서드]
      */
     @Transactional
     public void delete(final long inquiryId) {
