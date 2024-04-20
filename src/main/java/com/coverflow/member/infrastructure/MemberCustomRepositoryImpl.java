@@ -64,8 +64,8 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
                         .selectFrom(member)
                         .where(
                                 toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
-                                eqMemberStatus(request.status()),
-                                eqMemberRole(request.role()),
+                                eqStatus(request.status()),
+                                eqRole(request.role()),
                                 toConnectedDateBetween(request.connectedStartDate(), request.connectedEndDate())
                         )
                         .offset(pageable.getOffset())
@@ -80,8 +80,8 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
                         .from(member)
                         .where(
                                 toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
-                                eqMemberStatus(request.status()),
-                                eqMemberRole(request.role()),
+                                eqStatus(request.status()),
+                                eqRole(request.role()),
                                 toConnectedDateBetween(request.connectedStartDate(), request.connectedEndDate())
                         )
                         .fetchOne()
@@ -125,14 +125,14 @@ public class MemberCustomRepositoryImpl implements MemberCustomRepository {
         }
     }
 
-    private BooleanExpression eqMemberStatus(final String memberStatus) {
+    private BooleanExpression eqStatus(final String memberStatus) {
         if (!StringUtils.hasText(memberStatus)) {
             return null;
         }
         return member.memberStatus.eq(MemberStatus.valueOf(memberStatus));
     }
 
-    private BooleanExpression eqMemberRole(final String memberRole) {
+    private BooleanExpression eqRole(final String memberRole) {
         if (!StringUtils.hasText(memberRole)) {
             return null;
         }
