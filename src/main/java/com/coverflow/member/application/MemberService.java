@@ -92,7 +92,7 @@ public class MemberService {
     }
 
     /**
-     * [관리자 전용: 회원 조회 메서드]
+     * [관리자 - 회원 조회 메서드]
      * 회원을 필터링해서 조회하는 메서드
      */
     @Transactional(readOnly = true)
