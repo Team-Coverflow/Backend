@@ -29,9 +29,8 @@ public class Answer extends BaseTimeEntity {
     private String content; // 내용
     @Column
     private boolean selection; // 채택(T/F)
-
-    @Enumerated(EnumType.STRING)
-    private AnswerStatus answerStatus; // 답변 상태 (등록/삭제)
+    @Column
+    private boolean answerStatus; // 답변 상태 (T: 등록/F: 삭제)
 
     @ManyToOne
     @JoinColumn(name = "question_id")
@@ -54,7 +53,7 @@ public class Answer extends BaseTimeEntity {
     ) {
         this.content = request.content();
         this.selection = false;
-        this.answerStatus = AnswerStatus.REGISTRATION;
+        this.answerStatus = true;
         this.question = Question.builder()
                 .id(request.questionId())
                 .build();
@@ -65,14 +64,10 @@ public class Answer extends BaseTimeEntity {
 
     public void updateAnswer(final UpdateAnswerRequest request) {
         this.content = request.content();
-        this.answerStatus = AnswerStatus.valueOf(request.answerStatus());
+        this.answerStatus = request.answerStatus();
     }
 
     public void updateSelection(final boolean selection) {
         this.selection = selection;
-    }
-
-    public void updateAnswerStatus(final AnswerStatus answerStatus) {
-        this.answerStatus = answerStatus;
     }
 }

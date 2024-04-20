@@ -38,12 +38,11 @@ public class Question extends BaseTimeEntity {
     private int reward; // 채택 시 보상
     @Column
     private String questionCategory; // 질문 카테고리
+    @Column
+    private boolean questionStatus; // 질문 상태 (T: 등록/F: 삭제)
 
     @Enumerated(EnumType.STRING)
     private QuestionTag questionTag; // 질문 태그 (문화/급여/업무/커리어/워라밸)
-
-    @Enumerated(EnumType.STRING)
-    private QuestionStatus questionStatus; // 질문 상태 (등록/삭제)
 
     @ManyToOne
     @JoinColumn(name = "company_id")
@@ -80,7 +79,7 @@ public class Question extends BaseTimeEntity {
         this.answerCount = 0;
         this.reward = request.reward();
         this.questionTag = QuestionTag.valueOf(request.questionTag());
-        this.questionStatus = QuestionStatus.REGISTRATION;
+        this.questionStatus = true;
         this.company = Company.builder()
                 .id(request.companyId())
                 .build();
@@ -92,7 +91,7 @@ public class Question extends BaseTimeEntity {
     public void updateQuestion(final UpdateQuestionRequest request) {
         this.title = request.title();
         this.content = request.content();
-        this.questionStatus = QuestionStatus.valueOf(request.questionStatus());
+        this.questionStatus = request.questionStatus();
     }
 
     public void updateViewCount(int viewCount) {
@@ -101,17 +100,5 @@ public class Question extends BaseTimeEntity {
 
     public void updateAnswerCount(int answerCount) {
         this.answerCount = answerCount;
-    }
-
-    public void updateQuestionCategory(final String questionCategory) {
-        this.questionCategory = questionCategory;
-    }
-
-    public void updateQuestionTag(final QuestionTag questionTag) {
-        this.questionTag = questionTag;
-    }
-
-    public void updateQuestionStatus(final QuestionStatus questionStatus) {
-        this.questionStatus = questionStatus;
     }
 }
