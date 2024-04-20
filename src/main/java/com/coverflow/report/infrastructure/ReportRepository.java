@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface ReportRepository extends JpaRepository<Report, Long> {
+public interface ReportRepository extends JpaRepository<Report, Long>, ReportCustomRepository {
 
     @Query("""
             SELECT r
@@ -21,22 +21,6 @@ public interface ReportRepository extends JpaRepository<Report, Long> {
     Optional<Page<Report>> findByMemberId(
             @Param("memberId") final String memberId,
             final Pageable pageable
-    );
-
-    @Query("""
-            SELECT r
-            FROM Report r
-            """)
-    Optional<Page<Report>> find(final Pageable pageable);
-
-    @Query("""
-            SELECT r
-            FROM Report r
-            WHERE r.reportStatus = :reportStatus
-            """)
-    Optional<Page<Report>> findByReportStatus(
-            final Pageable pageable,
-            @Param("reportStatus") final boolean reportStatus
     );
 
     void deleteByMemberId(UUID id);
