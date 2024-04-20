@@ -1,4 +1,7 @@
 package com.coverflow.notice.infrastructure;
 
-public class NoticeCustomRepositoryImpl {
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
 }

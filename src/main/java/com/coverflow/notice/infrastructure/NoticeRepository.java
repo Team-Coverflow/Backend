@@ -1,4 +1,7 @@
 package com.coverflow.notice.infrastructure;
 
-public interface NoticeRepository {
+import com.coverflow.notice.domain.Notice;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface NoticeRepository extends JpaRepository<Notice, Long>, NoticeCustomRepository {
 }
