@@ -6,12 +6,15 @@ import java.util.List;
 
 public record FindAnswerResponse(
         int totalPages,
+        long totalElements,
         List<AnswersDTO> answers
 ) {
 
     public static FindAnswerResponse of(
             final int totalPages,
-            final List<AnswersDTO> answers) {
-        return new FindAnswerResponse(totalPages, answers);
+            final long totalElements,
+            final List<AnswersDTO> answers
+    ) {
+        return new FindAnswerResponse(totalPages, totalElements, answers);
     }
 }

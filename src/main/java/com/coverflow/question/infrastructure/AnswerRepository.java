@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AnswerRepository extends JpaRepository<Answer, Long> {
+public interface AnswerRepository extends JpaRepository<Answer, Long>, AnswerCustomRepository {
 
     Optional<Answer> findByIdAndAnswerStatus(
             final long id,
@@ -39,22 +39,6 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     Optional<Page<Answer>> findRegisteredAnswers(
             final Pageable pageable,
             @Param("memberId") final UUID memberId
-    );
-
-    @Query("""
-            SELECT a
-            FROM Answer a
-            """)
-    Optional<Page<Answer>> find(final Pageable pageable);
-
-    @Query("""
-            SELECT a
-            FROM Answer a
-            WHERE a.answerStatus = :answerStatus
-            """)
-    Optional<Page<Answer>> findByAnswerStatus(
-            final Pageable pageable,
-            @Param("answerStatus") final AnswerStatus answerStatus
     );
 
     void deleteByMemberId(UUID id);
