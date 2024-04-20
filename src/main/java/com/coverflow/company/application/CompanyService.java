@@ -82,7 +82,8 @@ public class CompanyService {
     public FindAllCompaniesResponse find(
             final int pageNo,
             final String criterion,
-            final FindCompanyAdminRequest request) {
+            final FindCompanyAdminRequest request
+    ) {
         Page<Company> companies = companyRepository.findWithFilters(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), request)
                 .orElseThrow(() -> new CompanyNotFoundException(request));
 

@@ -4,6 +4,7 @@ import com.coverflow.global.util.NicknameUtil;
 import com.coverflow.inquiry.infrastructure.InquiryRepository;
 import com.coverflow.member.domain.*;
 import com.coverflow.member.dto.MembersDTO;
+import com.coverflow.member.dto.request.FindMemberAdminRequest;
 import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.member.dto.request.UpdateMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
@@ -32,7 +33,8 @@ import java.util.UUID;
 
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
-import static com.coverflow.member.exception.MemberException.*;
+import static com.coverflow.member.exception.MemberException.MemberNotFoundException;
+import static com.coverflow.member.exception.MemberException.NotEnoughCurrencyException;
 
 @RequiredArgsConstructor
 @Service
@@ -83,47 +85,30 @@ public class MemberService {
      * [특정 회원 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public FindMemberResponse findMyMember(final String username) {
-        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
-                .orElseThrow(() -> new MemberNotFoundException(username));
+    public FindMemberResponse findMyMember(final String memberId) {
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(memberId), MemberStatus.REGISTRATION)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
         return FindMemberResponse.from(member);
     }
 
     /**
-     * [관리자 전용: 전체 회원 조회 메서드]
+     * [관리자 - 회원 조회 메서드]
+     * 회원을 필터링해서 조회하는 메서드
      */
     @Transactional(readOnly = true)
     public FindAllMembersResponse find(
             final int pageNo,
-            final String criterion
-    ) {
-        Page<Member> members = memberRepository.findAllMembers(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
-                .orElseThrow(AllMemberNotFoundException::new);
-
-        return FindAllMembersResponse.of(
-                members.getTotalPages(),
-                members.getContent().stream()
-                        .map(MembersDTO::from)
-                        .toList()
-        );
-    }
-
-    /**
-     * [관리자 전용: 특정 상태 회원 조회 메서드]
-     * 특정 상태(등록/탈퇴)의 회사를 조회하는 메서드
-     */
-    @Transactional(readOnly = true)
-    public FindAllMembersResponse findByStatus(
-            final int pageNo,
             final String criterion,
-            final MemberStatus memberStatus
+            final FindMemberAdminRequest request
     ) {
-        Page<Member> members = memberRepository.findAllByMemberStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), memberStatus)
-                .orElseThrow(() -> new MemberNotFoundException(memberStatus));
+        Page<Member> members = memberRepository.findWithFilters(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), request)
+                .orElseThrow(() -> new MemberNotFoundException(request));
 
         return FindAllMembersResponse.of(
                 members.getTotalPages(),
-                members.getContent().stream()
+                members.getTotalElements(),
+                members.getContent()
+                        .stream()
                         .map(MembersDTO::from)
                         .toList()
         );
@@ -134,11 +119,11 @@ public class MemberService {
      */
     @Transactional
     public void save(
-            final String username,
+            final String memberId,
             final SaveMemberRequest request
     ) {
-        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
-                .orElseThrow(() -> new MemberNotFoundException(username));
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(memberId), MemberStatus.REGISTRATION)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         member.updateMember(request);
         member.updateAuthorization(Role.MEMBER);
@@ -149,11 +134,11 @@ public class MemberService {
      */
     @Transactional
     public void update(
-            final String username,
+            final String memberId,
             final UpdateMemberRequest request
     ) {
-        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
-                .orElseThrow(() -> new MemberNotFoundException(username));
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(memberId), MemberStatus.REGISTRATION)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         member.updateMember(request);
     }
@@ -162,9 +147,9 @@ public class MemberService {
      * [닉네임 변경 메서드]
      */
     @Transactional
-    public UpdateNicknameResponse updateNickname(final String username) {
-        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
-                .orElseThrow(() -> new MemberNotFoundException(username));
+    public UpdateNicknameResponse updateNickname(final String memberId) {
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(memberId), MemberStatus.REGISTRATION)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
         String nickname = nicknameUtil.generateRandomNickname();
 
         if (member.getFishShapedBun() < 20) {
@@ -179,13 +164,13 @@ public class MemberService {
      * [로그아웃 메서드]
      */
     @Transactional
-    public void logout(final String username) {
-        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
-                .orElseThrow(() -> new MemberNotFoundException(username));
+    public void logout(final String memberId) {
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(memberId), MemberStatus.REGISTRATION)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         member.updateTokenStatus(RefreshTokenStatus.LOGOUT);
-        emitterRepository.deleteAllStartWithId(username);
-        emitterRepository.deleteAllEventCacheStartWithId(username);
+        emitterRepository.deleteAllStartWithId(memberId);
+        emitterRepository.deleteAllEventCacheStartWithId(memberId);
     }
 
     /**
@@ -194,9 +179,9 @@ public class MemberService {
      * 30일 이후에 탈퇴(모든 데이터 소멸)
      */
     @Transactional
-    public void delete(final String username) {
-        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(username), MemberStatus.REGISTRATION)
-                .orElseThrow(() -> new MemberNotFoundException(username));
+    public void delete(final String memberId) {
+        Member member = memberRepository.findByIdAndMemberStatus(UUID.fromString(memberId), MemberStatus.REGISTRATION)
+                .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         member.updateAuthorization(Role.GUEST);
         member.updateMemberStatus(MemberStatus.LEAVE);

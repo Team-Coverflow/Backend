@@ -24,7 +24,7 @@ public class QAnswer extends EntityPathBase<Answer> {
 
     public final com.coverflow.global.entity.QBaseTimeEntity _super = new com.coverflow.global.entity.QBaseTimeEntity(this);
 
-    public final EnumPath<AnswerStatus> answerStatus = createEnum("answerStatus", AnswerStatus.class);
+    public final BooleanPath answerStatus = createBoolean("answerStatus");
 
     public final StringPath content = createString("content");
 

@@ -4,7 +4,7 @@ import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.member.application.MemberService;
-import com.coverflow.member.domain.MemberStatus;
+import com.coverflow.member.dto.request.FindMemberAdminRequest;
 import com.coverflow.member.dto.request.SaveMemberRequest;
 import com.coverflow.member.dto.request.UpdateMemberRequest;
 import com.coverflow.member.dto.response.FindAllMembersResponse;
@@ -42,28 +42,14 @@ public class MemberController {
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindAllMembersResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<FindAllMembersResponse>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(memberService.find(pageNo, criterion))
-                        .build());
-    }
-
-    @GetMapping("/admin/status")
-    @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllMembersResponse>> findByStatus(
-            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @RequestParam @NotBlank final MemberStatus memberStatus
+            @ModelAttribute final FindMemberAdminRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllMembersResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(memberService.findByStatus(pageNo, criterion, memberStatus))
-                        .build()
-                );
+                        .data(memberService.find(pageNo, criterion, request))
+                        .build());
     }
 
     @PostMapping

@@ -1,15 +1,14 @@
 package com.coverflow.inquiry.application;
 
 import com.coverflow.inquiry.domain.Inquiry;
-import com.coverflow.inquiry.domain.InquiryStatus;
 import com.coverflow.inquiry.dto.InquiriesDTO;
 import com.coverflow.inquiry.dto.InquiryCountDTO;
 import com.coverflow.inquiry.dto.InquiryDTO;
+import com.coverflow.inquiry.dto.request.FindInquiryAdminRequest;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
 import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
 import com.coverflow.inquiry.dto.response.FindInquiryResponse;
-import com.coverflow.inquiry.exception.InquiryException;
 import com.coverflow.inquiry.infrastructure.InquiryRepository;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
@@ -25,6 +24,7 @@ import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
 import static com.coverflow.inquiry.domain.InquiryStatus.COMPLETE;
 import static com.coverflow.inquiry.domain.InquiryStatus.WAIT;
+import static com.coverflow.inquiry.exception.InquiryException.InquiryNotFoundException;
 
 @RequiredArgsConstructor
 @Service
@@ -43,7 +43,7 @@ public class InquiryService {
             final String memberId
     ) {
         Page<Inquiry> inquiries = inquiryRepository.findAllByMemberIdAndStatus(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), UUID.fromString(memberId))
-                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(memberId));
+                .orElseThrow(() -> new InquiryNotFoundException(memberId));
         int waitInquiryCount = inquiryRepository.findAllCountByMemberId(UUID.fromString(memberId), WAIT);
         int completeInquiryCount = inquiryRepository.findAllCountByMemberId(UUID.fromString(memberId), COMPLETE);
         int allInquiryCount = waitInquiryCount + completeInquiryCount;
@@ -61,40 +61,22 @@ public class InquiryService {
     }
 
     /**
-     * [관리자 전용: 전체 문의 조회 메서드]
+     * [관리자 - 문의 조회 메서드]
      */
     @Transactional(readOnly = true)
     public FindAllInquiriesResponse find(
             final int pageNo,
-            final String criterion
-    ) {
-        Page<Inquiry> inquiries = inquiryRepository.findInquiries(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
-                .orElseThrow(InquiryException.InquiryNotFoundException::new);
-
-        return FindAllInquiriesResponse.of(
-                inquiries.getTotalPages(),
-                inquiries.getContent().stream()
-                        .map(InquiriesDTO::from)
-                        .toList()
-        );
-    }
-
-    /**
-     * [관리자 전용: 특정 상태 문의 조회 메서드]
-     * 특정 상태(답변대기/답변완료/삭제)의 회사를 조회하는 메서드
-     */
-    @Transactional(readOnly = true)
-    public FindAllInquiriesResponse findByStatus(
-            final int pageNo,
             final String criterion,
-            final InquiryStatus inquiryStatus
+            final FindInquiryAdminRequest request
     ) {
-        Page<Inquiry> inquiries = inquiryRepository.findAllByStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), inquiryStatus)
-                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryStatus));
+        Page<Inquiry> inquiries = inquiryRepository.findWithFilters(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), request)
+                .orElseThrow(() -> new InquiryNotFoundException(request));
 
         return FindAllInquiriesResponse.of(
                 inquiries.getTotalPages(),
-                inquiries.getContent().stream()
+                inquiries.getTotalElements(),
+                inquiries.getContent()
+                        .stream()
                         .map(InquiriesDTO::from)
                         .toList()
         );
@@ -108,12 +90,11 @@ public class InquiryService {
             final SaveInquiryRequest request,
             final String memberId
     ) {
-
         inquiryRepository.save(new Inquiry(request, memberId));
     }
 
     /**
-     * [관리자 전용: 문의 수정 메서드]
+     * [관리자 - 문의 수정 메서드]
      */
     @Transactional
     public void update(
@@ -121,19 +102,19 @@ public class InquiryService {
             final UpdateInquiryRequest request
     ) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
+                .orElseThrow(() -> new InquiryNotFoundException(inquiryId));
 
         inquiry.updateInquiry(request);
         notificationService.send(new Notification(inquiry));
     }
 
     /**
-     * [관리자 전용: 문의 삭제 메서드]
+     * [관리자 - 문의 삭제 메서드]
      */
     @Transactional
     public void delete(final long inquiryId) {
         Inquiry inquiry = inquiryRepository.findById(inquiryId)
-                .orElseThrow(() -> new InquiryException.InquiryNotFoundException(inquiryId));
+                .orElseThrow(() -> new InquiryNotFoundException(inquiryId));
 
         inquiryRepository.delete(inquiry);
     }

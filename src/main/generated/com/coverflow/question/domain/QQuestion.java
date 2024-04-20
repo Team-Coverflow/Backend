@@ -41,7 +41,7 @@ public class QQuestion extends EntityPathBase<Question> {
 
     public final StringPath questionCategory = createString("questionCategory");
 
-    public final EnumPath<QuestionStatus> questionStatus = createEnum("questionStatus", QuestionStatus.class);
+    public final BooleanPath questionStatus = createBoolean("questionStatus");
 
     public final EnumPath<QuestionTag> questionTag = createEnum("questionTag", QuestionTag.class);
 

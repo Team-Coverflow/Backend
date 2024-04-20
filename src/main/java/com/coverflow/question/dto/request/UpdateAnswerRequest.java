@@ -7,6 +7,6 @@ public record UpdateAnswerRequest(
         @NotBlank
         String content,
         @NotBlank
-        String answerStatus
+        boolean answerStatus
 ) {
 }

@@ -3,19 +3,18 @@ package com.coverflow.question.application;
 import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.question.domain.Answer;
-import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.AnswerDTO;
 import com.coverflow.question.dto.AnswerListDTO;
 import com.coverflow.question.dto.AnswersDTO;
 import com.coverflow.question.dto.MyAnswerDTO;
+import com.coverflow.question.dto.request.FindAnswerAdminRequest;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.request.UpdateSelectionRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
 import com.coverflow.question.dto.response.FindMyAnswersResponse;
 import com.coverflow.question.exception.AnswerException;
-import com.coverflow.question.exception.QuestionException;
 import com.coverflow.question.infrastructure.AnswerRepository;
 import com.coverflow.question.infrastructure.QuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +29,8 @@ import java.util.UUID;
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
+import static com.coverflow.question.exception.AnswerException.AnswerNotFoundException;
+import static com.coverflow.question.exception.QuestionException.QuestionNotFoundException;
 
 @RequiredArgsConstructor
 @Service
@@ -67,7 +68,7 @@ public class AnswerService {
             final UUID memberId
     ) {
         Page<Answer> answers = answerRepository.findRegisteredAnswers(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), memberId)
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(memberId));
+                .orElseThrow(() -> new AnswerNotFoundException(memberId));
 
         return FindMyAnswersResponse.of(
                 answers.getTotalPages(),
@@ -77,40 +78,22 @@ public class AnswerService {
     }
 
     /**
-     * [관리자 전용: 전체 답변 조회 메서드]
+     * [관리자 - 답변 조회 메서드]
      */
     @Transactional(readOnly = true)
     public FindAnswerResponse find(
             final int pageNo,
-            final String criterion
-    ) {
-        Page<Answer> answers = answerRepository.find(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
-                .orElseThrow(AnswerException.AnswerNotFoundException::new);
-
-        return FindAnswerResponse.of(
-                answers.getTotalPages(),
-                answers.getContent().stream()
-                        .map(AnswersDTO::from)
-                        .toList()
-        );
-    }
-
-    /**
-     * [관리자 전용: 특정 상태 답변 조회 메서드]
-     * 특정 상태(등록/삭제)의 회사를 조회하는 메서드
-     */
-    @Transactional(readOnly = true)
-    public FindAnswerResponse findByStatus(
-            final int pageNo,
             final String criterion,
-            final AnswerStatus answerStatus
+            final FindAnswerAdminRequest request
     ) {
-        Page<Answer> answers = answerRepository.findByAnswerStatus(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), answerStatus)
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerStatus));
+        Page<Answer> answers = answerRepository.findWithFilters(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), request)
+                .orElseThrow(AnswerNotFoundException::new);
 
         return FindAnswerResponse.of(
                 answers.getTotalPages(),
-                answers.getContent().stream()
+                answers.getTotalElements(),
+                answers.getContent()
+                        .stream()
                         .map(AnswersDTO::from)
                         .toList()
         );
@@ -125,7 +108,7 @@ public class AnswerService {
             final String memberId
     ) {
         Question question = questionRepository.findById(request.questionId())
-                .orElseThrow(() -> new QuestionException.QuestionNotFoundException(request.questionId()));
+                .orElseThrow(() -> new QuestionNotFoundException(request.questionId()));
 
         if (String.valueOf(question.getMember().getId()).equals(memberId)) {
             throw new AnswerException.QuestionAuthorException(memberId);
@@ -146,7 +129,7 @@ public class AnswerService {
             final String memberId
     ) {
         Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
+                .orElseThrow(() -> new AnswerNotFoundException(answerId));
 
         if (!String.valueOf(answer.getQuestion().getMember().getId()).equals(memberId)) {
             throw new AnswerException.SelectionException();
@@ -158,7 +141,7 @@ public class AnswerService {
     }
 
     /**
-     * [관리자 전용: 답변 수정 메서드]
+     * [관리자 - 답변 수정 메서드]
      */
     @Transactional
     public void update(
@@ -166,18 +149,18 @@ public class AnswerService {
             final UpdateAnswerRequest request
     ) {
         Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
+                .orElseThrow(() -> new AnswerNotFoundException(answerId));
 
         answer.updateAnswer(request);
     }
 
     /**
-     * [관리자 전용: 답변 삭제 메서드]
+     * [관리자 - 답변 삭제 메서드]
      */
     @Transactional
     public void delete(final long answerId) {
         Answer answer = answerRepository.findById(answerId)
-                .orElseThrow(() -> new AnswerException.AnswerNotFoundException(answerId));
+                .orElseThrow(() -> new AnswerNotFoundException(answerId));
 
         answerRepository.delete(answer);
     }

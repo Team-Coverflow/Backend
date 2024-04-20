@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
-public interface CompanyRepositoryCustom {
+public interface CompanyCustomRepository {
 
-    Optional<Page<Company>> findWithFilters(final Pageable pageable, final FindCompanyAdminRequest companyStatus);
+    Optional<Page<Company>> findWithFilters(final Pageable pageable, final FindCompanyAdminRequest request);
 }

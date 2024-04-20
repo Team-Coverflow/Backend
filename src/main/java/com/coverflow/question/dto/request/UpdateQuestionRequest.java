@@ -9,6 +9,6 @@ public record UpdateQuestionRequest(
         @NotBlank
         String content,
         @NotBlank
-        String questionStatus
+        boolean questionStatus
 ) {
 }

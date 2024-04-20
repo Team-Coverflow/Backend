@@ -1,6 +1,7 @@
 package com.coverflow.report.dto;
 
 import com.coverflow.report.domain.Report;
+import com.coverflow.report.domain.ReportType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ public class ReportDTO {
     private long reportId;
     private String reportContent;
     private boolean reportStatus;
+    private ReportType reportType;
     private String reporterNickname;
     private long questionId;
     private long answerId;
@@ -24,6 +26,7 @@ public class ReportDTO {
                 report.getId(),
                 report.getContent(),
                 report.isReportStatus(),
+                report.getType(),
                 report.getMember().getNickname(),
                 report.getQuestion().getId(),
                 report.getAnswer().getId(),

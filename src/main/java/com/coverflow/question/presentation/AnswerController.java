@@ -5,7 +5,7 @@ import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.global.util.BadwordUtil;
 import com.coverflow.question.application.AnswerService;
-import com.coverflow.question.domain.AnswerStatus;
+import com.coverflow.question.dto.request.FindAnswerAdminRequest;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
 import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.request.UpdateSelectionRequest;
@@ -50,27 +50,13 @@ public class AnswerController {
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindAnswerResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<FindAnswerResponse>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(answerService.find(pageNo, criterion))
-                        .build()
-                );
-    }
-
-    @GetMapping("/admin/status")
-    @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAnswerResponse>> findByStatus(
-            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @RequestParam @NotBlank final AnswerStatus answerStatus
+            @ModelAttribute final FindAnswerAdminRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAnswerResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(answerService.findByStatus(pageNo, criterion, answerStatus))
+                        .data(answerService.find(pageNo, criterion, request))
                         .build()
                 );
     }

@@ -4,6 +4,5 @@ public enum MemberStatus {
 
     WAIT,
     REGISTRATION,
-    RESPITE,
     LEAVE
 }
