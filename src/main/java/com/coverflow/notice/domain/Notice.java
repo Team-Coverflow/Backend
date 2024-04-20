@@ -22,6 +22,8 @@ public class Notice extends BaseTimeEntity {
     @Column
     private String content; // 공지 내용
     @Column
+    private long views; // 조회수
+    @Column
     private boolean noticeStatus; // 상태(T: 등록/F: 삭제)
 
     @ManyToOne
