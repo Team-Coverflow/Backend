@@ -132,11 +132,11 @@ public class ReportCustomRepositoryImpl implements ReportCustomRepository {
         return report.content.eq(content);
     }
 
-    private BooleanExpression eqStatus(final String status) {
-        if (!StringUtils.hasText(status)) {
+    private BooleanExpression eqStatus(final Boolean status) {
+        if (status == null) {
             return null;
         }
-        return report.reportStatus.eq(Boolean.valueOf(status));
+        return report.reportStatus.eq(status);
     }
 
     private BooleanExpression eqType(final String type) {

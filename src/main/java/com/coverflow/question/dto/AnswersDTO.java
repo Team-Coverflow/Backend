@@ -1,7 +1,6 @@
 package com.coverflow.question.dto;
 
 import com.coverflow.question.domain.Answer;
-import com.coverflow.question.domain.AnswerStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +16,7 @@ public class AnswersDTO {
     private boolean selection;
     private String answererNickname;
     private String answererTag;
-    private AnswerStatus answerStatus;
+    private boolean answerStatus;
     private LocalDate createAt;
 
     public static AnswersDTO from(final Answer answer) {
@@ -27,7 +26,7 @@ public class AnswersDTO {
                 answer.isSelection(),
                 answer.getMember().getNickname(),
                 answer.getMember().getTag(),
-                answer.getAnswerStatus(),
+                answer.isAnswerStatus(),
                 answer.getCreatedAt().toLocalDate()
         );
     }

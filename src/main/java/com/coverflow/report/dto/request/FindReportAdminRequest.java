@@ -4,7 +4,7 @@ public record FindReportAdminRequest(
         String createdStartDate,
         String createdEndDate,
         String content,
-        String status,
+        Boolean status,
         String type
 ) {
 }

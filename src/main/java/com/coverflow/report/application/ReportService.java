@@ -1,7 +1,6 @@
 package com.coverflow.report.application;
 
 import com.coverflow.question.domain.Answer;
-import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.infrastructure.AnswerRepository;
 import com.coverflow.report.domain.Report;
 import com.coverflow.report.domain.ReportType;
@@ -88,7 +87,7 @@ public class ReportService {
             report = new Report(request, memberId);
         }
         if ((ANSWER).equals(ReportType.valueOf(request.type()))) {
-            Answer answer = answerRepository.findByIdAndAnswerStatus(request.id(), AnswerStatus.REGISTRATION)
+            Answer answer = answerRepository.findByIdAndAnswerStatus(request.id(), true)
                     .orElseThrow(() -> new AnswerNotFoundException(request.id()));
 
             report = new Report(request, answer, memberId);

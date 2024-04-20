@@ -1,7 +1,6 @@
 package com.coverflow.question.dto;
 
 import com.coverflow.question.domain.Question;
-import com.coverflow.question.domain.QuestionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +20,7 @@ public class QuestionsDTO {
     private int questionViewCount;
     private int answerCount;
     private int reward;
-    private QuestionStatus questionStatus;
+    private boolean questionStatus;
     private LocalDate createAt;
 
     public static QuestionsDTO from(final Question question) {
@@ -34,7 +33,7 @@ public class QuestionsDTO {
                 question.getViewCount(),
                 question.getAnswerCount(),
                 question.getReward(),
-                question.getQuestionStatus(),
+                question.isQuestionStatus(),
                 question.getCreatedAt().toLocalDate()
         );
     }

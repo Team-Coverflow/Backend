@@ -1,7 +1,6 @@
 package com.coverflow.question.infrastructure;
 
 import com.coverflow.question.domain.Answer;
-import com.coverflow.question.domain.AnswerStatus;
 import com.coverflow.question.dto.request.FindAnswerAdminRequest;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -120,10 +119,10 @@ public class AnswerCustomRepositoryImpl implements AnswerCustomRepository {
         }
     }
 
-    private BooleanExpression eqStatus(final String status) {
-        if (!StringUtils.hasText(status)) {
+    private BooleanExpression eqStatus(final Boolean status) {
+        if (status == null) {
             return null;
         }
-        return answer.answerStatus.eq(AnswerStatus.valueOf(status));
+        return answer.answerStatus.eq(status);
     }
 }

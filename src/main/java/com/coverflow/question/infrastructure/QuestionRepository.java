@@ -16,7 +16,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
             SELECT q
             FROM Question q
             WHERE q.member.id = :memberId
-            AND q.questionStatus = 'REGISTRATION'
+            AND q.questionStatus = true
             ORDER BY q.createdAt DESC
             """)
     Optional<Page<Question>> findRegisteredQuestions(
@@ -28,7 +28,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
             SELECT q
             FROM Question q
             WHERE q.company.id = :companyId
-            AND q.questionStatus = 'REGISTRATION'
+            AND q.questionStatus = true
             ORDER BY q.createdAt DESC
             """)
     Optional<Page<Question>> findRegisteredQuestions(
@@ -40,7 +40,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
             SELECT DISTINCT q
             FROM Question q
             WHERE q.id = :questionId
-            AND q.questionStatus = 'REGISTRATION'
+            AND q.questionStatus = true
             """)
     Optional<Question> findRegisteredQuestion(@Param("questionId") final long questionId);
 
