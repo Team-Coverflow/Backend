@@ -35,21 +35,5 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long>, Inquiry
             @Param("memberId") final UUID memberId
     );
 
-    @Query("""
-            SELECT e
-            FROM Inquiry e
-            """)
-    Optional<Page<Inquiry>> findInquiries(final Pageable pageable);
-
-    @Query("""
-            SELECT e
-            FROM Inquiry e
-            WHERE e.inquiryStatus = :inquiryStatus
-            """)
-    Optional<Page<Inquiry>> findAllByStatus(
-            final Pageable pageable,
-            @Param("inquiryStatus") final InquiryStatus inquiryStatus
-    );
-
     void deleteByMemberId(UUID id);
 }
