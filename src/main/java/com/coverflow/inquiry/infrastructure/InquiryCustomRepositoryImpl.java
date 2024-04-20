@@ -98,14 +98,14 @@ public class InquiryCustomRepositoryImpl implements InquiryCustomRepository {
         if (!StringUtils.hasText(startDate)) {
             return null;
         }
-        return inquiry.createdAt.goe(LocalDate.parse(startDate).atStartOfDay()); // 시작 날짜 이후
+        return inquiry.createdAt.goe(LocalDate.parse(startDate).atStartOfDay());
     }
 
     private BooleanExpression toContainsCreatedEndDate(final String endDate) {
         if (!StringUtils.hasText(endDate)) {
             return null;
         }
-        return inquiry.createdAt.loe(LocalDate.parse(endDate).atStartOfDay()); // 종료 날짜 이전
+        return inquiry.createdAt.loe(LocalDate.parse(endDate).atStartOfDay());
     }
 
     private BooleanExpression toCreatedDateBetween(final String startDate, final String endDate) {
