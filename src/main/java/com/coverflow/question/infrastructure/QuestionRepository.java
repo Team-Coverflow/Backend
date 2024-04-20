@@ -1,7 +1,6 @@
 package com.coverflow.question.infrastructure;
 
 import com.coverflow.question.domain.Question;
-import com.coverflow.question.domain.QuestionStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface QuestionRepository extends JpaRepository<Question, Long> {
+public interface QuestionRepository extends JpaRepository<Question, Long>, QuestionCustomRepository {
 
     @Query("""
             SELECT q
@@ -44,22 +43,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long> {
             AND q.questionStatus = 'REGISTRATION'
             """)
     Optional<Question> findRegisteredQuestion(@Param("questionId") final long questionId);
-
-    @Query("""
-            SELECT q
-            FROM Question q
-            """)
-    Optional<Page<Question>> findAllQuestions(final Pageable pageable);
-
-    @Query("""
-            SELECT q
-            FROM Question q
-            WHERE q.questionStatus = :questionStatus
-            """)
-    Optional<Page<Question>> findAllByQuestionStatus(
-            final Pageable pageable,
-            @Param("questionStatus") final QuestionStatus questionStatus
-    );
 
     void deleteByMemberId(UUID id);
 }

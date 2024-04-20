@@ -6,13 +6,15 @@ import java.util.List;
 
 public record FindAllQuestionsResponse(
         int totalPages,
+        long totalElements,
         List<QuestionsDTO> questions
 ) {
 
     public static FindAllQuestionsResponse of(
             final int totalPages,
+            final long totalElements,
             final List<QuestionsDTO> questions
     ) {
-        return new FindAllQuestionsResponse(totalPages, questions);
+        return new FindAllQuestionsResponse(totalPages, totalElements, questions);
     }
 }
