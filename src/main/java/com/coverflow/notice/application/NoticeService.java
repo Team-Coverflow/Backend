@@ -72,5 +72,9 @@ public class NoticeService {
      */
     @Transactional
     public void delete(final long noticeId) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new NoticeNotFoundException(noticeId));
+
+        noticeRepository.delete(notice);
     }
 }
