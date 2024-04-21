@@ -61,8 +61,4 @@ public class Company extends BaseTimeEntity {
     public void updateQuestionCount(final int questionCount) {
         this.questionCount = questionCount;
     }
-
-    public void updateCompanyStatus(final CompanyStatus companyStatus) {
-        this.companyStatus = companyStatus;
-    }
 }
