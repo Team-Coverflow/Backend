@@ -2,9 +2,12 @@ package com.coverflow.notice.domain;
 
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
+import com.coverflow.notice.dto.request.SaveNoticeRequest;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,4 +33,11 @@ public class Notice extends BaseTimeEntity {
     @JoinColumn(name = "member_id")
     @JsonBackReference
     private Member member; // 작성자 정보
+
+    public Notice(final SaveNoticeRequest request, final String memberId) {
+        this.title = request.title();
+        this.content = request.content();
+        this.noticeStatus = true;
+        this.member = Member.builder().id(UUID.fromString(memberId)).build();
+    }
 }

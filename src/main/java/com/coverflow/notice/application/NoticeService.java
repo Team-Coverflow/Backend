@@ -48,8 +48,9 @@ public class NoticeService {
     @Transactional
     public void save(
             final SaveNoticeRequest request,
-            final String username
+            final String memberId
     ) {
+        noticeRepository.save(new Notice(request, memberId));
     }
 
     /**
