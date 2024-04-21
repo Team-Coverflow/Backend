@@ -29,7 +29,7 @@ public class NoticeService {
             final int pageNo,
             final String criterion
     ) {
-        Page<Notice> notices = noticeRepository.findAll(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
+        Page<Notice> notices = noticeRepository.find(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion))
                 .orElseThrow(NoticeNotFoundException::new);
 
         return FindNoticeResponse.of(

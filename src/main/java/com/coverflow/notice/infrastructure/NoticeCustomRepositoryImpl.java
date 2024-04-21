@@ -20,7 +20,7 @@ public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<Page<Notice>> findAll(final Pageable pageable) {
+    public Optional<Page<Notice>> find(final Pageable pageable) {
         List<Notice> notices;
         long total;
 

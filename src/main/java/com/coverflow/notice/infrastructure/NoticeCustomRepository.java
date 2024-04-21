@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface NoticeCustomRepository {
 
-    Optional<Page<Notice>> findAll(final Pageable pageable);
+    Optional<Page<Notice>> find(final Pageable pageable);
 }
