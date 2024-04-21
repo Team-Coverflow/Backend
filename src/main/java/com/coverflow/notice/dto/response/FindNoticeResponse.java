@@ -1,4 +1,12 @@
 package com.coverflow.notice.dto.response;
 
-public record FindNoticeResponse() {
+import java.time.LocalDate;
+
+public record FindNoticeResponse(
+        long id,
+        String title,
+        String content,
+        long views,
+        LocalDate createdAt
+) {
 }

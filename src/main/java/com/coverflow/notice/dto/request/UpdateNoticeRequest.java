@@ -1,4 +1,7 @@
 package com.coverflow.notice.dto.request;
 
-public record UpdateNoticeRequest() {
+public record UpdateNoticeRequest(
+        String title,
+        String content
+) {
 }
