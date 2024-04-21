@@ -3,6 +3,7 @@ package com.coverflow.notice.domain;
 import com.coverflow.global.entity.BaseTimeEntity;
 import com.coverflow.member.domain.Member;
 import com.coverflow.notice.dto.request.SaveNoticeRequest;
+import com.coverflow.notice.dto.request.UpdateNoticeRequest;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,5 +40,11 @@ public class Notice extends BaseTimeEntity {
         this.content = request.content();
         this.noticeStatus = true;
         this.member = Member.builder().id(UUID.fromString(memberId)).build();
+    }
+
+    public void updateNotice(final UpdateNoticeRequest request) {
+        this.title = request.title();
+        this.content = request.content();
+        this.noticeStatus = request.noticeStatus();
     }
 }

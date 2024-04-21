@@ -61,6 +61,10 @@ public class NoticeService {
             final long noticeId,
             final UpdateNoticeRequest request
     ) {
+        Notice notice = noticeRepository.findById(noticeId)
+                .orElseThrow(() -> new NoticeNotFoundException(noticeId));
+
+        notice.updateNotice(request);
     }
 
     /**
