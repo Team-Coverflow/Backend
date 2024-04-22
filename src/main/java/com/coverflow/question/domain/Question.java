@@ -31,7 +31,7 @@ public class Question extends BaseTimeEntity {
     @Column
     private String content; // 내용
     @Column
-    private int viewCount; // 질문 조회 수
+    private long viewCount; // 질문 조회 수
     @Column
     private int answerCount; // 답변 수
     @Column

@@ -47,8 +47,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{questionId}")
-    @MemberAuthorize
-    public ResponseEntity<ResponseHandler<FindQuestionResponse>> findByQuestionId(
+    public ResponseEntity<ResponseHandler<FindQuestionResponse>> findById(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @PathVariable @Positive final long questionId
@@ -56,7 +55,7 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(questionService.findByQuestionId(pageNo, criterion, questionId))
+                        .data(questionService.findById(pageNo, criterion, questionId))
                         .build()
                 );
     }
