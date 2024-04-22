@@ -17,7 +17,7 @@ public class QuestionsDTO {
     private String questionerNickname;
     private String questionerTag;
     private String questionTitle;
-    private int questionViewCount;
+    private long questionViewCount;
     private int answerCount;
     private int reward;
     private boolean questionStatus;

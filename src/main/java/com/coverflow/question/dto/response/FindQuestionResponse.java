@@ -14,7 +14,7 @@ public record FindQuestionResponse(
         String questionContent,
         QuestionTag questionTag,
         String questionCategory,
-        int viewCount,
+        long viewCount,
         int answerCount,
         int reward,
         String questionerNickname,
