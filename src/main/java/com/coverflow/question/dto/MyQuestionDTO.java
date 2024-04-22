@@ -20,7 +20,7 @@ public class MyQuestionDTO {
     private String questionTitle;
     private QuestionTag questionTag;
     private String questionCategory;
-    private int questionViewCount;
+    private long questionViewCount;
     private int answerCount;
     private int reward;
     private LocalDate createAt;

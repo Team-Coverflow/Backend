@@ -54,7 +54,7 @@ public class QQuestion extends EntityPathBase<Question> {
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final NumberPath<Integer> viewCount = createNumber("viewCount", Integer.class);
+    public final NumberPath<Long> viewCount = createNumber("viewCount", Long.class);
 
     public QQuestion(String variable) {
         this(Question.class, forVariable(variable), INITS);

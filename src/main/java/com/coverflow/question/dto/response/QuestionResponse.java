@@ -8,7 +8,7 @@ public record QuestionResponse(
         long questionId,
         String title,
         String content,
-        int viewCount,
+        long viewCount,
         int answerCount,
         long companyId,
         UUID memberId
