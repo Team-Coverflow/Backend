@@ -94,7 +94,7 @@ public class Question extends BaseTimeEntity {
         this.questionStatus = request.questionStatus();
     }
 
-    public void updateViewCount(int viewCount) {
+    public void updateViewCount(long viewCount) {
         this.viewCount = viewCount;
     }
 
