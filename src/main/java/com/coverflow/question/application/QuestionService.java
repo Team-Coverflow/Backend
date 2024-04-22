@@ -79,7 +79,7 @@ public class QuestionService {
      * 특정 질문 id로 질문 및 답변 조회
      */
     @Transactional
-    public FindQuestionResponse findByQuestionId(
+    public FindQuestionResponse findById(
             final int pageNo,
             final String criterion,
             final long questionId
