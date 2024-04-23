@@ -41,6 +41,7 @@ public class SecurityConfig {
             "/api/auth/token",
             "/api/company",
             "/api/company/{companyId}",
+            "/api/notice",
             "/api/question/{questionId}",
             "/api/feedback"
     };
