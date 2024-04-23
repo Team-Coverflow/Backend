@@ -8,7 +8,11 @@ import org.springframework.stereotype.Component;
 public class BadwordUtil {
 
     public static void check(final String word) {
-        if (new BadWordFiltering().check(word)) {
+        BadWordFiltering badWordFiltering = new BadWordFiltering();
+        badWordFiltering.remove("공지");
+        badWordFiltering.remove("공지사항");
+
+        if (badWordFiltering.check(word)) {
             throw new GlobalException.ExistBadwordException();
         }
     }
