@@ -22,7 +22,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static com.coverflow.company.exception.CompanyException.CompanyNotFoundException;
-import static com.coverflow.global.constant.Constant.*;
+import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
+import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
 import static com.coverflow.question.exception.QuestionException.QuestionNotFoundException;
 
@@ -64,7 +65,7 @@ public class QuestionService {
             final String criterion,
             final UUID memberId
     ) {
-        Page<Question> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, SMALL_PAGE_SIZE, criterion), memberId)
+        Page<Question> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), memberId)
                 .orElseThrow(() -> new QuestionNotFoundException(memberId));
 
         return FindMyQuestionsResponse.of(
