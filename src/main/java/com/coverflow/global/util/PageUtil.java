@@ -9,7 +9,7 @@ public class PageUtil {
     public static Pageable generatePageAsc(
             final int pageNo,
             final int pageSize,
-            final String criterion
+            final String... criterion
     ) {
         return PageRequest.of(pageNo, pageSize, Sort.by(criterion).ascending());
     }
