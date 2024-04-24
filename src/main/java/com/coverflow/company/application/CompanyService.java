@@ -8,12 +8,14 @@ import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
+import com.coverflow.company.dto.response.SearchCompanyCountResponse;
 import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.question.application.QuestionService;
 import com.coverflow.question.dto.CompanyAndQuestionDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,17 +45,22 @@ public class CompanyService {
             final int pageNo,
             final String name
     ) {
-        Page<Company> companies = companyRepository.findByNameStartingWithAndCompanyStatus(generatePageAsc(pageNo, NORMAL_PAGE_SIZE, "name"), name)
+        Slice<Company> companies = companyRepository.findByNameStartingWith(generatePageAsc(pageNo, NORMAL_PAGE_SIZE, "name"), name)
                 .orElseThrow(() -> new CompanyNotFoundException(name));
 
-        return SearchCompanyResponse.of(
-                companies.getTotalPages(),
-                companies.getTotalElements(),
+        return SearchCompanyResponse.from(
                 companies.getContent()
                         .stream()
                         .map(CompanyDTO::from)
                         .toList()
         );
+    }
+
+    public SearchCompanyCountResponse searchTotalCount(final String name) {
+        long totalElements = companyRepository.countByName(name);
+        int totalPages = (int) (totalElements / NORMAL_PAGE_SIZE);
+
+        return SearchCompanyCountResponse.of(totalPages, totalElements);
     }
 
     /**

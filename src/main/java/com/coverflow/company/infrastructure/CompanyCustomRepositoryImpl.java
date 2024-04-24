@@ -6,9 +6,7 @@ import com.coverflow.company.dto.request.FindCompanyAdminRequest;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -23,6 +21,39 @@ import static com.coverflow.global.util.RepositoryUtil.makeOrderSpecifiers;
 public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    @Override
+    public Optional<Slice<Company>> findByNameStartingWith(
+            final Pageable pageable,
+            final String name
+    ) {
+        List<Company> companies = jpaQueryFactory
+                .selectFrom(company)
+                .where(
+                        company.name.startsWith(name),
+                        company.companyStatus.eq(CompanyStatus.valueOf("REGISTRATION"))
+                )
+                .orderBy(makeOrderSpecifiers(company, pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+
+        return Optional.of(new SliceImpl<>(companies));
+    }
+
+    @Override
+    public Long countByName(
+            final String name
+    ) {
+        return jpaQueryFactory
+                .select(company.count())
+                .from(company)
+                .where(
+                        company.name.startsWith(name)
+                )
+                .fetchOne();
+    }
 
     @Override
     public Optional<Page<Company>> findWithFilters(
@@ -41,9 +72,9 @@ public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
                                 toContainsDistrict(request.district()),
                                 eqCompanyStatus(request.companyStatus())
                         )
+                        .orderBy(makeOrderSpecifiers(company, pageable))
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
-                        .orderBy(makeOrderSpecifiers(company, pageable))
                         .fetch()
         );
 
