@@ -6,6 +6,7 @@ import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
+import com.coverflow.company.dto.response.SearchCompanyCountResponse;
 import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
@@ -28,12 +29,22 @@ public class CompanyController {
     @GetMapping
     public ResponseEntity<ResponseHandler<SearchCompanyResponse>> search(
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "name") final String name
+            @RequestParam final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<SearchCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(companyService.search(pageNo, name))
+                        .build()
+                );
+    }
+
+    @GetMapping("/count")
+    public ResponseEntity<ResponseHandler<SearchCompanyCountResponse>> search(@RequestParam final String name) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<SearchCompanyCountResponse>builder()
+                        .statusCode(HttpStatus.OK)
+                        .data(companyService.search(name))
                         .build()
                 );
     }
