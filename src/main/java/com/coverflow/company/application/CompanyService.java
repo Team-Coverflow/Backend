@@ -56,6 +56,7 @@ public class CompanyService {
         );
     }
 
+    @Transactional(readOnly = true)
     public SearchCompanyCountResponse search(final String name) {
         long totalElements = companyRepository.countByName(name);
         int totalPages = (int) (totalElements / NORMAL_PAGE_SIZE);
