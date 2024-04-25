@@ -17,10 +17,18 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<List<Notification>> findByMemberId(final UUID memberId, final LocalDateTime date) {
+    public Optional<List<Notification>> findByMemberId(
+            final UUID memberId,
+            final LocalDateTime date,
+            final long lastIndex
+    ) {
         List<Notification> notifications = jpaQueryFactory
                 .select(notification)
-                .where()
+                .where(
+                        notification.member.id.eq(memberId),
+                        notification.createdAt.gt(date),
+                        notification.id.gt(lastIndex)
+                )
                 .orderBy(notification.createdAt.desc())
                 .limit(10)
                 .fetch();

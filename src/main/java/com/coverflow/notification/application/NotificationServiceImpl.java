@@ -130,7 +130,7 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Transactional(readOnly = true)
     public FindNotificationResponse find(final long lastIndex, final String memberId) {
-        List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId), LocalDateTime.now().minusDays(31))
+        List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId), LocalDateTime.now().minusDays(31), lastIndex)
                 .orElseThrow(() -> new NotificationException.NotificationNotFoundException(memberId));
 
         return FindNotificationResponse.of(

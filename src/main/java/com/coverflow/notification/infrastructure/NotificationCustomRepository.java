@@ -9,5 +9,5 @@ import java.util.UUID;
 
 public interface NotificationCustomRepository {
 
-    Optional<List<Notification>> findByMemberId(final UUID memberId, final LocalDateTime date);
+    Optional<List<Notification>> findByMemberId(final UUID memberId, final LocalDateTime date, final long lastIndex);
 }
