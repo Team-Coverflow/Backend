@@ -20,7 +20,7 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
     public Optional<List<Notification>> findByMemberId(
             final UUID memberId,
             final LocalDateTime date,
-            final long lastIndex
+            final long lastId
     ) {
         List<Notification> notifications = jpaQueryFactory
                 .select(notification)
@@ -28,7 +28,7 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
                 .where(
                         notification.member.id.eq(memberId),
                         notification.createdAt.gt(date),
-                        notification.id.lt(lastIndex)
+                        notification.id.lt(lastId)
                 )
                 .orderBy(notification.createdAt.desc())
                 .limit(10)

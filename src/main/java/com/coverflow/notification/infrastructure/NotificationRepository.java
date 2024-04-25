@@ -10,19 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public interface NotificationRepository extends JpaRepository<Notification, Long>, NotificationCustomRepository {
-
-//    @Query("""
-//            SELECT n
-//            FROM Notification n
-//            WHERE n.member.id = :member_id
-//            AND n.createdAt> :date
-//            ORDER BY n.createdAt DESC
-//            """)
-//    Optional<List<Notification>> findByMemberId(
-//            @Param("member_id") final UUID memberId,
-//            @Param("date") final LocalDateTime date
-//    );
-
+    
     @Modifying
     @Query("""
             DELETE FROM Notification n
