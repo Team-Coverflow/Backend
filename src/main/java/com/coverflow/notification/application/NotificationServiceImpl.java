@@ -129,7 +129,7 @@ public class NotificationServiceImpl implements NotificationService {
      * [알림 조회 메서드]
      */
     @Transactional(readOnly = true)
-    public FindNotificationResponse find(final long lastId, final String memberId) {
+    public FindNotificationResponse find(final Long lastId, final String memberId) {
         List<Notification> notifications = notificationRepository.findByMemberId(UUID.fromString(memberId), LocalDateTime.now().minusDays(31), lastId)
                 .orElseThrow(() -> new NotificationException.NotificationNotFoundException(memberId));
 

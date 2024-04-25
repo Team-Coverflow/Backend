@@ -36,7 +36,7 @@ public class NotificationController {
     @GetMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindNotificationResponse>> find(
-            @RequestParam long lastId,
+            @RequestParam(defaultValue = "", required = false) final Long lastId,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()

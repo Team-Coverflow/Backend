@@ -1,6 +1,7 @@
 package com.coverflow.notification.infrastructure;
 
 import com.coverflow.notification.domain.Notification;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -20,7 +21,7 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
     public Optional<List<Notification>> findByMemberId(
             final UUID memberId,
             final LocalDateTime date,
-            final long lastId
+            final Long lastId
     ) {
         List<Notification> notifications = jpaQueryFactory
                 .select(notification)
@@ -28,12 +29,19 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
                 .where(
                         notification.member.id.eq(memberId),
                         notification.createdAt.gt(date),
-                        notification.id.lt(lastId)
+                        toContainsLastId(lastId)
                 )
                 .orderBy(notification.createdAt.desc())
                 .limit(10)
                 .fetch();
 
         return Optional.of(notifications);
+    }
+
+    private BooleanExpression toContainsLastId(final Long lastId) {
+        if (lastId == null) {
+            return null;
+        }
+        return notification.id.lt(lastId);
     }
 }
