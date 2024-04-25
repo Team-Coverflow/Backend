@@ -36,12 +36,13 @@ public class NotificationController {
     @GetMapping
     @MemberAuthorize
     public ResponseEntity<ResponseHandler<FindNotificationResponse>> find(
+            @RequestParam(defaultValue = "", required = false) final Long lastId,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindNotificationResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(notificationService.find(userDetails.getUsername()))
+                        .data(notificationService.find(lastId, userDetails.getUsername()))
                         .build()
                 );
     }
