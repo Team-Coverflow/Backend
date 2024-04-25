@@ -24,10 +24,11 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
     ) {
         List<Notification> notifications = jpaQueryFactory
                 .select(notification)
+                .from(notification)
                 .where(
                         notification.member.id.eq(memberId),
                         notification.createdAt.gt(date),
-                        notification.id.gt(lastIndex)
+                        notification.id.lt(lastIndex)
                 )
                 .orderBy(notification.createdAt.desc())
                 .limit(10)
