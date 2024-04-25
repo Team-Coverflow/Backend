@@ -25,6 +25,6 @@ public class NotificationCustomRepositoryImpl implements NotificationCustomRepos
                 .limit(10)
                 .fetch();
 
-        return Optional.empty();
+        return Optional.of(notifications);
     }
 }
