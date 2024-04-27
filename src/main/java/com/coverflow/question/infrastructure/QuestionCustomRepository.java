@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface QuestionCustomRepository {
 
-    Optional<Page<Question>> findRegisteredQuestions(final Pageable pageable, final long companyId);
+    Optional<Page<Question>> findRegisteredQuestionsById(final Pageable pageable, final long companyId);
 
     Optional<Page<Question>> findWithFilters(final Pageable pageable, final FindQuestionAdminRequest request);
 }

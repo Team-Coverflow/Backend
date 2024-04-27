@@ -52,8 +52,45 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
     }
 
     @Override
-    public Optional<Page<Question>> findRegisteredQuestions(Pageable pageable, long companyId) {
-        return Optional.empty();
+    public Optional<Page<Question>> findRegisteredQuestionsById(
+            final Pageable pageable,
+            final long companyId
+    ) {
+        List<Question> questions;
+        long total;
+
+        CompletableFuture<List<Question>> questionsFuture = CompletableFuture.supplyAsync(() ->
+                jpaQueryFactory
+                        .selectFrom(question)
+                        .where(
+
+                        )
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(makeOrderSpecifiers(question, pageable))
+                        .fetch()
+        );
+
+        CompletableFuture<Long> countFuture = CompletableFuture.supplyAsync(() ->
+                jpaQueryFactory
+                        .select(question.count())
+                        .from(question)
+                        .where(
+
+                        )
+                        .fetchOne()
+        );
+
+        CompletableFuture.allOf(questionsFuture, countFuture).join();
+
+        try {
+            questions = questionsFuture.get();
+            total = countFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Optional.of(new PageImpl<>(questions, pageable, total));
     }
 
     @Override

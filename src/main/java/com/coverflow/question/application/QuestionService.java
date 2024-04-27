@@ -46,7 +46,7 @@ public class QuestionService {
             final String criterion,
             final long companyId
     ) {
-        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId);
+        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestionsById(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId);
 
         return questionList
                 .map(questionPage ->
