@@ -69,7 +69,7 @@ public class QuestionService {
             final String criterion,
             final UUID memberId
     ) {
-        Page<Question> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), memberId)
+        Page<Question> questionList = questionRepository.findRegisteredQuestionsByMemberId(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), memberId)
                 .orElseThrow(() -> new QuestionNotFoundException(memberId));
 
         return FindMyQuestionsResponse.of(

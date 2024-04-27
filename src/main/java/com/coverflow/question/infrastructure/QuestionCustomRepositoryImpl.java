@@ -52,6 +52,11 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
     }
 
     @Override
+    public Optional<Page<Question>> findRegisteredQuestions(Pageable pageable, long companyId) {
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Page<Question>> findWithFilters(
             final Pageable pageable,
             final FindQuestionAdminRequest request

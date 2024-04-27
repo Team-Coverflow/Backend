@@ -21,22 +21,22 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
             AND q.questionStatus = true
             ORDER BY q.createdAt DESC
             """)
-    Optional<Page<Question>> findRegisteredQuestions(
+    Optional<Page<Question>> findRegisteredQuestionsByMemberId(
             final Pageable pageable,
             @Param("memberId") final UUID memberId
     );
 
-    @Query("""
-            SELECT q
-            FROM Question q
-            WHERE q.company.id = :companyId
-            AND q.questionStatus = true
-            ORDER BY q.createdAt DESC
-            """)
-    Optional<Page<Question>> findRegisteredQuestions(
-            final Pageable pageable,
-            @Param("companyId") final long companyId
-    );
+//    @Query("""
+//            SELECT q
+//            FROM Question q
+//            WHERE q.company.id = :companyId
+//            AND q.questionStatus = true
+//            ORDER BY q.createdAt DESC
+//            """)
+//    Optional<Page<Question>> findRegisteredQuestions(
+//            final Pageable pageable,
+//            @Param("companyId") final long companyId
+//    );
 
     @Query("""
             SELECT DISTINCT q
