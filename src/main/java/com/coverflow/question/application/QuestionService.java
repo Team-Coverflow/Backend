@@ -50,9 +50,13 @@ public class QuestionService {
 
         return questionList
                 .map(questionPage ->
-                        new CompanyAndQuestionDTO(questionPage.getTotalPages(), questionPage.getContent().stream().map(QuestionDTO::from).toList())
+                        new CompanyAndQuestionDTO(
+                                questionPage.getTotalPages(),
+                                questionPage.getTotalElements(),
+                                questionPage.getContent().stream().map(QuestionDTO::from).toList()
+                        )
                 )
-                .orElseGet(() -> new CompanyAndQuestionDTO(0, new ArrayList<>()));
+                .orElseGet(() -> new CompanyAndQuestionDTO(0, 0, new ArrayList<>()));
     }
 
     /**
