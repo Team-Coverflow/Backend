@@ -1,6 +1,7 @@
 package com.coverflow.question.infrastructure;
 
 import com.coverflow.question.domain.Question;
+import com.coverflow.question.domain.QuestionTag;
 import com.coverflow.question.dto.request.FindQuestionAdminRequest;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -64,7 +65,9 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
                 jpaQueryFactory
                         .selectFrom(question)
                         .where(
-                            
+                                question.company.id.eq(companyId),
+                                question.questionStatus.eq(true),
+                                toContainsQuestionTag(questionTag)
                         )
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
@@ -77,7 +80,9 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
                         .select(question.count())
                         .from(question)
                         .where(
-
+                                question.company.id.eq(companyId),
+                                question.questionStatus.eq(true),
+                                toContainsQuestionTag(questionTag)
                         )
                         .fetchOne()
         );
@@ -136,6 +141,13 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
         }
 
         return Optional.of(new PageImpl<>(questions, pageable, total));
+    }
+
+    private BooleanExpression toContainsQuestionTag(final String questionTag) {
+        if (!StringUtils.hasText(questionTag)) {
+            return null;
+        }
+        return question.questionTag.eq(QuestionTag.valueOf(questionTag));
     }
 
     private BooleanExpression toContainsCreatedStartDate(final String startDate) {

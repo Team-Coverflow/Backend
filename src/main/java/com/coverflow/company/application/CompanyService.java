@@ -81,7 +81,7 @@ public class CompanyService {
 
         CompanyAndQuestionDTO questionList = questionService.findByCompanyId(pageNo, criterion, companyId, request.questionTag());
 
-        return FindCompanyResponse.of(company, questionList.getTotalPages(), questionList.getQuestions());
+        return FindCompanyResponse.of(company, questionList.getTotalPages(), questionList.getTotalElements(), questionList.getQuestions());
     }
 
     /**
