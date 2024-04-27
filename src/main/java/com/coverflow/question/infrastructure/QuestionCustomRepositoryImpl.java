@@ -54,7 +54,8 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
     @Override
     public Optional<Page<Question>> findRegisteredQuestionsById(
             final Pageable pageable,
-            final long companyId
+            final long companyId,
+            final String questionTag
     ) {
         List<Question> questions;
         long total;
@@ -63,7 +64,7 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
                 jpaQueryFactory
                         .selectFrom(question)
                         .where(
-
+                            
                         )
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())

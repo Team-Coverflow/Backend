@@ -44,9 +44,10 @@ public class QuestionService {
     public CompanyAndQuestionDTO findByCompanyId(
             final int pageNo,
             final String criterion,
-            final long companyId
+            final long companyId,
+            final String questionTag
     ) {
-        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestionsById(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId);
+        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestionsById(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId, questionTag);
 
         return questionList
                 .map(questionPage ->
