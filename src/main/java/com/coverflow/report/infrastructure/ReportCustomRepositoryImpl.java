@@ -14,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -26,6 +27,7 @@ import java.util.concurrent.ExecutionException;
 import static com.coverflow.question.domain.QQuestion.question;
 import static com.coverflow.report.domain.QReport.report;
 
+@Repository
 @RequiredArgsConstructor
 public class ReportCustomRepositoryImpl implements ReportCustomRepository {
 

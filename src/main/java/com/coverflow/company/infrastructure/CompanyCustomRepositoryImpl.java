@@ -7,6 +7,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 import static com.coverflow.company.domain.QCompany.company;
 import static com.coverflow.global.util.RepositoryUtil.makeOrderSpecifiers;
 
+@Repository
 @RequiredArgsConstructor
 public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
 
