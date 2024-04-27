@@ -6,10 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
+@Repository
 public interface QuestionRepository extends JpaRepository<Question, Long>, QuestionCustomRepository {
 
     @Query("""
@@ -19,21 +21,9 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
             AND q.questionStatus = true
             ORDER BY q.createdAt DESC
             """)
-    Optional<Page<Question>> findRegisteredQuestions(
+    Optional<Page<Question>> findRegisteredQuestionsByMemberId(
             final Pageable pageable,
             @Param("memberId") final UUID memberId
-    );
-
-    @Query("""
-            SELECT q
-            FROM Question q
-            WHERE q.company.id = :companyId
-            AND q.questionStatus = true
-            ORDER BY q.createdAt DESC
-            """)
-    Optional<Page<Question>> findRegisteredQuestions(
-            final Pageable pageable,
-            @Param("companyId") final long companyId
     );
 
     @Query("""

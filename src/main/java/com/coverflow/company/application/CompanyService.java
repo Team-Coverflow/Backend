@@ -4,6 +4,7 @@ import com.coverflow.company.domain.Company;
 import com.coverflow.company.dto.CompaniesDTO;
 import com.coverflow.company.dto.CompanyDTO;
 import com.coverflow.company.dto.request.FindCompanyAdminRequest;
+import com.coverflow.company.dto.request.FindCompanyQuestionRequest;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
@@ -72,14 +73,15 @@ public class CompanyService {
     public FindCompanyResponse findByCompanyId(
             final int pageNo,
             final String criterion,
-            final long companyId
+            final long companyId,
+            final FindCompanyQuestionRequest request
     ) {
         Company company = companyRepository.findRegisteredCompany(companyId)
                 .orElseThrow(() -> new CompanyNotFoundException(companyId));
 
-        CompanyAndQuestionDTO questionList = questionService.findByCompanyId(pageNo, criterion, companyId);
+        CompanyAndQuestionDTO questionList = questionService.findByCompanyId(pageNo, criterion, companyId, request.questionTag());
 
-        return FindCompanyResponse.of(company, questionList.getTotalPages(), questionList.getQuestions());
+        return FindCompanyResponse.of(company, questionList.getTotalPages(), questionList.getTotalElements(), questionList.getQuestions());
     }
 
     /**

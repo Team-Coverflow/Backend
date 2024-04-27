@@ -4,6 +4,7 @@ import com.coverflow.notification.domain.Notification;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.UUID;
 
 import static com.coverflow.notification.domain.QNotification.notification;
 
+@Repository
 @RequiredArgsConstructor
 public class NotificationCustomRepositoryImpl implements NotificationCustomRepository {
 

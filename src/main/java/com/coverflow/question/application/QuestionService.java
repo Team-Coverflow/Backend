@@ -44,15 +44,20 @@ public class QuestionService {
     public CompanyAndQuestionDTO findByCompanyId(
             final int pageNo,
             final String criterion,
-            final long companyId
+            final long companyId,
+            final String questionTag
     ) {
-        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId);
+        Optional<Page<Question>> questionList = questionRepository.findRegisteredQuestionsById(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), companyId, questionTag);
 
         return questionList
                 .map(questionPage ->
-                        new CompanyAndQuestionDTO(questionPage.getTotalPages(), questionPage.getContent().stream().map(QuestionDTO::from).toList())
+                        new CompanyAndQuestionDTO(
+                                questionPage.getTotalPages(),
+                                questionPage.getTotalElements(),
+                                questionPage.getContent().stream().map(QuestionDTO::from).toList()
+                        )
                 )
-                .orElseGet(() -> new CompanyAndQuestionDTO(0, new ArrayList<>()));
+                .orElseGet(() -> new CompanyAndQuestionDTO(0, 0, new ArrayList<>()));
     }
 
     /**
@@ -65,7 +70,7 @@ public class QuestionService {
             final String criterion,
             final UUID memberId
     ) {
-        Page<Question> questionList = questionRepository.findRegisteredQuestions(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), memberId)
+        Page<Question> questionList = questionRepository.findRegisteredQuestionsByMemberId(generatePageDesc(pageNo, NORMAL_PAGE_SIZE, criterion), memberId)
                 .orElseThrow(() -> new QuestionNotFoundException(memberId));
 
         return FindMyQuestionsResponse.of(

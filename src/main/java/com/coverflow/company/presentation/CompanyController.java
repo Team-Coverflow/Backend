@@ -2,6 +2,7 @@ package com.coverflow.company.presentation;
 
 import com.coverflow.company.application.CompanyService;
 import com.coverflow.company.dto.request.FindCompanyAdminRequest;
+import com.coverflow.company.dto.request.FindCompanyQuestionRequest;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
@@ -53,12 +54,13 @@ public class CompanyController {
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findByCompanyId(
             @PathVariable @Positive final long companyId,
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") final String criterion
+            @RequestParam(defaultValue = "createdAt") final String criterion,
+            @ModelAttribute final FindCompanyQuestionRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(companyService.findByCompanyId(pageNo, criterion, companyId))
+                        .data(companyService.findByCompanyId(pageNo, criterion, companyId, request))
                         .build()
                 );
     }

@@ -1,6 +1,7 @@
 package com.coverflow.question.infrastructure;
 
 import com.coverflow.question.domain.Question;
+import com.coverflow.question.domain.QuestionTag;
 import com.coverflow.question.dto.request.FindQuestionAdminRequest;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
@@ -24,6 +26,7 @@ import java.util.concurrent.ExecutionException;
 
 import static com.coverflow.question.domain.QQuestion.question;
 
+@Repository
 @RequiredArgsConstructor
 public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
 
@@ -47,6 +50,53 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
             return Order.ASC;
         }
         return Order.DESC;
+    }
+
+    @Override
+    public Optional<Page<Question>> findRegisteredQuestionsById(
+            final Pageable pageable,
+            final long companyId,
+            final String questionTag
+    ) {
+        List<Question> questions;
+        long total;
+
+        CompletableFuture<List<Question>> questionsFuture = CompletableFuture.supplyAsync(() ->
+                jpaQueryFactory
+                        .selectFrom(question)
+                        .where(
+                                question.company.id.eq(companyId),
+                                question.questionStatus.eq(true),
+                                toContainsQuestionTag(questionTag)
+                        )
+                        .offset(pageable.getOffset())
+                        .limit(pageable.getPageSize())
+                        .orderBy(makeOrderSpecifiers(question, pageable))
+                        .fetch()
+        );
+
+        CompletableFuture<Long> countFuture = CompletableFuture.supplyAsync(() ->
+                jpaQueryFactory
+                        .select(question.count())
+                        .from(question)
+                        .where(
+                                question.company.id.eq(companyId),
+                                question.questionStatus.eq(true),
+                                toContainsQuestionTag(questionTag)
+                        )
+                        .fetchOne()
+        );
+
+        CompletableFuture.allOf(questionsFuture, countFuture).join();
+
+        try {
+            questions = questionsFuture.get();
+            total = countFuture.get();
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+
+        return Optional.of(new PageImpl<>(questions, pageable, total));
     }
 
     @Override
@@ -91,6 +141,13 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
         }
 
         return Optional.of(new PageImpl<>(questions, pageable, total));
+    }
+
+    private BooleanExpression toContainsQuestionTag(final String questionTag) {
+        if (!StringUtils.hasText(questionTag)) {
+            return null;
+        }
+        return question.questionTag.eq(QuestionTag.valueOf(questionTag));
     }
 
     private BooleanExpression toContainsCreatedStartDate(final String startDate) {

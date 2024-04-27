@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import static com.coverflow.global.util.RepositoryUtil.makeOrderSpecifiers;
 import static com.coverflow.notice.domain.QNotice.notice;
 
+@Repository
 @RequiredArgsConstructor
 public class NoticeCustomRepositoryImpl implements NoticeCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
