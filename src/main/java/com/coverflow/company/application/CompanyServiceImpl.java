@@ -12,7 +12,7 @@ import com.coverflow.company.dto.response.FindCompanyResponse;
 import com.coverflow.company.dto.response.SearchCompanyCountResponse;
 import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.company.infrastructure.CompanyRepository;
-import com.coverflow.question.application.QuestionService;
+import com.coverflow.question.application.QuestionServiceImpl;
 import com.coverflow.question.dto.CompanyAndQuestionDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,7 +34,7 @@ import static com.coverflow.global.util.PageUtil.generatePageDesc;
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
-    private final QuestionService questionService;
+    private final QuestionServiceImpl questionService;
     private final CompanyRepository companyRepository;
 
     @Override
