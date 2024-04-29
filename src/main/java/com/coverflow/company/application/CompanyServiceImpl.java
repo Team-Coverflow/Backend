@@ -58,7 +58,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Transactional(readOnly = true)
     public SearchCompanyCountResponse search(final String name) {
         long totalElements = companyRepository.countByName(name);
-        int totalPages = (int) (totalElements / NORMAL_PAGE_SIZE);
+        int totalPages = (int) Math.ceil((double) totalElements / NORMAL_PAGE_SIZE);
 
         return SearchCompanyCountResponse.of(totalPages, totalElements);
     }
