@@ -25,10 +25,7 @@ public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Optional<Slice<Company>> findByNameStartingWith(
-            final Pageable pageable,
-            final String name
-    ) {
+    public Optional<Slice<Company>> findByNameStartingWith(final Pageable pageable, final String name) {
         List<Company> companies = jpaQueryFactory
                 .selectFrom(company)
                 .where(
@@ -45,23 +42,16 @@ public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
     }
 
     @Override
-    public Long countByName(
-            final String name
-    ) {
+    public Long countByName(final String name) {
         return jpaQueryFactory
                 .select(company.count())
                 .from(company)
-                .where(
-                        company.name.startsWith(name)
-                )
+                .where(company.name.startsWith(name))
                 .fetchOne();
     }
 
     @Override
-    public Optional<Page<Company>> findWithFilters(
-            final Pageable pageable,
-            final FindCompanyAdminRequest request
-    ) {
+    public Optional<Page<Company>> findWithFilters(final Pageable pageable, final FindCompanyAdminRequest request) {
         List<Company> companies;
         long total;
 
