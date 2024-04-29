@@ -8,9 +8,9 @@ import com.coverflow.member.domain.RefreshTokenStatus;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
-import com.coverflow.notification.application.NotificationServiceImpl;
+import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
-import com.coverflow.visitor.application.VisitorServiceImpl;
+import com.coverflow.visitor.application.VisitorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,8 @@ import java.util.UUID;
 public class OAuth2LoginService {
 
     private final JwtService jwtService;
-    private final VisitorServiceImpl visitorService;
-    private final NotificationServiceImpl notificationService;
+    private final VisitorService visitorService;
+    private final NotificationService notificationService;
     private final MemberRepository memberRepository;
 
     @Transactional
