@@ -2,7 +2,7 @@ package com.coverflow.question.application;
 
 import com.coverflow.company.domain.Company;
 import com.coverflow.company.infrastructure.CompanyRepository;
-import com.coverflow.member.application.CurrencyService;
+import com.coverflow.member.application.MemberServiceImpl;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.*;
 import com.coverflow.question.dto.request.FindQuestionAdminRequest;
@@ -31,7 +31,7 @@ import static com.coverflow.question.exception.QuestionException.QuestionNotFoun
 @Service
 public class QuestionService {
 
-    private final CurrencyService currencyService;
+    private final MemberServiceImpl memberService;
     private final AnswerService answerService;
     private final CompanyRepository companyRepository;
     private final QuestionRepository questionRepository;
@@ -132,7 +132,7 @@ public class QuestionService {
         Company company = companyRepository.findById(request.companyId())
                 .orElseThrow(() -> new CompanyNotFoundException(request.companyId()));
 
-        currencyService.writeQuestion(memberId, request.reward());
+        memberService.writeQuestion(memberId, request.reward());
         questionRepository.save(new Question(request, memberId));
         company.updateQuestionCount(company.getQuestionCount() + 1);
     }
