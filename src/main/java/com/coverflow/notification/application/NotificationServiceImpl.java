@@ -27,7 +27,7 @@ import java.util.UUID;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-    private static final long DEFAULT_TIMEOUT = 6L * 1000;
+    private static final long DEFAULT_TIMEOUT = 60 * 60 * 1000L;
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
 
