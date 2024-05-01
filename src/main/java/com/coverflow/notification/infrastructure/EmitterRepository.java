@@ -18,9 +18,16 @@ public class EmitterRepository {
 
     public SseEmitter save(
             final String eventId,
+            final String memberId,
             final SseEmitter sseEmitter
     ) {
-        emitterMap.remove(eventId);
+        Map<String, SseEmitter> toRemove = findAllEventStartWithId(memberId);
+
+        toRemove.forEach((key, emitter) -> {
+            emitter.complete();
+            emitterMap.remove(key);
+        });
+
         emitterMap.put(eventId, sseEmitter);
 
         log.info("[SseEmitter] Set {}", eventId);
