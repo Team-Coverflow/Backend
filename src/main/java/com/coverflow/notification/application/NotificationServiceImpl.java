@@ -27,7 +27,7 @@ import java.util.UUID;
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
-    private static final long DEFAULT_TIMEOUT = 60 * 60 * 1000L;
+    private static final long DEFAULT_TIMEOUT = 60L * 1000 * 60;
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
 
@@ -45,7 +45,7 @@ public class NotificationServiceImpl implements NotificationService {
         String eventId = memberId + "_" + System.currentTimeMillis();
 
         // SseEmitter 인스턴스 생성 후 Map에 저장
-        SseEmitter emitter = emitterRepository.save(eventId, memberId, new SseEmitter(DEFAULT_TIMEOUT));
+        SseEmitter emitter = emitterRepository.save(eventId, new SseEmitter(DEFAULT_TIMEOUT));
 
         // 이벤트 전송 시
         emitter.onCompletion(() -> {
