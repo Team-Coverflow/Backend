@@ -39,6 +39,8 @@ public class Question extends BaseTimeEntity {
     @Column
     private String questionCategory; // 질문 카테고리
     @Column
+    private boolean selectionStatus; // 채택 상태 (T: 채택o/F: 채택x)
+    @Column
     private boolean questionStatus; // 질문 상태 (T: 등록/F: 삭제)
 
     @Enumerated(EnumType.STRING)

@@ -31,10 +31,17 @@ public class AnswerException extends RuntimeException {
         }
     }
 
-    public static class SelectionException extends AnswerException {
+    public static class OtherSelectionException extends AnswerException {
 
-        public SelectionException() {
-            super("질문 작성자 이외엔 채택이 불가능합니다. - request info => %s");
+        public OtherSelectionException(final Object data) {
+            super(String.format("질문 작성자 이외엔 채택이 불가능합니다. - request info => %s", data));
+        }
+    }
+
+    public static class AlreadySelectedQuestionException extends AnswerException {
+
+        public AlreadySelectedQuestionException(final Object data) {
+            super(String.format("이미 채택된 답변입니다. - request info => %s", data));
         }
     }
 }
