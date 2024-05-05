@@ -103,4 +103,8 @@ public class Question extends BaseTimeEntity {
     public void updateAnswerCount(int answerCount) {
         this.answerCount = answerCount;
     }
+
+    public void updateSelectionStatus(boolean selectionStatus) {
+        this.selectionStatus = selectionStatus;
+    }
 }
