@@ -4,7 +4,10 @@ import com.coverflow.company.domain.Company;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.MemberServiceImpl;
 import com.coverflow.question.domain.Question;
-import com.coverflow.question.dto.*;
+import com.coverflow.question.dto.AnswerListDTO;
+import com.coverflow.question.dto.CompanyAndQuestionDTO;
+import com.coverflow.question.dto.MyQuestionDTO;
+import com.coverflow.question.dto.QuestionDTO;
 import com.coverflow.question.dto.request.FindQuestionAdminRequest;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
@@ -105,7 +108,7 @@ public class QuestionServiceImpl implements QuestionService {
                 questions.getTotalPages(),
                 questions.getTotalElements(),
                 questions.getContent().stream()
-                        .map(QuestionsDTO::from)
+                        .map(QuestionDTO::from)
                         .toList()
         );
     }
