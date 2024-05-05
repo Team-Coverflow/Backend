@@ -6,7 +6,6 @@ import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.AnswerDTO;
 import com.coverflow.question.dto.AnswerListDTO;
-import com.coverflow.question.dto.AnswersDTO;
 import com.coverflow.question.dto.MyAnswerDTO;
 import com.coverflow.question.dto.request.FindAnswerAdminRequest;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
@@ -88,7 +87,7 @@ public class AnswerServiceImpl implements AnswerService {
                 answers.getTotalElements(),
                 answers.getContent()
                         .stream()
-                        .map(AnswersDTO::from)
+                        .map(AnswerDTO::from)
                         .toList()
         );
     }

@@ -15,17 +15,21 @@ import java.time.LocalDate;
 public class AnswerDTO {
 
     private long answerId;
+    private String answerContent;
+    private boolean selection;
     private String answererNickname;
     private String answererTag;
-    private String answerContent;
+    private boolean answerStatus;
     private LocalDate createAt;
 
     public static AnswerDTO from(final Answer answer) {
         return new AnswerDTO(
                 answer.getId(),
+                answer.getContent(),
+                answer.isSelection(),
                 answer.getMember().getNickname(),
                 answer.getMember().getTag(),
-                answer.getContent(),
+                answer.isAnswerStatus(),
                 answer.getCreatedAt().toLocalDate()
         );
     }
