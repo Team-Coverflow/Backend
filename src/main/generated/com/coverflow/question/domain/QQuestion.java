@@ -49,6 +49,8 @@ public class QQuestion extends EntityPathBase<Question> {
 
     public final NumberPath<Integer> reward = createNumber("reward", Integer.class);
 
+    public final BooleanPath selectionStatus = createBoolean("selectionStatus");
+
     public final StringPath title = createString("title");
 
     //inherited

@@ -3,7 +3,7 @@ package com.coverflow.inquiry.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
-import com.coverflow.global.util.BadwordUtil;
+import com.coverflow.global.util.BadWordUtil;
 import com.coverflow.inquiry.application.InquiryService;
 import com.coverflow.inquiry.dto.request.FindInquiryAdminRequest;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
@@ -62,8 +62,8 @@ public class InquiryController {
             @RequestBody @Valid final SaveInquiryRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        BadwordUtil.check(request.title());
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.title());
+        BadWordUtil.check(request.content());
         inquiryService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
@@ -77,7 +77,7 @@ public class InquiryController {
             @PathVariable @Positive final long inquiryId,
             @RequestBody @Valid final UpdateInquiryRequest request
     ) {
-        BadwordUtil.check(request.inquiryAnswer());
+        BadWordUtil.check(request.inquiryAnswer());
         inquiryService.update(inquiryId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()

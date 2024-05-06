@@ -10,10 +10,12 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static com.coverflow.company.domain.QCompany.company;
 import static com.coverflow.global.util.RepositoryUtil.makeOrderSpecifiers;
@@ -29,7 +31,8 @@ public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
         List<Company> companies = jpaQueryFactory
                 .selectFrom(company)
                 .where(
-                        company.name.startsWith(name),
+                        company.name.startsWith(name)
+                                .or(company.name.startsWith("(주)" + name)),
                         company.companyStatus.eq(CompanyStatus.valueOf("REGISTRATION"))
                 )
                 .orderBy(makeOrderSpecifiers(company, pageable))
@@ -37,8 +40,23 @@ public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
 
+        Comparator<Company> customComparator = Comparator.comparing(c -> {
+            String companyName = c.getName();
+            if (companyName.startsWith("(주)")) {
+                return companyName.substring(3);
+            }
+            return companyName;
+        });
 
-        return Optional.of(new SliceImpl<>(companies));
+        List<Company> sortedCompanies = companies.stream()
+                .sorted(customComparator)
+                .collect(Collectors.toList());
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), sortedCompanies.size());
+        List<Company> paginatedList = sortedCompanies.subList(start, end);
+
+        return Optional.of(new SliceImpl<>(paginatedList, pageable, sortedCompanies.size() < pageable.getPageSize()));
     }
 
     @Override

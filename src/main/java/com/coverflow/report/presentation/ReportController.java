@@ -3,7 +3,7 @@ package com.coverflow.report.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
-import com.coverflow.global.util.BadwordUtil;
+import com.coverflow.global.util.BadWordUtil;
 import com.coverflow.report.application.ReportService;
 import com.coverflow.report.dto.request.FindReportAdminRequest;
 import com.coverflow.report.dto.request.SaveReportRequest;
@@ -61,7 +61,7 @@ public class ReportController {
             @RequestBody @Valid final SaveReportRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.content());
         reportService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()

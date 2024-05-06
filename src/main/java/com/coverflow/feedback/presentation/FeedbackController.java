@@ -6,7 +6,7 @@ import com.coverflow.feedback.dto.request.SaveFeedbackRequest;
 import com.coverflow.feedback.dto.response.FeedbackResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
-import com.coverflow.global.util.BadwordUtil;
+import com.coverflow.global.util.BadWordUtil;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -39,7 +39,7 @@ public class FeedbackController {
     public ResponseEntity<ResponseHandler<Void>> save(
             @RequestBody @Valid final SaveFeedbackRequest request
     ) {
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.content());
         feedbackService.save(request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()

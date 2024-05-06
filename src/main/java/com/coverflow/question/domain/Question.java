@@ -39,6 +39,8 @@ public class Question extends BaseTimeEntity {
     @Column
     private String questionCategory; // 질문 카테고리
     @Column
+    private boolean selectionStatus; // 채택 상태 (T: 채택o/F: 채택x)
+    @Column
     private boolean questionStatus; // 질문 상태 (T: 등록/F: 삭제)
 
     @Enumerated(EnumType.STRING)
@@ -79,6 +81,7 @@ public class Question extends BaseTimeEntity {
         this.answerCount = 0;
         this.reward = request.reward();
         this.questionTag = QuestionTag.valueOf(request.questionTag());
+        this.questionCategory = request.questionCategory();
         this.questionStatus = true;
         this.company = Company.builder()
                 .id(request.companyId())
@@ -100,5 +103,9 @@ public class Question extends BaseTimeEntity {
 
     public void updateAnswerCount(int answerCount) {
         this.answerCount = answerCount;
+    }
+
+    public void updateSelectionStatus(boolean selectionStatus) {
+        this.selectionStatus = selectionStatus;
     }
 }

@@ -119,6 +119,8 @@ public class QuestionServiceImpl implements QuestionService {
             final SaveQuestionRequest request,
             final String memberId
     ) {
+        
+
         Company company = companyRepository.findById(request.companyId())
                 .orElseThrow(() -> new CompanyNotFoundException(request.companyId()));
 

@@ -3,7 +3,7 @@ package com.coverflow.question.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
-import com.coverflow.global.util.BadwordUtil;
+import com.coverflow.global.util.BadWordUtil;
 import com.coverflow.question.application.AnswerService;
 import com.coverflow.question.dto.request.FindAnswerAdminRequest;
 import com.coverflow.question.dto.request.SaveAnswerRequest;
@@ -67,7 +67,7 @@ public class AnswerController {
             @RequestBody @Valid final SaveAnswerRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.content());
         answerService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
@@ -95,7 +95,7 @@ public class AnswerController {
             @PathVariable @Positive final long answerId,
             @RequestBody @Valid final UpdateAnswerRequest request
     ) {
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.content());
         answerService.update(answerId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()

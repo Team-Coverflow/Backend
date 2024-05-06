@@ -13,7 +13,6 @@ import com.coverflow.question.dto.request.UpdateAnswerRequest;
 import com.coverflow.question.dto.request.UpdateSelectionRequest;
 import com.coverflow.question.dto.response.FindAnswerResponse;
 import com.coverflow.question.dto.response.FindMyAnswersResponse;
-import com.coverflow.question.exception.AnswerException;
 import com.coverflow.question.infrastructure.AnswerRepository;
 import com.coverflow.question.infrastructure.QuestionRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +27,7 @@ import java.util.UUID;
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
-import static com.coverflow.question.exception.AnswerException.AnswerNotFoundException;
+import static com.coverflow.question.exception.AnswerException.*;
 import static com.coverflow.question.exception.QuestionException.QuestionNotFoundException;
 
 @RequiredArgsConstructor
@@ -102,7 +101,10 @@ public class AnswerServiceImpl implements AnswerService {
                 .orElseThrow(() -> new QuestionNotFoundException(request.questionId()));
 
         if (String.valueOf(question.getMember().getId()).equals(memberId)) {
-            throw new AnswerException.QuestionAuthorException(memberId);
+            throw new QuestionAuthorException(memberId);
+        }
+        if (question.isSelectionStatus()) {
+            throw new AlreadySelectedQuestionException(question.getId());
         }
 
         question.updateAnswerCount(question.getAnswerCount() + 1);
@@ -121,10 +123,11 @@ public class AnswerServiceImpl implements AnswerService {
                 .orElseThrow(() -> new AnswerNotFoundException(answerId));
 
         if (!String.valueOf(answer.getQuestion().getMember().getId()).equals(memberId)) {
-            throw new AnswerException.SelectionException();
+            throw new OtherSelectionException(answer.getId());
         }
 
         answer.updateSelection(request.selection());
+        answer.getQuestion().updateSelectionStatus(request.selection());
         answer.getMember().updateFishShapedBun(answer.getMember().getFishShapedBun() + answer.getQuestion().getReward());
         notificationService.send(new Notification(answer));
     }

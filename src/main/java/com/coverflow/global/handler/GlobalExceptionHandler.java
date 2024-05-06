@@ -121,7 +121,8 @@ public class GlobalExceptionHandler {
             NotEnoughCurrencyException.class,
             ExistBadwordException.class,
             QuestionAuthorException.class,
-            SelectionException.class
+            OtherSelectionException.class,
+            AlreadySelectedQuestionException.class
     })
     public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
         String message = exception.getMessage();
