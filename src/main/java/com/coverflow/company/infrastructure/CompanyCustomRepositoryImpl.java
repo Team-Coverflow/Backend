@@ -52,11 +52,7 @@ public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
                 .sorted(customComparator)
                 .collect(Collectors.toList());
 
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), sortedCompanies.size());
-        List<Company> paginatedList = sortedCompanies.subList(start, end);
-
-        return Optional.of(new SliceImpl<>(paginatedList, pageable, sortedCompanies.size() < pageable.getPageSize()));
+        return Optional.of(new SliceImpl<>(sortedCompanies, pageable, sortedCompanies.size() <= pageable.getPageSize()));
     }
 
     @Override
