@@ -20,10 +20,8 @@ import static com.coverflow.global.exception.GlobalException.ExistBadwordExcepti
 import static com.coverflow.inquiry.exception.InquiryException.InquiryNotFoundException;
 import static com.coverflow.member.exception.MemberException.*;
 import static com.coverflow.notification.exception.NotificationException.NotificationNotFoundException;
-import static com.coverflow.question.exception.AnswerException.AnswerExistException;
-import static com.coverflow.question.exception.AnswerException.AnswerNotFoundException;
-import static com.coverflow.question.exception.QuestionException.QuestionExistException;
-import static com.coverflow.question.exception.QuestionException.QuestionNotFoundException;
+import static com.coverflow.question.exception.AnswerException.*;
+import static com.coverflow.question.exception.QuestionException.*;
 import static com.coverflow.report.exception.ReportException.ReportNotFoundException;
 import static com.coverflow.visitor.exception.VisitorException.DayNotFoundException;
 
@@ -120,7 +118,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             SuspendedMembershipException.class,
             NotEnoughCurrencyException.class,
-            ExistBadwordException.class
+            ExistBadwordException.class,
+            QuestionAuthorException.class,
+            OtherSelectionException.class,
+            AlreadySelectedQuestionException.class,
+            AlreadySelectedAnswerException.class
     })
     public ResponseEntity<ErrorResponse> handleCustomBadRequestException(final RuntimeException exception) {
         String message = exception.getMessage();

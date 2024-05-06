@@ -11,12 +11,14 @@ import java.util.List;
 @AllArgsConstructor
 public class CompanyAndQuestionDTO {
     private int totalPages;
+    private long totalElements;
     private List<QuestionDTO> questions;
 
     public static CompanyAndQuestionDTO of(
             final int totalPages,
+            final long totalElements,
             final List<QuestionDTO> questions
     ) {
-        return new CompanyAndQuestionDTO(totalPages, questions);
+        return new CompanyAndQuestionDTO(totalPages, totalElements, questions);
     }
 }

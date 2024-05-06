@@ -3,9 +3,9 @@ package com.coverflow.inquiry.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
-import com.coverflow.global.util.BadwordUtil;
+import com.coverflow.global.util.BadWordUtil;
 import com.coverflow.inquiry.application.InquiryService;
-import com.coverflow.inquiry.domain.InquiryStatus;
+import com.coverflow.inquiry.dto.request.FindInquiryAdminRequest;
 import com.coverflow.inquiry.dto.request.SaveInquiryRequest;
 import com.coverflow.inquiry.dto.request.UpdateInquiryRequest;
 import com.coverflow.inquiry.dto.response.FindAllInquiriesResponse;
@@ -46,28 +46,14 @@ public class InquiryController {
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindAllInquiriesResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<FindAllInquiriesResponse>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(inquiryService.find(pageNo, criterion))
-                        .build());
-    }
-
-    @GetMapping("/admin/status")
-    @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllInquiriesResponse>> findByStatus(
-            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @RequestParam @Valid final InquiryStatus inquiryStatus
+            @ModelAttribute final FindInquiryAdminRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllInquiriesResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(inquiryService.findByStatus(pageNo, criterion, inquiryStatus))
-                        .build()
-                );
+                        .data(inquiryService.find(pageNo, criterion, request))
+                        .build());
     }
 
     @PostMapping
@@ -76,8 +62,8 @@ public class InquiryController {
             @RequestBody @Valid final SaveInquiryRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        BadwordUtil.check(request.title());
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.title());
+        BadWordUtil.check(request.content());
         inquiryService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
@@ -91,7 +77,7 @@ public class InquiryController {
             @PathVariable @Positive final long inquiryId,
             @RequestBody @Valid final UpdateInquiryRequest request
     ) {
-        BadwordUtil.check(request.inquiryAnswer());
+        BadWordUtil.check(request.inquiryAnswer());
         inquiryService.update(inquiryId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()

@@ -14,20 +14,23 @@ import java.time.LocalDate;
 public class QuestionDTO {
 
     private long questionId;
+    private String companyName;
     private String questionerNickname;
     private String questionerTag;
     private String questionTitle;
     private String questionContent;
     private QuestionTag questionTag;
     private String questionCategory;
-    private int questionViewCount;
+    private long questionViewCount;
     private int answerCount;
     private int reward;
+    private boolean questionStatus;
     private LocalDate createAt;
 
     public static QuestionDTO from(final Question question) {
         return new QuestionDTO(
                 question.getId(),
+                question.getCompany().getName(),
                 question.getMember().getNickname(),
                 question.getMember().getTag(),
                 question.getTitle(),
@@ -37,6 +40,7 @@ public class QuestionDTO {
                 question.getViewCount(),
                 question.getAnswerCount(),
                 question.getReward(),
+                question.isQuestionStatus(),
                 question.getCreatedAt().toLocalDate()
         );
     }

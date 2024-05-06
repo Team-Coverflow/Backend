@@ -27,7 +27,7 @@ public interface NotificationService {
     /**
      * 알림 조회
      */
-    FindNotificationResponse find(final String memberId);
+    FindNotificationResponse find(final Long lastId, final String memberId);
 
     /**
      * 알림 수정

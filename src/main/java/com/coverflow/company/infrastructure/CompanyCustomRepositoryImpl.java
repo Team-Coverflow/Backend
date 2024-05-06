@@ -3,56 +3,72 @@ package com.coverflow.company.infrastructure;
 import com.coverflow.company.domain.Company;
 import com.coverflow.company.domain.CompanyStatus;
 import com.coverflow.company.dto.request.FindCompanyAdminRequest;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.EntityPathBase;
-import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
+import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 import static com.coverflow.company.domain.QCompany.company;
+import static com.coverflow.global.util.RepositoryUtil.makeOrderSpecifiers;
 
+@Repository
 @RequiredArgsConstructor
-public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
+public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public static <T> OrderSpecifier[] makeOrderSpecifiers(final EntityPathBase<T> qClass, final Pageable pageable) {
-        return pageable.getSort()
-                .stream()
-                .map(sort -> toOrderSpecifier(qClass, sort))
-                .toList().toArray(OrderSpecifier[]::new);
-    }
+    @Override
+    public Optional<Slice<Company>> findByNameStartingWith(final Pageable pageable, final String name) {
+        List<Company> companies = jpaQueryFactory
+                .selectFrom(company)
+                .where(
+                        company.name.startsWith(name)
+                                .or(company.name.startsWith("(주)" + name)),
+                        company.companyStatus.eq(CompanyStatus.valueOf("REGISTRATION"))
+                )
+                .orderBy(makeOrderSpecifiers(company, pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-    private static <T> OrderSpecifier toOrderSpecifier(final EntityPathBase<T> qClass, final Sort.Order sortOrder) {
-        final Order orderMethod = toOrder(sortOrder);
-        final PathBuilder<T> pathBuilder = new PathBuilder<>(qClass.getType(), qClass.getMetadata());
-        return new OrderSpecifier(orderMethod, pathBuilder.get(sortOrder.getProperty()));
-    }
+        Comparator<Company> customComparator = Comparator.comparing(c -> {
+            String companyName = c.getName();
+            if (companyName.startsWith("(주)")) {
+                return companyName.substring(3);
+            }
+            return companyName;
+        });
 
-    private static Order toOrder(final Sort.Order sortOrder) {
-        if (sortOrder.isAscending()) {
-            return Order.ASC;
-        }
-        return Order.DESC;
+        List<Company> sortedCompanies = companies.stream()
+                .sorted(customComparator)
+                .collect(Collectors.toList());
+
+        return Optional.of(new SliceImpl<>(sortedCompanies, pageable, sortedCompanies.size() <= pageable.getPageSize()));
     }
 
     @Override
-    public Optional<Page<Company>> findWithFilters(
-            final Pageable pageable,
-            final FindCompanyAdminRequest request
-    ) {
+    public Long countByName(final String name) {
+        return jpaQueryFactory
+                .select(company.count())
+                .from(company)
+                .where(company.name.startsWith(name))
+                .fetchOne();
+    }
+
+    @Override
+    public Optional<Page<Company>> findWithFilters(final Pageable pageable, final FindCompanyAdminRequest request) {
+        List<Company> companies;
+        long total;
+
         CompletableFuture<List<Company>> companiesFuture = CompletableFuture.supplyAsync(() ->
                 jpaQueryFactory
                         .selectFrom(company)
@@ -62,9 +78,9 @@ public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
                                 toContainsDistrict(request.district()),
                                 eqCompanyStatus(request.companyStatus())
                         )
+                        .orderBy(makeOrderSpecifiers(company, pageable))
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
-                        .orderBy(makeOrderSpecifiers(company, pageable))
                         .fetch()
         );
 
@@ -81,10 +97,8 @@ public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
                         .fetchOne()
         );
 
-        CompletableFuture.allOf(companiesFuture, countFuture).join(); // 이 호출로 두 쿼리가 완료될 때까지 대기
+        CompletableFuture.allOf(companiesFuture, countFuture).join();
 
-        List<Company> companies; // 목록 조회 결과
-        long total; // 카운트 조회 결과
         try {
             companies = companiesFuture.get();
             total = countFuture.get();

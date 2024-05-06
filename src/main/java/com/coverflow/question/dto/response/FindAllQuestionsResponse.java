@@ -1,18 +1,20 @@
 package com.coverflow.question.dto.response;
 
-import com.coverflow.question.dto.QuestionsDTO;
+import com.coverflow.question.dto.QuestionDTO;
 
 import java.util.List;
 
 public record FindAllQuestionsResponse(
         int totalPages,
-        List<QuestionsDTO> questions
+        long totalElements,
+        List<QuestionDTO> questions
 ) {
 
     public static FindAllQuestionsResponse of(
             final int totalPages,
-            final List<QuestionsDTO> questions
+            final long totalElements,
+            final List<QuestionDTO> questions
     ) {
-        return new FindAllQuestionsResponse(totalPages, questions);
+        return new FindAllQuestionsResponse(totalPages, totalElements, questions);
     }
 }

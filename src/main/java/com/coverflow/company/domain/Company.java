@@ -16,11 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "tbl_company",
-        indexes = {
-                @Index(name = "company_name_idx", columnList = "name"),
-                @Index(name = "company_status_idx", columnList = "companyStatus")
-        })
+@Table(name = "tbl_company", indexes = {@Index(name = "idx_company_name", columnList = "name")})
 public class Company extends BaseTimeEntity {
 
     @Id
@@ -45,8 +41,8 @@ public class Company extends BaseTimeEntity {
     @JsonManagedReference
     private List<Question> questions = new ArrayList<>();
 
-    public Company(final SaveCompanyRequest request) {
-        this.name = request.name();
+    public Company(final SaveCompanyRequest request, final String modifiedName) {
+        this.name = modifiedName;
         this.type = request.type();
         this.city = request.city();
         this.district = request.district();
@@ -64,9 +60,5 @@ public class Company extends BaseTimeEntity {
 
     public void updateQuestionCount(final int questionCount) {
         this.questionCount = questionCount;
-    }
-
-    public void updateCompanyStatus(final CompanyStatus companyStatus) {
-        this.companyStatus = companyStatus;
     }
 }

@@ -19,8 +19,29 @@ public class AnswerException extends RuntimeException {
 
     public static class AnswerExistException extends AnswerException {
 
-        public AnswerExistException(final long id) {
-            super(String.format("이미 답변이 존재합니다. - request info { id : %d }", id));
+        public AnswerExistException(final Object data) {
+            super(String.format("이미 답변이 존재합니다. - request info => %s", data));
+        }
+    }
+
+    public static class QuestionAuthorException extends AnswerException {
+
+        public QuestionAuthorException(final Object data) {
+            super(String.format("질문 작성자는 답변 작성이 불가능합니다. - request info => %s", data));
+        }
+    }
+
+    public static class OtherSelectionException extends AnswerException {
+
+        public OtherSelectionException(final Object data) {
+            super(String.format("질문 작성자 이외엔 채택이 불가능합니다. - request info => %s", data));
+        }
+    }
+
+    public static class AlreadySelectedAnswerException extends AnswerException {
+
+        public AlreadySelectedAnswerException(final Object data) {
+            super(String.format("이미 채택된 답변입니다. - request info => %s", data));
         }
     }
 }

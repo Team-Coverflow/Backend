@@ -5,25 +5,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-public interface NotificationRepository extends JpaRepository<Notification, Long> {
-
-    @Query("""
-            SELECT n
-            FROM Notification n
-            WHERE n.member.id = :member_id
-            AND n.createdAt> :date
-            ORDER BY n.createdAt DESC
-            """)
-    Optional<List<Notification>> findByMemberId(
-            @Param("member_id") final UUID memberId,
-            @Param("date") final LocalDateTime date
-    );
+@Repository
+public interface NotificationRepository extends JpaRepository<Notification, Long>, NotificationCustomRepository {
 
     @Modifying
     @Query("""

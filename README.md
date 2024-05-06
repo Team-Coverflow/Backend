@@ -3,10 +3,10 @@
 </p>
 
 ## 🚀 기술 스택
-![image](https://github.com/COFLLL/CoverFlow-BE/assets/98208452/4d2492f0-36dc-4c61-8078-c1a5907b84b9)
+![image](https://github.com/fakerdeft/CoverFlow-BE/assets/98208452/cc5dffb8-d84e-48c6-869a-8adc5c2c5baf)
 
 ## 🚀 프로젝트 아키텍처
-![image](https://github.com/COFLLL/.github/assets/98208452/bdd1c678-3eef-4af7-a75e-661069930261)
+![image](https://github.com/COFLLL/Coverflow-BE/assets/98208452/9db31b89-20b9-42da-93ca-65c79f0b0b1a)
 
 ## ✈ 기본
 

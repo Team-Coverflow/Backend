@@ -1,28 +1,17 @@
 package com.coverflow.company.infrastructure;
 
 import com.coverflow.company.domain.Company;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-public interface CompanyRepository extends JpaRepository<Company, Long>, CompanyRepositoryCustom {
-
-    @Query("""
-            SELECT c
-            FROM Company c
-            WHERE c.name LIKE :name%
-            AND c.companyStatus = 'REGISTRATION'
-            """)
-    Optional<Page<Company>> findAllByNameStartingWithAndCompanyStatus(
-            final Pageable pageable,
-            @Param("name") final String name
-    );
+@Repository
+public interface CompanyRepository extends JpaRepository<Company, Long>, CompanyCustomRepository {
 
     Optional<Company> findByName(final String name);
 

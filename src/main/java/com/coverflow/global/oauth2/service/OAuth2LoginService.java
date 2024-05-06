@@ -8,7 +8,7 @@ import com.coverflow.member.domain.RefreshTokenStatus;
 import com.coverflow.member.domain.Role;
 import com.coverflow.member.exception.MemberException;
 import com.coverflow.member.infrastructure.MemberRepository;
-import com.coverflow.notification.application.NotificationServiceImpl;
+import com.coverflow.notification.application.NotificationService;
 import com.coverflow.notification.domain.Notification;
 import com.coverflow.visitor.application.VisitorService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +26,7 @@ public class OAuth2LoginService {
 
     private final JwtService jwtService;
     private final VisitorService visitorService;
-    private final NotificationServiceImpl notificationService;
+    private final NotificationService notificationService;
     private final MemberRepository memberRepository;
 
     @Transactional

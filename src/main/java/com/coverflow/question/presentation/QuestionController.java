@@ -3,9 +3,9 @@ package com.coverflow.question.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
-import com.coverflow.global.util.BadwordUtil;
+import com.coverflow.global.util.BadWordUtil;
 import com.coverflow.question.application.QuestionService;
-import com.coverflow.question.domain.QuestionStatus;
+import com.coverflow.question.dto.request.FindQuestionAdminRequest;
 import com.coverflow.question.dto.request.SaveQuestionRequest;
 import com.coverflow.question.dto.request.UpdateQuestionRequest;
 import com.coverflow.question.dto.response.FindAllQuestionsResponse;
@@ -47,8 +47,7 @@ public class QuestionController {
     }
 
     @GetMapping("/{questionId}")
-    @MemberAuthorize
-    public ResponseEntity<ResponseHandler<FindQuestionResponse>> findByQuestionId(
+    public ResponseEntity<ResponseHandler<FindQuestionResponse>> findById(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
             @PathVariable @Positive final long questionId
@@ -56,7 +55,7 @@ public class QuestionController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindQuestionResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(questionService.findByQuestionId(pageNo, criterion, questionId))
+                        .data(questionService.findById(pageNo, criterion, questionId))
                         .build()
                 );
     }
@@ -65,27 +64,13 @@ public class QuestionController {
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindAllQuestionsResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<FindAllQuestionsResponse>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(questionService.find(pageNo, criterion))
-                        .build()
-                );
-    }
-
-    @GetMapping("/admin/status")
-    @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllQuestionsResponse>> findByStatus(
-            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @RequestParam @NotBlank final QuestionStatus questionStatus
+            @ModelAttribute final FindQuestionAdminRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindAllQuestionsResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(questionService.findByStatus(pageNo, criterion, questionStatus))
+                        .data(questionService.find(pageNo, criterion, request))
                         .build()
                 );
     }
@@ -96,8 +81,8 @@ public class QuestionController {
             @RequestBody @Valid final SaveQuestionRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        BadwordUtil.check(request.title());
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.title());
+        BadWordUtil.check(request.content());
         questionService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
@@ -111,8 +96,8 @@ public class QuestionController {
             @PathVariable @Positive final long questionId,
             @RequestBody @Valid final UpdateQuestionRequest request
     ) {
-        BadwordUtil.check(request.title());
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.title());
+        BadWordUtil.check(request.content());
         questionService.update(questionId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()

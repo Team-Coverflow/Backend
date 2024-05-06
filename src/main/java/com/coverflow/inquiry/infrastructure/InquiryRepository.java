@@ -7,11 +7,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 import java.util.UUID;
 
-public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
+@Repository
+public interface InquiryRepository extends JpaRepository<Inquiry, Long>, InquiryCustomRepository {
 
     @Query("""
             SELECT count(*)
@@ -33,22 +35,6 @@ public interface InquiryRepository extends JpaRepository<Inquiry, Long> {
     Optional<Page<Inquiry>> findAllByMemberIdAndStatus(
             final Pageable pageable,
             @Param("memberId") final UUID memberId
-    );
-
-    @Query("""
-            SELECT e
-            FROM Inquiry e
-            """)
-    Optional<Page<Inquiry>> findInquiries(final Pageable pageable);
-
-    @Query("""
-            SELECT e
-            FROM Inquiry e
-            WHERE e.inquiryStatus = :inquiryStatus
-            """)
-    Optional<Page<Inquiry>> findAllByStatus(
-            final Pageable pageable,
-            @Param("inquiryStatus") final InquiryStatus inquiryStatus
     );
 
     void deleteByMemberId(UUID id);

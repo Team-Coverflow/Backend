@@ -3,8 +3,9 @@ package com.coverflow.report.presentation;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.annotation.MemberAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
-import com.coverflow.global.util.BadwordUtil;
+import com.coverflow.global.util.BadWordUtil;
 import com.coverflow.report.application.ReportService;
+import com.coverflow.report.dto.request.FindReportAdminRequest;
 import com.coverflow.report.dto.request.SaveReportRequest;
 import com.coverflow.report.dto.request.UpdateReportRequest;
 import com.coverflow.report.dto.response.FindReportResponse;
@@ -44,28 +45,14 @@ public class ReportController {
     @AdminAuthorize
     public ResponseEntity<ResponseHandler<FindReportResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion
-    ) {
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<FindReportResponse>builder()
-                        .statusCode(HttpStatus.OK)
-                        .data(reportService.find(pageNo, criterion))
-                        .build());
-    }
-
-    @GetMapping("/admin/status")
-    @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindReportResponse>> findByStatus(
-            @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") @NotBlank final String criterion,
-            @RequestParam @NotBlank final boolean reportStatus
+            @ModelAttribute final FindReportAdminRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindReportResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(reportService.findByStatus(pageNo, criterion, reportStatus))
-                        .build()
-                );
+                        .data(reportService.find(pageNo, criterion, request))
+                        .build());
     }
 
     @PostMapping
@@ -74,7 +61,7 @@ public class ReportController {
             @RequestBody @Valid final SaveReportRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.content());
         reportService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()

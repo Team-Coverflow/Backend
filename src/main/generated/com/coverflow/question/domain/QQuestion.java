@@ -41,7 +41,7 @@ public class QQuestion extends EntityPathBase<Question> {
 
     public final StringPath questionCategory = createString("questionCategory");
 
-    public final EnumPath<QuestionStatus> questionStatus = createEnum("questionStatus", QuestionStatus.class);
+    public final BooleanPath questionStatus = createBoolean("questionStatus");
 
     public final EnumPath<QuestionTag> questionTag = createEnum("questionTag", QuestionTag.class);
 
@@ -49,12 +49,14 @@ public class QQuestion extends EntityPathBase<Question> {
 
     public final NumberPath<Integer> reward = createNumber("reward", Integer.class);
 
+    public final BooleanPath selectionStatus = createBoolean("selectionStatus");
+
     public final StringPath title = createString("title");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
-    public final NumberPath<Integer> viewCount = createNumber("viewCount", Integer.class);
+    public final NumberPath<Long> viewCount = createNumber("viewCount", Long.class);
 
     public QQuestion(String variable) {
         this(Question.class, forVariable(variable), INITS);

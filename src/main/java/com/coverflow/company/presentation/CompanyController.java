@@ -2,14 +2,16 @@ package com.coverflow.company.presentation;
 
 import com.coverflow.company.application.CompanyService;
 import com.coverflow.company.dto.request.FindCompanyAdminRequest;
+import com.coverflow.company.dto.request.FindCompanyQuestionRequest;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
 import com.coverflow.company.dto.response.FindAllCompaniesResponse;
 import com.coverflow.company.dto.response.FindCompanyResponse;
+import com.coverflow.company.dto.response.SearchCompanyCountResponse;
 import com.coverflow.company.dto.response.SearchCompanyResponse;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
-import com.coverflow.global.util.BadwordUtil;
+import com.coverflow.global.util.BadWordUtil;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -28,7 +30,7 @@ public class CompanyController {
     @GetMapping
     public ResponseEntity<ResponseHandler<SearchCompanyResponse>> search(
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "name") final String name
+            @RequestParam final String name
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<SearchCompanyResponse>builder()
@@ -38,16 +40,27 @@ public class CompanyController {
                 );
     }
 
+    @GetMapping("/count")
+    public ResponseEntity<ResponseHandler<SearchCompanyCountResponse>> search(@RequestParam final String name) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<SearchCompanyCountResponse>builder()
+                        .statusCode(HttpStatus.OK)
+                        .data(companyService.search(name))
+                        .build()
+                );
+    }
+
     @GetMapping("/{companyId}")
     public ResponseEntity<ResponseHandler<FindCompanyResponse>> findByCompanyId(
             @PathVariable @Positive final long companyId,
             @RequestParam @PositiveOrZero final int pageNo,
-            @RequestParam(defaultValue = "createdAt") final String criterion
+            @RequestParam(defaultValue = "createdAt") final String criterion,
+            @ModelAttribute final FindCompanyQuestionRequest request
     ) {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<FindCompanyResponse>builder()
                         .statusCode(HttpStatus.OK)
-                        .data(companyService.findByCompanyId(pageNo, criterion, companyId))
+                        .data(companyService.findByCompanyId(pageNo, criterion, companyId, request))
                         .build()
                 );
     }
@@ -71,7 +84,7 @@ public class CompanyController {
     public ResponseEntity<ResponseHandler<Void>> save(
             @RequestBody @Valid final SaveCompanyRequest request
     ) {
-        BadwordUtil.check(request.name());
+        BadWordUtil.check(request.name());
         companyService.save(request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
