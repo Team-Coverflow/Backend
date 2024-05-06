@@ -41,8 +41,8 @@ public class Company extends BaseTimeEntity {
     @JsonManagedReference
     private List<Question> questions = new ArrayList<>();
 
-    public Company(final SaveCompanyRequest request) {
-        this.name = request.name();
+    public Company(final SaveCompanyRequest request, final String modifiedName) {
+        this.name = modifiedName;
         this.type = request.type();
         this.city = request.city();
         this.district = request.district();

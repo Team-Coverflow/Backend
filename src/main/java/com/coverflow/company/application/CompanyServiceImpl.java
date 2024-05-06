@@ -102,11 +102,15 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     @Transactional
     public void save(final SaveCompanyRequest request) {
+        String modifiedName = "";
+        if (request.name().contains("㈜")) {
+            modifiedName = request.name().replace("㈜", "(주)");
+        }
         if (companyRepository.findByName(request.name()).isPresent()) {
             throw new CompanyExistException(request.name());
         }
 
-        companyRepository.save(new Company(request));
+        companyRepository.save(new Company(request, modifiedName));
     }
 
     @Override
