@@ -26,9 +26,9 @@ public class Question extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 질문 고유 번호
-    @Column
+    @Column(length = 100)
     private String title; // 제목
-    @Column
+    @Column(length = 500)
     private String content; // 내용
     @Column
     private long viewCount; // 질문 조회 수

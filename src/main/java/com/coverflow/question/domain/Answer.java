@@ -25,7 +25,7 @@ public class Answer extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id; // 답변 고유 번호
-    @Column
+    @Column(length = 500)
     private String content; // 내용
     @Column
     private boolean selection; // 채택(T/F)
