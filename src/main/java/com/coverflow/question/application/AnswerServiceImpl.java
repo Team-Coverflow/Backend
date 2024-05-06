@@ -104,7 +104,7 @@ public class AnswerServiceImpl implements AnswerService {
             throw new QuestionAuthorException(memberId);
         }
         if (question.isSelectionStatus()) {
-            throw new AlreadySelectedQuestionException(question.getId());
+            throw new AlreadySelectedAnswerException(question.getId());
         }
 
         question.updateAnswerCount(question.getAnswerCount() + 1);
