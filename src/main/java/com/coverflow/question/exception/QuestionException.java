@@ -23,4 +23,11 @@ public class QuestionException extends RuntimeException {
             super(String.format("이미 질문이 존재합니다. - request info { id : %d }", id));
         }
     }
+
+    public static class AlreadySelectedQuestionException extends QuestionException {
+
+        public AlreadySelectedQuestionException(final Object data) {
+            super(String.format("이미 채택된 답변이 있는 질문입니다. - request info => %s", data));
+        }
+    }
 }

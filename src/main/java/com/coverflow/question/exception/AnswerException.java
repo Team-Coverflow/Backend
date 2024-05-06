@@ -38,9 +38,9 @@ public class AnswerException extends RuntimeException {
         }
     }
 
-    public static class AlreadySelectedQuestionException extends AnswerException {
+    public static class AlreadySelectedAnswerException extends AnswerException {
 
-        public AlreadySelectedQuestionException(final Object data) {
+        public AlreadySelectedAnswerException(final Object data) {
             super(String.format("이미 채택된 답변입니다. - request info => %s", data));
         }
     }

@@ -58,7 +58,7 @@ public interface QuestionService {
     void save(final SaveQuestionRequest request, final String memberId);
 
     /**
-     * [질문 수정 메서드]
+     * [질문 수정/삭제 메서드]
      */
     void update(final long questionId, final UpdateQuestionRequest request);
 

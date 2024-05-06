@@ -8,7 +8,6 @@ public record UpdateQuestionRequest(
         String title,
         @NotBlank
         String content,
-        @NotBlank
         boolean questionStatus
 ) {
 }
