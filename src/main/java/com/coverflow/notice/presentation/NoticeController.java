@@ -2,7 +2,7 @@ package com.coverflow.notice.presentation;
 
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
-import com.coverflow.global.util.BadwordUtil;
+import com.coverflow.global.util.BadWordUtil;
 import com.coverflow.notice.application.NoticeService;
 import com.coverflow.notice.dto.request.SaveNoticeRequest;
 import com.coverflow.notice.dto.request.UpdateNoticeRequest;
@@ -42,8 +42,8 @@ public class NoticeController {
             @RequestBody @Valid final SaveNoticeRequest request,
             @AuthenticationPrincipal final UserDetails userDetails
     ) {
-        BadwordUtil.check(request.title());
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.title());
+        BadWordUtil.check(request.content());
         noticeService.save(request, userDetails.getUsername());
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
@@ -57,8 +57,8 @@ public class NoticeController {
             @PathVariable @Positive final long noticeId,
             @RequestBody @Valid final UpdateNoticeRequest request
     ) {
-        BadwordUtil.check(request.title());
-        BadwordUtil.check(request.content());
+        BadWordUtil.check(request.title());
+        BadWordUtil.check(request.content());
         noticeService.update(noticeId, request);
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
