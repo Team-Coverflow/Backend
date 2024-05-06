@@ -12,7 +12,7 @@ public class CompanyException extends RuntimeException {
             super("기업이 존재하지 않습니다.");
         }
 
-        public CompanyNotFoundException(final Object data) {
+        public CompanyNotFoundException(Object data) {
             super(String.format("기업이 존재하지 않습니다. - request info => %s", data));
         }
     }
