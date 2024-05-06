@@ -81,6 +81,7 @@ public class Question extends BaseTimeEntity {
         this.answerCount = 0;
         this.reward = request.reward();
         this.questionTag = QuestionTag.valueOf(request.questionTag());
+        this.questionCategory = request.questionCategory();
         this.questionStatus = true;
         this.company = Company.builder()
                 .id(request.companyId())
