@@ -24,8 +24,6 @@ public class QQuestion extends EntityPathBase<Question> {
 
     public final com.coverflow.global.entity.QBaseTimeEntity _super = new com.coverflow.global.entity.QBaseTimeEntity(this);
 
-    public final NumberPath<Integer> answerCount = createNumber("answerCount", Integer.class);
-
     public final ListPath<Answer, QAnswer> answers = this.<Answer, QAnswer>createList("answers", Answer.class, QAnswer.class, PathInits.DIRECT2);
 
     public final com.coverflow.company.domain.QCompany company;

@@ -125,7 +125,6 @@ public class QuestionServiceImpl implements QuestionService {
 
         memberService.writeQuestion(memberId, request.reward());
         questionRepository.save(new Question(request, memberId));
-        company.updateQuestionCount(company.getQuestionCount() + 1);
     }
 
     @Override

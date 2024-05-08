@@ -27,7 +27,7 @@ public record FindCompanyResponse(
                 company.getName(),
                 company.getType(),
                 company.getCity() + " " + company.getDistrict(),
-                company.getQuestionCount(),
+                company.getQuestions().size(),
                 totalPages,
                 totalElements,
                 questions
