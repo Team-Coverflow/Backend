@@ -20,7 +20,7 @@ public record QuestionResponse(
                 question.getTitle(),
                 question.getContent(),
                 question.getViewCount(),
-                question.getAnswerCount(),
+                question.getAnswers().size(),
                 question.getCompany().getId(),
                 question.getMember().getId()
         );

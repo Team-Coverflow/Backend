@@ -25,7 +25,7 @@ public class CompaniesDTO {
                 company.getType(),
                 company.getCity(),
                 company.getDistrict(),
-                company.getQuestionCount(),
+                company.getQuestions().size(),
                 company.getCompanyStatus()
         );
     }

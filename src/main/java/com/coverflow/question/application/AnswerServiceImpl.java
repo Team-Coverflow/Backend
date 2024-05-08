@@ -107,7 +107,6 @@ public class AnswerServiceImpl implements AnswerService {
             throw new AlreadySelectedAnswerException(question.getId());
         }
 
-        question.updateAnswerCount(question.getAnswerCount() + 1);
         answerRepository.save(new Answer(request, memberId));
         notificationService.send(new Notification(question));
     }

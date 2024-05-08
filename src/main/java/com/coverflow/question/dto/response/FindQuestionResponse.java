@@ -36,7 +36,7 @@ public record FindQuestionResponse(
                 question.getQuestionTag(),
                 question.getQuestionCategory(),
                 question.getViewCount(),
-                question.getAnswerCount(),
+                question.getAnswers().size(),
                 question.getReward(),
                 question.getMember().getNickname(),
                 question.getMember().getTag(),
