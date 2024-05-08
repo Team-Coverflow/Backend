@@ -5,10 +5,7 @@ import com.coverflow.company.dto.request.FindCompanyAdminRequest;
 import com.coverflow.company.dto.request.FindCompanyQuestionRequest;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
-import com.coverflow.company.dto.response.FindAllCompaniesResponse;
-import com.coverflow.company.dto.response.FindCompanyResponse;
-import com.coverflow.company.dto.response.SearchCompanyCountResponse;
-import com.coverflow.company.dto.response.SearchCompanyResponse;
+import com.coverflow.company.dto.response.*;
 import com.coverflow.global.annotation.AdminAuthorize;
 import com.coverflow.global.handler.ResponseHandler;
 import com.coverflow.global.util.BadWordUtil;
@@ -67,15 +64,28 @@ public class CompanyController {
 
     @GetMapping("/admin")
     @AdminAuthorize
-    public ResponseEntity<ResponseHandler<FindAllCompaniesResponse>> find(
+    public ResponseEntity<ResponseHandler<FindCompanyAdminResponse>> find(
             @RequestParam @PositiveOrZero final int pageNo,
             @RequestParam(defaultValue = "createdAt") final String criterion,
             @ModelAttribute final FindCompanyAdminRequest request
     ) {
         return ResponseEntity.ok()
-                .body(ResponseHandler.<FindAllCompaniesResponse>builder()
+                .body(ResponseHandler.<FindCompanyAdminResponse>builder()
                         .statusCode(HttpStatus.OK)
                         .data(companyService.find(pageNo, criterion, request))
+                        .build()
+                );
+    }
+
+    @GetMapping("/admin/count")
+    @AdminAuthorize
+    public ResponseEntity<ResponseHandler<FindCompanyAdminCountResponse>> find(
+            @ModelAttribute final FindCompanyAdminRequest request
+    ) {
+        return ResponseEntity.ok()
+                .body(ResponseHandler.<FindCompanyAdminCountResponse>builder()
+                        .statusCode(HttpStatus.OK)
+                        .data(companyService.find(request))
                         .build()
                 );
     }

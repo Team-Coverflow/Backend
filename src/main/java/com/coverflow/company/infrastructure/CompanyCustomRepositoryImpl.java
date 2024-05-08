@@ -6,15 +6,15 @@ import com.coverflow.company.dto.request.FindCompanyAdminRequest;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 import static com.coverflow.company.domain.QCompany.company;
@@ -65,48 +65,35 @@ public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
     }
 
     @Override
-    public Optional<Page<Company>> findWithFilters(final Pageable pageable, final FindCompanyAdminRequest request) {
-        List<Company> companies;
-        long total;
+    public Optional<Slice<Company>> findWithFilters(final Pageable pageable, final FindCompanyAdminRequest request) {
+        List<Company> companies = jpaQueryFactory
+                .selectFrom(company)
+                .where(
+                        toContainsType(request.type()),
+                        toContainsCity(request.city()),
+                        toContainsDistrict(request.district()),
+                        eqCompanyStatus(request.companyStatus())
+                )
+                .orderBy(makeOrderSpecifiers(company, pageable))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
 
-        CompletableFuture<List<Company>> companiesFuture = CompletableFuture.supplyAsync(() ->
-                jpaQueryFactory
-                        .selectFrom(company)
-                        .where(
-                                toContainsType(request.type()),
-                                toContainsCity(request.city()),
-                                toContainsDistrict(request.district()),
-                                eqCompanyStatus(request.companyStatus())
-                        )
-                        .orderBy(makeOrderSpecifiers(company, pageable))
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .fetch()
-        );
+        return Optional.of(new SliceImpl<>(companies));
+    }
 
-        CompletableFuture<Long> countFuture = CompletableFuture.supplyAsync(() ->
-                jpaQueryFactory
-                        .select(company.count())
-                        .from(company)
-                        .where(
-                                toContainsType(request.type()),
-                                toContainsCity(request.city()),
-                                toContainsDistrict(request.district()),
-                                eqCompanyStatus(request.companyStatus())
-                        )
-                        .fetchOne()
-        );
-
-        CompletableFuture.allOf(companiesFuture, countFuture).join();
-
-        try {
-            companies = companiesFuture.get();
-            total = countFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-
-        return Optional.of(new PageImpl<>(companies, pageable, total));
+    @Override
+    public Long countByFilters(final FindCompanyAdminRequest request) {
+        return jpaQueryFactory
+                .select(company.count())
+                .from(company)
+                .where(
+                        toContainsType(request.type()),
+                        toContainsCity(request.city()),
+                        toContainsDistrict(request.district()),
+                        eqCompanyStatus(request.companyStatus())
+                )
+                .fetchOne();
     }
 
     private BooleanExpression toContainsType(final String type) {

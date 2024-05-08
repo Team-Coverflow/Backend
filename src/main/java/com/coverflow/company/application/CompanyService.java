@@ -4,10 +4,7 @@ import com.coverflow.company.dto.request.FindCompanyAdminRequest;
 import com.coverflow.company.dto.request.FindCompanyQuestionRequest;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
-import com.coverflow.company.dto.response.FindAllCompaniesResponse;
-import com.coverflow.company.dto.response.FindCompanyResponse;
-import com.coverflow.company.dto.response.SearchCompanyCountResponse;
-import com.coverflow.company.dto.response.SearchCompanyResponse;
+import com.coverflow.company.dto.response.*;
 
 public interface CompanyService {
 
@@ -37,11 +34,16 @@ public interface CompanyService {
      * [관리자 전용: 기업 조회 메서드]
      * 기업을 필터링해서 조회하는 메서드
      */
-    FindAllCompaniesResponse find(
+    FindCompanyAdminResponse find(
             final int pageNo,
             final String criterion,
             final FindCompanyAdminRequest request
     );
+
+    /**
+     * [관리자 전용: 기업 검색 시 데이터 수]
+     */
+    FindCompanyAdminCountResponse find(final FindCompanyAdminRequest request);
 
     /**
      * [기업 등록 메서드]
