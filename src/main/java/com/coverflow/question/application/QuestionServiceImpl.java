@@ -28,6 +28,7 @@ import static com.coverflow.company.exception.CompanyException.CompanyNotFoundEx
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
+import static com.coverflow.question.exception.AnswerException.AnswerExistException;
 import static com.coverflow.question.exception.QuestionException.AlreadySelectedQuestionException;
 import static com.coverflow.question.exception.QuestionException.QuestionNotFoundException;
 
@@ -135,6 +136,10 @@ public class QuestionServiceImpl implements QuestionService {
     ) {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionNotFoundException(questionId));
+
+        if (!question.getAnswers().isEmpty()) {
+            throw new AnswerExistException(questionId);
+        }
 
         if (question.isSelectionStatus()) {
             throw new AlreadySelectedQuestionException(questionId);
