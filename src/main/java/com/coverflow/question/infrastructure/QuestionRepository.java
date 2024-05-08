@@ -17,6 +17,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
     @Query("""
             SELECT q
             FROM Question q
+            JOIN FETCH q.answers
             WHERE q.member.id = :memberId
             AND q.questionStatus = true
             ORDER BY q.createdAt DESC
@@ -29,6 +30,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
     @Query("""
             SELECT DISTINCT q
             FROM Question q
+            JOIN FETCH q.answers
             WHERE q.id = :questionId
             AND q.questionStatus = true
             """)
