@@ -141,6 +141,10 @@ public class AnswerServiceImpl implements AnswerService {
         Answer answer = answerRepository.findById(answerId)
                 .orElseThrow(() -> new AnswerNotFoundException(answerId));
 
+        if (!request.answerStatus()) {
+            answer.getQuestion().updateAnswerCount(answer.getQuestion().getAnswerCount() - 1);
+        }
+
         answer.updateAnswer(request);
     }
 
