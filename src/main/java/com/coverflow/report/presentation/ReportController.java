@@ -7,7 +7,6 @@ import com.coverflow.global.util.BadWordUtil;
 import com.coverflow.report.application.ReportService;
 import com.coverflow.report.dto.request.FindReportAdminRequest;
 import com.coverflow.report.dto.request.SaveReportRequest;
-import com.coverflow.report.dto.request.UpdateReportRequest;
 import com.coverflow.report.dto.response.FindReportResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -66,19 +65,6 @@ public class ReportController {
         return ResponseEntity.ok()
                 .body(ResponseHandler.<Void>builder()
                         .statusCode(HttpStatus.CREATED)
-                        .build());
-    }
-
-    @PatchMapping("/admin/{reportId}")
-    @AdminAuthorize
-    public ResponseEntity<ResponseHandler<Void>> update(
-            @PathVariable @Positive final long reportId,
-            @RequestBody @Valid final UpdateReportRequest request
-    ) {
-        reportService.update(reportId, request);
-        return ResponseEntity.ok()
-                .body(ResponseHandler.<Void>builder()
-                        .statusCode(HttpStatus.NO_CONTENT)
                         .build());
     }
 

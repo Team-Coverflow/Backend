@@ -7,7 +7,6 @@ import com.coverflow.report.domain.ReportType;
 import com.coverflow.report.dto.ReportDTO;
 import com.coverflow.report.dto.request.FindReportAdminRequest;
 import com.coverflow.report.dto.request.SaveReportRequest;
-import com.coverflow.report.dto.request.UpdateReportRequest;
 import com.coverflow.report.dto.response.FindReportResponse;
 import com.coverflow.report.infrastructure.ReportRepository;
 import lombok.RequiredArgsConstructor;
@@ -88,18 +87,6 @@ public class ReportServiceImpl implements ReportService {
         }
 
         reportRepository.save(report);
-    }
-
-    @Override
-    @Transactional
-    public void update(
-            final long reportId,
-            final UpdateReportRequest request
-    ) {
-        Report report = reportRepository.findById(reportId)
-                .orElseThrow(() -> new ReportNotFoundException(reportId));
-
-        report.updateReport(request);
     }
 
     @Override
