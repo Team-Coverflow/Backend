@@ -5,7 +5,6 @@ import com.coverflow.member.domain.Member;
 import com.coverflow.question.domain.Answer;
 import com.coverflow.question.domain.Question;
 import com.coverflow.report.dto.request.SaveReportRequest;
-import com.coverflow.report.dto.request.UpdateReportRequest;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -78,9 +77,5 @@ public class Report extends BaseTimeEntity {
         this.answer = Answer.builder()
                 .id(request.id())
                 .build();
-    }
-
-    public void updateReport(final UpdateReportRequest request) {
-        this.reportStatus = request.updateStatus();
     }
 }

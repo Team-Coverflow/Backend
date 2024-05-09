@@ -105,8 +105,8 @@ public class QuestionController {
                         .build());
     }
 
-    @DeleteMapping("/admin/{questionId}")
-    @AdminAuthorize
+    @DeleteMapping("/{questionId}")
+    @MemberAuthorize
     public ResponseEntity<ResponseHandler<Void>> delete(
             @PathVariable @Positive final long questionId
     ) {

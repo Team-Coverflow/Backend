@@ -1,6 +1,5 @@
 package com.coverflow.question.application;
 
-import com.coverflow.company.domain.Company;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.MemberServiceImpl;
 import com.coverflow.question.domain.Question;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.coverflow.company.exception.CompanyException.CompanyNotFoundException;
 import static com.coverflow.global.constant.Constant.LARGE_PAGE_SIZE;
 import static com.coverflow.global.constant.Constant.NORMAL_PAGE_SIZE;
 import static com.coverflow.global.util.PageUtil.generatePageDesc;
@@ -121,9 +119,6 @@ public class QuestionServiceImpl implements QuestionService {
             final SaveQuestionRequest request,
             final String memberId
     ) {
-        Company company = companyRepository.findById(request.companyId())
-                .orElseThrow(() -> new CompanyNotFoundException(request.companyId()));
-
         memberService.writeQuestion(memberId, request.reward());
         questionRepository.save(new Question(request, memberId));
     }
