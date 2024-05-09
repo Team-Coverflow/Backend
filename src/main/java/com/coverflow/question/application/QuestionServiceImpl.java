@@ -149,6 +149,10 @@ public class QuestionServiceImpl implements QuestionService {
         Question question = questionRepository.findById(questionId)
                 .orElseThrow(() -> new QuestionNotFoundException(questionId));
 
+        if (!question.getAnswers().isEmpty()) {
+            throw new AnswerExistException(questionId);
+        }
+
         questionRepository.delete(question);
     }
 }
