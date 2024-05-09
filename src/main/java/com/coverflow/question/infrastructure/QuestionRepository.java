@@ -17,7 +17,6 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
     @Query("""
             SELECT q
             FROM Question q
-            LEFT JOIN FETCH q.answers
             WHERE q.member.id = :memberId
             AND q.questionStatus = true
             ORDER BY q.createdAt DESC
