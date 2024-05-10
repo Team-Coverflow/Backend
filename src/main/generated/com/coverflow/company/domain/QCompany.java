@@ -35,8 +35,6 @@ public class QCompany extends EntityPathBase<Company> {
 
     public final StringPath name = createString("name");
 
-    public final NumberPath<Integer> questionCount = createNumber("questionCount", Integer.class);
-
     public final ListPath<com.coverflow.question.domain.Question, com.coverflow.question.domain.QQuestion> questions = this.<com.coverflow.question.domain.Question, com.coverflow.question.domain.QQuestion>createList("questions", com.coverflow.question.domain.Question.class, com.coverflow.question.domain.QQuestion.class, PathInits.DIRECT2);
 
     public final StringPath type = createString("type");

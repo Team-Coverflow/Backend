@@ -2,7 +2,6 @@ package com.coverflow.report.application;
 
 import com.coverflow.report.dto.request.FindReportAdminRequest;
 import com.coverflow.report.dto.request.SaveReportRequest;
-import com.coverflow.report.dto.request.UpdateReportRequest;
 import com.coverflow.report.dto.response.FindReportResponse;
 
 public interface ReportService {
@@ -29,11 +28,6 @@ public interface ReportService {
      * [신고 등록 메서드]
      */
     void save(final SaveReportRequest request, final String memberId);
-
-    /**
-     * [관리자 - 신고 수정 메서드]
-     */
-    void update(final long reportId, final UpdateReportRequest request);
 
     /**
      * [관리자 - 신고 삭제 메서드]

@@ -14,6 +14,11 @@ import java.util.UUID;
 @Repository
 public interface QuestionRepository extends JpaRepository<Question, Long>, QuestionCustomRepository {
 
+    Optional<Question> findByIdAndQuestionStatus(
+            final long id,
+            final boolean questionStatus
+    );
+
     @Query("""
             SELECT q
             FROM Question q
@@ -29,6 +34,7 @@ public interface QuestionRepository extends JpaRepository<Question, Long>, Quest
     @Query("""
             SELECT DISTINCT q
             FROM Question q
+            LEFT JOIN FETCH q.answers
             WHERE q.id = :questionId
             AND q.questionStatus = true
             """)

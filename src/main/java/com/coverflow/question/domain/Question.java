@@ -33,8 +33,6 @@ public class Question extends BaseTimeEntity {
     @Column
     private long viewCount; // 질문 조회 수
     @Column
-    private int answerCount; // 답변 수
-    @Column
     private int reward; // 채택 시 보상
     @Column
     private String questionCategory; // 질문 카테고리
@@ -78,7 +76,6 @@ public class Question extends BaseTimeEntity {
         this.title = request.title();
         this.content = request.content();
         this.viewCount = 1;
-        this.answerCount = 0;
         this.reward = request.reward();
         this.questionTag = QuestionTag.valueOf(request.questionTag());
         this.questionCategory = request.questionCategory();
@@ -99,10 +96,6 @@ public class Question extends BaseTimeEntity {
 
     public void updateViewCount(long viewCount) {
         this.viewCount = viewCount;
-    }
-
-    public void updateAnswerCount(int answerCount) {
-        this.answerCount = answerCount;
     }
 
     public void updateSelectionStatus(boolean selectionStatus) {

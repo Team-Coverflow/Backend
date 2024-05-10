@@ -7,15 +7,11 @@ import com.coverflow.company.dto.request.FindCompanyAdminRequest;
 import com.coverflow.company.dto.request.FindCompanyQuestionRequest;
 import com.coverflow.company.dto.request.SaveCompanyRequest;
 import com.coverflow.company.dto.request.UpdateCompanyRequest;
-import com.coverflow.company.dto.response.FindAllCompaniesResponse;
-import com.coverflow.company.dto.response.FindCompanyResponse;
-import com.coverflow.company.dto.response.SearchCompanyCountResponse;
-import com.coverflow.company.dto.response.SearchCompanyResponse;
+import com.coverflow.company.dto.response.*;
 import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.question.application.QuestionServiceImpl;
 import com.coverflow.question.dto.CompanyAndQuestionDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Slice;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -81,22 +77,29 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     @Transactional(readOnly = true)
-    public FindAllCompaniesResponse find(
+    public FindCompanyAdminResponse find(
             final int pageNo,
             final String criterion,
             final FindCompanyAdminRequest request
     ) {
-        Page<Company> companies = companyRepository.findWithFilters(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), request)
+        Slice<Company> companies = companyRepository.findWithFilters(generatePageDesc(pageNo, LARGE_PAGE_SIZE, criterion), request)
                 .orElseThrow(() -> new CompanyNotFoundException(request));
 
-        return FindAllCompaniesResponse.of(
-                companies.getTotalPages(),
-                companies.getTotalElements(),
+        return FindCompanyAdminResponse.from(
                 companies.getContent()
                         .stream()
                         .map(CompaniesDTO::from)
                         .toList()
         );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public FindCompanyAdminCountResponse find(final FindCompanyAdminRequest request) {
+        long totalElements = companyRepository.countByFilters(request);
+        int totalPages = (int) Math.ceil((double) totalElements / LARGE_PAGE_SIZE);
+
+        return FindCompanyAdminCountResponse.of(totalPages, totalElements);
     }
 
     @Override

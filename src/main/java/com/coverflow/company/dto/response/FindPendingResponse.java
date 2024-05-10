@@ -18,7 +18,7 @@ public record FindPendingResponse(
                 company.getName(),
                 company.getType(),
                 company.getCity() + " " + company.getDistrict(),
-                company.getQuestionCount(),
+                company.getQuestions().size(),
                 company.getCompanyStatus()
         );
     }

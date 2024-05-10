@@ -38,7 +38,7 @@ public class QuestionDTO {
                 question.getQuestionTag(),
                 question.getQuestionCategory(),
                 question.getViewCount(),
-                question.getAnswerCount(),
+                question.getAnswers().size(),
                 question.getReward(),
                 question.isQuestionStatus(),
                 question.getCreatedAt().toLocalDate()

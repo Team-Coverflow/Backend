@@ -64,6 +64,7 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
         CompletableFuture<List<Question>> questionsFuture = CompletableFuture.supplyAsync(() ->
                 jpaQueryFactory
                         .selectFrom(question)
+                        .leftJoin(question.answers).fetchJoin()
                         .where(
                                 question.company.id.eq(companyId),
                                 question.questionStatus.eq(true),
@@ -72,6 +73,7 @@ public class QuestionCustomRepositoryImpl implements QuestionCustomRepository {
                         .offset(pageable.getOffset())
                         .limit(pageable.getPageSize())
                         .orderBy(makeOrderSpecifiers(question, pageable))
+                        .distinct()
                         .fetch()
         );
 

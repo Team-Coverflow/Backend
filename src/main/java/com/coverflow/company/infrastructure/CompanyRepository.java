@@ -18,6 +18,7 @@ public interface CompanyRepository extends JpaRepository<Company, Long>, Company
     @Query("""
             SELECT c
             FROM Company c
+            LEFT JOIN FETCH c.questions
             WHERE c.id = :companyId
             AND c.companyStatus = 'REGISTRATION'
             """)
