@@ -22,6 +22,7 @@ import static com.coverflow.member.exception.MemberException.*;
 import static com.coverflow.notification.exception.NotificationException.NotificationNotFoundException;
 import static com.coverflow.question.exception.AnswerException.*;
 import static com.coverflow.question.exception.QuestionException.*;
+import static com.coverflow.report.exception.ReportException.ReportExistException;
 import static com.coverflow.report.exception.ReportException.ReportNotFoundException;
 import static com.coverflow.visitor.exception.VisitorException.DayNotFoundException;
 
@@ -103,7 +104,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = {
             CompanyExistException.class,
             QuestionExistException.class,
-            AnswerExistException.class
+            AnswerExistException.class,
+            ReportExistException.class
     })
     public ResponseEntity<ErrorResponse> handleExistException(final RuntimeException exception) {
         String message = exception.getMessage();
