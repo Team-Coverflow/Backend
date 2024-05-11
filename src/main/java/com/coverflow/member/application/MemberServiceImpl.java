@@ -29,6 +29,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -198,7 +200,7 @@ public class MemberServiceImpl implements MemberService {
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void leave() {
-        LocalDateTime date = LocalDateTime.now().minusDays(30);
+        LocalDateTime date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime().minusDays(30);
         List<Member> members = memberRepository.findByStatus(date)
                 .orElseThrow(MemberNotFoundException::new);
 
