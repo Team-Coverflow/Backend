@@ -35,7 +35,7 @@ public class Company extends BaseTimeEntity {
     private CompanyStatus companyStatus; // 기업 상태 (검토/등록/삭제)
 
     @Builder.Default
-    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "company")
     @JsonManagedReference
     private List<Question> questions = new ArrayList<>();
 

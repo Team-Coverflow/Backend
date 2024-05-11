@@ -30,7 +30,7 @@ public class Notice extends BaseTimeEntity {
     @Column
     private boolean noticeStatus; // 상태(T: 등록/F: 삭제)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @JsonBackReference
     private Member member; // 작성자 정보

@@ -30,7 +30,7 @@ public class Notification extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private NotificationType type; // 알림 종류 (DAILY, QUESTION, ANSWER)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @JsonBackReference
     private Member member; // 회원 정보
