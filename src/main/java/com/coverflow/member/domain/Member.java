@@ -51,6 +51,10 @@ public class Member extends BaseTimeEntity {
     private String socialAccessToken; // 소셜 액세스 토큰
     @Column
     private String refreshToken; // 리프레쉬 토큰
+    @Column
+    private boolean agreeMarketing; // 마케팅 광고 동의 여부
+    @Column
+    private boolean agreeCollection; // 개인정보 수집 동의 여부
 
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
@@ -143,6 +147,14 @@ public class Member extends BaseTimeEntity {
 
     public void updateTokenStatus(final RefreshTokenStatus refreshTokenStatus) {
         this.refreshTokenStatus = refreshTokenStatus;
+    }
+
+    public void updateAgreeMarketing(final boolean agreeMarketing) {
+        this.agreeMarketing = agreeMarketing;
+    }
+
+    public void updateAgreeCollection(final boolean agreeCollection) {
+        this.agreeCollection = agreeCollection;
     }
 
 //    public void passwordEncode(final PasswordEncoder passwordEncoder) {

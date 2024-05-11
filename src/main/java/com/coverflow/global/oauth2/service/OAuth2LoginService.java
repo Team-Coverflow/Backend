@@ -1,6 +1,7 @@
 package com.coverflow.global.oauth2.service;
 
 import com.coverflow.global.jwt.service.JwtService;
+import com.coverflow.global.oauth2.dto.TokenRequest;
 import com.coverflow.global.util.AesUtil;
 import com.coverflow.member.domain.Member;
 import com.coverflow.member.domain.MemberStatus;
@@ -31,12 +32,12 @@ public class OAuth2LoginService {
 
     @Transactional
     public String getToken(
-            final String code
+            final TokenRequest request
     ) {
         // 인가 코드 디코딩
         String decodingCode;
         try {
-            decodingCode = AesUtil.decrypt(code);
+            decodingCode = AesUtil.decrypt(request.code());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -50,6 +51,12 @@ public class OAuth2LoginService {
         if (MemberStatus.WAIT.equals(findMember.getMemberStatus())) {
             findMember.updateMemberStatus(MemberStatus.REGISTRATION);
             findMember.updateAuthorization(Role.MEMBER);
+            if (request.agreeMarket() != null) {
+                findMember.updateAgreeMarketing(Boolean.parseBoolean(request.agreeMarket()));
+            }
+            if (request.agreeCollection() != null) {
+                findMember.updateAgreeCollection(Boolean.parseBoolean(request.agreeCollection()));
+            }
             log.info("회원가입 성공!");
         }
 
