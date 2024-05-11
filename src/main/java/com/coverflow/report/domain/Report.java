@@ -30,17 +30,17 @@ public class Report extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private ReportType type; // 신고 종류
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @JsonBackReference
     private Member member; // 작성자 정보
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     @JsonBackReference
     private Question question; // 질문 정보
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "answer_id")
     @JsonBackReference
     private Answer answer; // 답변 정보

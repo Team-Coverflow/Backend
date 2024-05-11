@@ -44,23 +44,23 @@ public class Question extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private QuestionTag questionTag; // 질문 태그 (문화/급여/업무/커리어/워라밸)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
     @JsonBackReference
     private Company company; // 회사 정보
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @JsonBackReference
     private Member member; // 질문 작성자 정보
 
     @Builder.Default
-    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question")
     @JsonManagedReference
     private List<Answer> answers = new ArrayList<>(); // 질문에 대한 답변 리스트
 
     @Builder.Default
-    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "question")
     @JsonManagedReference
     private List<Report> reports = new ArrayList<>(); // 질문에 대한 신고 리스트
 

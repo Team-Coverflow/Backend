@@ -30,7 +30,7 @@ public class Inquiry extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private InquiryStatus inquiryStatus; // 상태 (답변대기/답변완료/삭제)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member; // 작성자 정보
 
