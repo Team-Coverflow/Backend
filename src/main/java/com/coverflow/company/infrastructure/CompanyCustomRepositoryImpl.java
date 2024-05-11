@@ -60,7 +60,11 @@ public class CompanyCustomRepositoryImpl implements CompanyCustomRepository {
         return jpaQueryFactory
                 .select(company.count())
                 .from(company)
-                .where(company.name.startsWith(name))
+                .where(
+                        company.name.startsWith(name)
+                                .or(company.name.startsWith("(주)" + name)),
+                        company.companyStatus.eq(CompanyStatus.valueOf("REGISTRATION"))
+                )
                 .fetchOne();
     }
 
