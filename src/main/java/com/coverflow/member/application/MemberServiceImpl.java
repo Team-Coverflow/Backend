@@ -120,7 +120,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         member.updateMember(request);
-        member.updateAuthorization(Role.MEMBER);
     }
 
     @Override
