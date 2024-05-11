@@ -9,13 +9,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Log4j2
 @RequiredArgsConstructor
 @Service
 public class VisitorServiceImpl implements VisitorService {
-    private final String NOW = String.valueOf(LocalDateTime.now()).substring(0, 10);
+    private final String NOW = String.valueOf(LocalDate.now());
     private final VisitorRepository visitorRepository;
 
     @Override
