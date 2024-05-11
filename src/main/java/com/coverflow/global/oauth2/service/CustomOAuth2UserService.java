@@ -92,7 +92,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     /**
      * SocialType과 attributes에 들어있는 소셜 로그인의 식별값 id를 통해 DB에서 회원을 찾아 리턴하는 메소드
-     * RESPITE 상태인 회원은 예외 발생시킨다.
+     * LEAVE 상태인 회원은 예외 발생시킨다.
      * WAIT/REGISTRATION 상태인 회원이 존재하면 그대로 리턴하고
      * 없으면 saveMember()를 호출하여 회원을 저장하고 리턴한다.
      */
