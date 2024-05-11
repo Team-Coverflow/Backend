@@ -24,6 +24,10 @@ public class QMember extends EntityPathBase<Member> {
 
     public final StringPath age = createString("age");
 
+    public final BooleanPath agreeCollection = createBoolean("agreeCollection");
+
+    public final BooleanPath agreeMarketing = createBoolean("agreeMarketing");
+
     public final ListPath<com.coverflow.question.domain.Answer, com.coverflow.question.domain.QAnswer> answers = this.<com.coverflow.question.domain.Answer, com.coverflow.question.domain.QAnswer>createList("answers", com.coverflow.question.domain.Answer.class, com.coverflow.question.domain.QAnswer.class, PathInits.DIRECT2);
 
     public final DateTimePath<java.time.LocalDateTime> connectedAt = createDateTime("connectedAt", java.time.LocalDateTime.class);

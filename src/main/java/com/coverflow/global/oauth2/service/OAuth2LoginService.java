@@ -16,8 +16,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Slf4j
@@ -51,10 +54,10 @@ public class OAuth2LoginService {
         if (MemberStatus.WAIT.equals(findMember.getMemberStatus())) {
             findMember.updateMemberStatus(MemberStatus.REGISTRATION);
             findMember.updateAuthorization(Role.MEMBER);
-            if (request.agreeMarket() != null) {
+            if (StringUtils.hasText(request.agreeMarket())) {
                 findMember.updateAgreeMarketing(Boolean.parseBoolean(request.agreeMarket()));
             }
-            if (request.agreeCollection() != null) {
+            if (StringUtils.hasText(request.agreeCollection())) {
                 findMember.updateAgreeCollection(Boolean.parseBoolean(request.agreeCollection()));
             }
             log.info("회원가입 성공!");
@@ -90,7 +93,7 @@ public class OAuth2LoginService {
      */
     private void dailyCheck(final Member member) {
         // 오늘 첫 로그인 시 = 출석
-        if (null == member.getConnectedAt() || !LocalDate.now().equals(LocalDate.from(member.getConnectedAt()))) {
+        if (null == member.getConnectedAt() || !ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate().isEqual(LocalDate.from(member.getConnectedAt()))) {
             // 출석 체크 시 붕어빵 지급
             member.updateFishShapedBun(member.getFishShapedBun() + 5);
             notificationService.save(new Notification(member));
