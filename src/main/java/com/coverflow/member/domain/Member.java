@@ -65,26 +65,26 @@ public class Member extends BaseTimeEntity {
     private RefreshTokenStatus refreshTokenStatus; // 리프레쉬 토큰 상태 (로그인/로그아웃)
 
     @Builder.Default
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     @JsonManagedReference
     private List<Question> questions = new ArrayList<>(); // 회원의 질문 리스트
 
     @Builder.Default
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     @JsonManagedReference
     private List<Answer> answers = new ArrayList<>(); // 회원의 답변 리스트
 
     @Builder.Default
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     @JsonManagedReference
     private List<Notification> notifications = new ArrayList<>(); // 회원의 알림 리스트
 
     @Builder.Default
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     private List<Inquiry> inquiries = new ArrayList<>(); // 회원의 문의 리스트
 
     @Builder.Default
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "member")
     @JsonManagedReference
     private List<Report> reports = new ArrayList<>(); // 회원의 신고 리스트
 

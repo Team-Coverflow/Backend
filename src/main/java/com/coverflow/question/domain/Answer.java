@@ -32,18 +32,18 @@ public class Answer extends BaseTimeEntity {
     @Column
     private boolean answerStatus; // 답변 상태 (T: 등록/F: 삭제)
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "question_id")
     @JsonBackReference
     private Question question; // 질문 정보
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @JsonBackReference
     private Member member; // 답변 작성자 정보
 
     @Builder.Default
-    @OneToMany(mappedBy = "answer", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "answer")
     @JsonManagedReference
     private List<Report> reports = new ArrayList<>(); // 답변에 대한 신고 리스트
 

@@ -120,7 +120,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
 
         member.updateMember(request);
-        member.updateAuthorization(Role.MEMBER);
     }
 
     @Override
@@ -219,10 +218,10 @@ public class MemberServiceImpl implements MemberService {
      * [탈퇴에 따른 데이터 삭제 메서드]
      */
     private void deleteData(final UUID memberId) {
+        reportRepository.deleteByMemberId(memberId);
         answerRepository.deleteByMemberId(memberId);
         questionRepository.deleteByMemberId(memberId);
         inquiryRepository.deleteByMemberId(memberId);
-        reportRepository.deleteByMemberId(memberId);
 
         emitterRepository.deleteAllStartWithId(String.valueOf(memberId));
         emitterRepository.deleteAllEventCacheStartWithId(String.valueOf(memberId));
