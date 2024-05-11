@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Slf4j
@@ -91,7 +93,7 @@ public class OAuth2LoginService {
      */
     private void dailyCheck(final Member member) {
         // 오늘 첫 로그인 시 = 출석
-        if (null == member.getConnectedAt() || !LocalDate.now().equals(LocalDate.from(member.getConnectedAt()))) {
+        if (null == member.getConnectedAt() || !ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate().isEqual(LocalDate.from(member.getConnectedAt()))) {
             // 출석 체크 시 붕어빵 지급
             member.updateFishShapedBun(member.getFishShapedBun() + 5);
             notificationService.save(new Notification(member));
