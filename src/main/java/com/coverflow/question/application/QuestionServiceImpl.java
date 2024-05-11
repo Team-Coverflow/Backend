@@ -1,6 +1,5 @@
 package com.coverflow.question.application;
 
-import com.coverflow.company.infrastructure.CompanyRepository;
 import com.coverflow.member.application.MemberServiceImpl;
 import com.coverflow.question.domain.Question;
 import com.coverflow.question.dto.AnswerListDTO;
@@ -36,7 +35,6 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final MemberServiceImpl memberService;
     private final AnswerServiceImpl answerService;
-    private final CompanyRepository companyRepository;
     private final QuestionRepository questionRepository;
 
     @Override
