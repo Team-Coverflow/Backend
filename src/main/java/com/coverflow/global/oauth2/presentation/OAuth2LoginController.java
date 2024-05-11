@@ -25,7 +25,9 @@ public class OAuth2LoginController {
             @ModelAttribute final TokenRequest request
     ) {
         log.info("인가 코드 수신 성공 => {}", request.code());
-
+        System.out.println(request.code());
+        System.out.println(request.agreeMarket());
+        System.out.println(request.agreeCollection());
         // '/'를 구분자로 사용하여 문자열을 분리
         String[] tokens = oAuth2LoginService.getToken(request).split("/");
 

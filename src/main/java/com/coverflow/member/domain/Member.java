@@ -52,9 +52,9 @@ public class Member extends BaseTimeEntity {
     @Column
     private String refreshToken; // 리프레쉬 토큰
     @Column
-    private boolean agreeMarketing; // 마케팅 광고 동의 여부
+    private Boolean agreeMarketing; // 마케팅 광고 동의 여부
     @Column
-    private boolean agreeCollection; // 개인정보 수집 동의 여부
+    private Boolean agreeCollection; // 개인정보 수집 동의 여부
 
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE

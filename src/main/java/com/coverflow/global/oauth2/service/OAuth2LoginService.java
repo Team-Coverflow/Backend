@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -51,10 +52,10 @@ public class OAuth2LoginService {
         if (MemberStatus.WAIT.equals(findMember.getMemberStatus())) {
             findMember.updateMemberStatus(MemberStatus.REGISTRATION);
             findMember.updateAuthorization(Role.MEMBER);
-            if (request.agreeMarket() != null) {
+            if (StringUtils.hasText(request.agreeMarket())) {
                 findMember.updateAgreeMarketing(Boolean.parseBoolean(request.agreeMarket()));
             }
-            if (request.agreeCollection() != null) {
+            if (StringUtils.hasText(request.agreeCollection())) {
                 findMember.updateAgreeCollection(Boolean.parseBoolean(request.agreeCollection()));
             }
             log.info("회원가입 성공!");
