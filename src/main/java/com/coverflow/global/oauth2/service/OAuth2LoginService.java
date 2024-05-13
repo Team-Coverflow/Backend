@@ -94,7 +94,7 @@ public class OAuth2LoginService {
         // 오늘 첫 로그인 시 = 출석
         if (null == member.getConnectedAt() || !LocalDateTime.now().toLocalDate().isEqual(LocalDate.from(member.getConnectedAt()))) {
             // 출석 체크 시 붕어빵 지급
-            member.updateFishShapedBun(member.getFishShapedBun() + 5);
+            member.updateFishShapedBun(member.getCurrency() + 5);
             notificationService.save(new Notification(member));
         }
         member.updateConnectedAt();

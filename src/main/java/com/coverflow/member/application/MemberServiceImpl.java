@@ -141,11 +141,11 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new MemberNotFoundException(memberId));
         String nickname = nicknameUtil.generateRandomNickname();
 
-        if (member.getFishShapedBun() < 20) {
+        if (member.getCurrency() < 20) {
             throw new NotEnoughCurrencyException();
         }
         member.updateNickname(nickname);
-        member.updateFishShapedBun(member.getFishShapedBun() - 20);
+        member.updateFishShapedBun(member.getCurrency() - 20);
         return UpdateNicknameResponse.from(nickname);
     }
 
@@ -158,8 +158,8 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findById(UUID.fromString(memberId))
                 .orElseThrow(() -> new MemberException.MemberNotFoundException(memberId));
 
-        if (member.getFishShapedBun() >= 10 + currency) {
-            member.updateFishShapedBun(member.getFishShapedBun() - 10 - currency);
+        if (member.getCurrency() >= 10 + currency) {
+            member.updateFishShapedBun(member.getCurrency() - 10 - currency);
             return;
         }
         throw new MemberException.NotEnoughCurrencyException();

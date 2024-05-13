@@ -42,7 +42,7 @@ public class Member extends BaseTimeEntity {
     @Column
     private String gender; // 성별
     @Column
-    private int fishShapedBun; // 붕어빵
+    private int currency; // 통화
     @Column
     private LocalDateTime connectedAt; // 마지막 접속 시간
     @Column
@@ -98,7 +98,7 @@ public class Member extends BaseTimeEntity {
         this.tag = memberSignUpDTO.getTag();
         this.age = memberSignUpDTO.getAge();
         this.gender = memberSignUpDTO.getGender();
-        this.fishShapedBun = 300;
+        this.currency = 300;
         this.socialId = memberSignUpDTO.getSocialId();
         this.socialType = memberSignUpDTO.getSocialType();
         this.role = Role.GUEST;
@@ -133,8 +133,8 @@ public class Member extends BaseTimeEntity {
         this.role = role;
     }
 
-    public void updateFishShapedBun(final int fishShapedBun) {
-        this.fishShapedBun = fishShapedBun;
+    public void updateFishShapedBun(final int currency) {
+        this.currency = currency;
     }
 
     public void updateSocialAccessToken(final String socialAccessToken) {
