@@ -18,8 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 
 import static com.coverflow.company.exception.CompanyException.CompanyExistException;
 import static com.coverflow.company.exception.CompanyException.CompanyNotFoundException;
@@ -145,7 +143,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     protected void deletePeriodically() {
-        LocalDateTime date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime().minusDays(30);
+        LocalDateTime date = LocalDateTime.now().minusDays(30);
         companyRepository.deleteByCompanyStatus(date);
     }
 }

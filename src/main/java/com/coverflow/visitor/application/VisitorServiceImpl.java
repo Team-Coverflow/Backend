@@ -9,14 +9,13 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 
 @Log4j2
 @RequiredArgsConstructor
 @Service
 public class VisitorServiceImpl implements VisitorService {
-    private final String NOW = String.valueOf(ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDate());
+    private final String NOW = String.valueOf(LocalDateTime.now().toLocalDate());
     private final VisitorRepository visitorRepository;
 
     @Override

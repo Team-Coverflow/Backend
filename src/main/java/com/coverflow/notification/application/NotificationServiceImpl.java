@@ -18,8 +18,6 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -176,7 +174,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Scheduled(cron = "0 0 0 * * ?")
     @Transactional
     public void delete() {
-        LocalDateTime date = ZonedDateTime.now(ZoneId.of("Asia/Seoul")).toLocalDateTime().minusDays(30);
+        LocalDateTime date = LocalDateTime.now().minusDays(30);
         notificationRepository.deleteByCreatedAt(date);
     }
 }
