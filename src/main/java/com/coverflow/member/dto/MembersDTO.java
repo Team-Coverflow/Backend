@@ -37,7 +37,7 @@ public class MembersDTO {
                 member.getTag(),
                 member.getAge(),
                 member.getGender(),
-                member.getFishShapedBun(),
+                member.getCurrency(),
                 member.getMemberStatus(),
                 member.getCreatedAt().toLocalDate(),
                 member.getConnectedAt(),
