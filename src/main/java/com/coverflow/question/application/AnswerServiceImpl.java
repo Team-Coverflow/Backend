@@ -127,7 +127,7 @@ public class AnswerServiceImpl implements AnswerService {
 
         answer.updateSelection(request.selection());
         answer.getQuestion().updateSelectionStatus(request.selection());
-        answer.getMember().updateFishShapedBun(answer.getMember().getFishShapedBun() + answer.getQuestion().getReward());
+        answer.getMember().updateFishShapedBun(answer.getMember().getCurrency() + answer.getQuestion().getReward());
         notificationService.send(new Notification(answer));
     }
 
