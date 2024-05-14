@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
@@ -16,7 +16,7 @@ public class NoticeDTO {
     private String noticeContent;
     private long noticeViews;
     private boolean noticeStatus;
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     public static NoticeDTO from(final Notice notice) {
         return new NoticeDTO(
@@ -25,7 +25,7 @@ public class NoticeDTO {
                 notice.getContent(),
                 notice.getViews(),
                 notice.isNoticeStatus(),
-                notice.getCreatedAt()
+                notice.getCreatedAt().toLocalDate()
         );
     }
 }
