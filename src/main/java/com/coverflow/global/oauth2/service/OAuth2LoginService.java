@@ -55,9 +55,13 @@ public class OAuth2LoginService {
             findMember.updateAuthorization(Role.MEMBER);
             if (StringUtils.hasText(request.agreeMarket())) {
                 findMember.updateAgreeMarketing(Boolean.parseBoolean(request.agreeMarket()));
+            } else {
+                findMember.updateAgreeMarketing(false);
             }
             if (StringUtils.hasText(request.agreeCollection())) {
                 findMember.updateAgreeCollection(Boolean.parseBoolean(request.agreeCollection()));
+            } else {
+                findMember.updateAgreeMarketing(false);
             }
             log.info("회원가입 성공!");
         }
