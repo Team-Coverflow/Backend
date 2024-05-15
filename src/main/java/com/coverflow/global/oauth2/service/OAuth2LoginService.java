@@ -61,7 +61,7 @@ public class OAuth2LoginService {
             if (StringUtils.hasText(request.agreeCollection())) {
                 findMember.updateAgreeCollection(Boolean.parseBoolean(request.agreeCollection()));
             } else {
-                findMember.updateAgreeMarketing(false);
+                findMember.updateAgreeCollection(false);
             }
             log.info("회원가입 성공!");
         }
