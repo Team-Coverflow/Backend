@@ -25,7 +25,7 @@ public class Report extends BaseTimeEntity {
     @Column
     private String content; // 내용
     @Column
-    private boolean reportStatus; // 상태(T: 등록/F: 삭제)
+    private Boolean reportStatus; // 상태(T: 등록/F: 삭제)
 
     @Enumerated(EnumType.STRING)
     private ReportType type; // 신고 종류

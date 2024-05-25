@@ -21,10 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
-import static com.coverflow.question.domain.QQuestion.question;
 import static com.coverflow.report.domain.QReport.report;
 
 @Repository
@@ -58,47 +55,20 @@ public class ReportCustomRepositoryImpl implements ReportCustomRepository {
             final Pageable pageable,
             final FindReportAdminRequest request
     ) {
-        List<Report> reports;
-        long total;
+        List<Report> reports = jpaQueryFactory
+                .selectFrom(report)
+                .where(
+                        toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
+                        eqContent(request.content()),
+                        eqStatus(request.status()),
+                        eqType(request.type())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(makeOrderSpecifiers(report, pageable))
+                .fetch();
 
-        CompletableFuture<List<Report>> reportsFuture = CompletableFuture.supplyAsync(() ->
-                jpaQueryFactory
-                        .selectFrom(report)
-                        .where(
-                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
-                                eqContent(request.content()),
-                                eqStatus(request.status()),
-                                eqType(request.type())
-                        )
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .orderBy(makeOrderSpecifiers(report, pageable))
-                        .fetch()
-        );
-
-        CompletableFuture<Long> countFuture = CompletableFuture.supplyAsync(() ->
-                jpaQueryFactory
-                        .select(question.count())
-                        .from(question)
-                        .where(
-                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
-                                eqContent(request.content()),
-                                eqStatus(request.status()),
-                                eqType(request.type())
-                        )
-                        .fetchOne()
-        );
-
-        CompletableFuture.allOf(reportsFuture, countFuture).join();
-
-        try {
-            reports = reportsFuture.get();
-            total = countFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-
-        return Optional.of(new PageImpl<>(reports, pageable, total));
+        return Optional.of(new PageImpl<>(reports, pageable, reports.size()));
     }
 
     private BooleanExpression toContainsCreatedStartDate(final String startDate) {
