@@ -20,8 +20,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static com.coverflow.question.domain.QAnswer.answer;
 
@@ -56,43 +54,18 @@ public class AnswerCustomRepositoryImpl implements AnswerCustomRepository {
             final Pageable pageable,
             final FindAnswerAdminRequest request
     ) {
-        List<Answer> answers;
-        long total;
+        List<Answer> answers = jpaQueryFactory
+                .selectFrom(answer)
+                .where(
+                        toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
+                        eqStatus(request.status())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(makeOrderSpecifiers(answer, pageable))
+                .fetch();
 
-        CompletableFuture<List<Answer>> answersFuture = CompletableFuture.supplyAsync(() ->
-                jpaQueryFactory
-                        .selectFrom(answer)
-                        .where(
-                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
-                                eqStatus(request.status())
-                        )
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .orderBy(makeOrderSpecifiers(answer, pageable))
-                        .fetch()
-        );
-
-        CompletableFuture<Long> countFuture = CompletableFuture.supplyAsync(() ->
-                jpaQueryFactory
-                        .select(answer.count())
-                        .from(answer)
-                        .where(
-                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
-                                eqStatus(request.status())
-                        )
-                        .fetchOne()
-        );
-
-        CompletableFuture.allOf(answersFuture, countFuture).join();
-
-        try {
-            answers = answersFuture.get();
-            total = countFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-
-        return Optional.of(new PageImpl<>(answers, pageable, total));
+        return Optional.of(new PageImpl<>(answers, pageable, answers.size()));
     }
 
     private BooleanExpression toContainsCreatedStartDate(final String startDate) {
