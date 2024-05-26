@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build:
-    if: github.repository == 'COFLLL/CoverFlow-BE'
+    if: github.repository == 'Team-Coverflow/CoverFlow-BE'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
