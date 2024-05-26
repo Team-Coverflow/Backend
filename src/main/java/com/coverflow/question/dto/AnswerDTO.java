@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class AnswerDTO {
 
+    private long questionId;
     private long answerId;
     private String answerContent;
     private boolean selection;
@@ -24,6 +25,7 @@ public class AnswerDTO {
 
     public static AnswerDTO from(final Answer answer) {
         return new AnswerDTO(
+                answer.getQuestion().getId(),
                 answer.getId(),
                 answer.getContent(),
                 answer.isSelection(),
