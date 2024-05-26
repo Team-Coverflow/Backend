@@ -21,8 +21,6 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutionException;
 
 import static com.coverflow.inquiry.domain.QInquiry.inquiry;
 
@@ -57,43 +55,18 @@ public class InquiryCustomRepositoryImpl implements InquiryCustomRepository {
             final Pageable pageable,
             final FindInquiryAdminRequest request
     ) {
-        List<Inquiry> inquiries;
-        long total;
+        List<Inquiry> inquiries = jpaQueryFactory
+                .selectFrom(inquiry)
+                .where(
+                        toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
+                        eqStatus(request.status())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(makeOrderSpecifiers(inquiry, pageable))
+                .fetch();
 
-        CompletableFuture<List<Inquiry>> inquiriesFuture = CompletableFuture.supplyAsync(() ->
-                jpaQueryFactory
-                        .selectFrom(inquiry)
-                        .where(
-                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
-                                eqStatus(request.status())
-                        )
-                        .offset(pageable.getOffset())
-                        .limit(pageable.getPageSize())
-                        .orderBy(makeOrderSpecifiers(inquiry, pageable))
-                        .fetch()
-        );
-
-        CompletableFuture<Long> countFuture = CompletableFuture.supplyAsync(() ->
-                jpaQueryFactory
-                        .select(inquiry.count())
-                        .from(inquiry)
-                        .where(
-                                toCreatedDateBetween(request.createdStartDate(), request.createdEndDate()),
-                                eqStatus(request.status())
-                        )
-                        .fetchOne()
-        );
-
-        CompletableFuture.allOf(inquiriesFuture, countFuture).join();
-
-        try {
-            inquiries = inquiriesFuture.get();
-            total = countFuture.get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-
-        return Optional.of(new PageImpl<>(inquiries, pageable, total));
+        return Optional.of(new PageImpl<>(inquiries, pageable, inquiries.size()));
     }
 
     private BooleanExpression toContainsCreatedStartDate(final String startDate) {
