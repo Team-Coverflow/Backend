@@ -94,7 +94,8 @@ public class OAuth2LoginService {
      * [출석 체크 메서드]
      * 당일 첫 로그인 시 화폐 5 증가
      */
-    private void dailyCheck(final Member member) {
+    @Transactional
+    protected void dailyCheck(final Member member) {
         // 오늘 첫 로그인 시 = 출석
         if (null == member.getConnectedAt() || !LocalDateTime.now().toLocalDate().isEqual(LocalDate.from(member.getConnectedAt()))) {
             // 출석 체크 시 붕어빵 지급
